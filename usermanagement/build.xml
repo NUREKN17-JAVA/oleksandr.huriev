@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="usermanagement" basedir="." default="test">
+
+    <property name="build-dir" value="${basedir}/target"/>
+    <property name="main-java-dir" value="${basedir}/src/main/java"/>
+    <property name="test-java-dir" value="${basedir}/src/test/java"/>
+
+    <target name="test" depends="test-compile" description="description">
+        <junit>
+            <classpath>
+                <pathelement location="${build-dir}"/>
+                <fileset dir="C:\Users\User\.m2\repository\junit\junit\3.8.2"/>
+            </classpath>
+            <test name="ua.nure.cs.huriev.usermanagement.UserTest"/>
+            <formatter type="plain"/>
+        </junit>
+    </target>
+
+    <target name="test-compile" depends="compile">
+        <javac srcdir="${test-java-dir}" destdir="${build-dir}"/>
+    </target>
+
+    <target name="compile" depends="initialise">
+        <javac srcdir="${main-java-dir}" destdir="${build-dir}"/>
+    </target>
+
+    <target name="initialise" depends="clean">
+        <mkdir dir="${build-dir}"/>
+    </target>
+
+    <target name="clean">
+        <mkdir dir="${build-dir}"/>
+    </target>
+
+</project>
