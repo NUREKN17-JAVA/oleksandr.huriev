@@ -3,62 +3,59 @@ package ua.nure.cs.huriev.usermanagement;
 import junit.framework.TestCase;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class UserTest extends TestCase {
 
-    public static final String FIRST_NAME = "John";
-    public static final String LAST_NAME = "Doe";
-    public static final String ETALON_FULL_NAME = "Doe, John";
-    public static final int YEAR_OF_BIRTH = 2000;
-    public static final int MONTH_OF_BIRTH = 11;
-    public static final int MONTH_OF_BIRTH_2 = 10;
-    public static final int DAY_OF_BIRTH = 28;
-    public static final int ETALON_AGE_1 = 19;
-    public static final int ETALO_AGE_2 = 20;
-    public static final int AGE_AFTER_5_YEAR = 24;
-    private static final int MONTH_OF_BIRTH_PASSED = 9;
-    private static final int MONTH_LEFT_TO_BIRTH = 2;
+    private static final int ETALONE_MAX_STUDENT_AGE = 25;
+    private static final int ETALONE_AGE_1 = 19;
+    private static final int ETALONE_ADULT_AGE = 18;
+    private static final int ETALONE_MIN_STUDENT_AGE = 6;
+    private static final int DAY_OF_BIRTH = 8;
+    private static final int MONTH_OF_BIRTH = 2;
+    private static final int YEAR_OF_BIRTH = 2000;
     private User user;
 
-    public void testGetFullName(){
-        user.setFirstName(FIRST_NAME);
-        user.setLastName(LAST_NAME);
-        assertEquals(ETALON_FULL_NAME, user.getFullName());
+    public void testGetFullName() {
+        user.setFirstName("John");
+        user.setLastName("Doe");
+
+        assertEquals("Doe, John", user.getFullName());
     }
 
-    public void testGetAgeBirthDateInTheFuture(){
+    public void testGetAge1() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(YEAR_OF_BIRTH, MONTH_OF_BIRTH, DAY_OF_BIRTH);
         user.setDateOfBirth(calendar.getTime());
-        assertEquals(ETALON_AGE_1,user.getAge());
+
+        assertEquals(ETALONE_AGE_1, user.getAge());
     }
 
-    public void testGetAgeBirthDateIsPassedItTheYear(){
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(YEAR_OF_BIRTH, MONTH_OF_BIRTH_PASSED, DAY_OF_BIRTH);
-        user.setDateOfBirth(calendar.getTime());
-        assertEquals(ETALON_AGE_1,user.getAge());
-    }
-
-    public void testGetDayOfBirthToday() {
+    public void testAdultAge() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(YEAR_OF_BIRTH, MONTH_OF_BIRTH, DAY_OF_BIRTH);
         user.setDateOfBirth(calendar.getTime());
-        assertEquals(DAY_OF_BIRTH, user.getDay());
+
+        assertTrue("Person is too young!", ETALONE_ADULT_AGE <= user.getAge());
     }
 
-    public void  testMonthLeft(){
+    public void testUnrealAge() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(YEAR_OF_BIRTH, MONTH_OF_BIRTH, DAY_OF_BIRTH);
         user.setDateOfBirth(calendar.getTime());
-        assertEquals(MONTH_LEFT_TO_BIRTH, user.getMonthLeft());
+        int birthYear = calendar.get(Calendar.YEAR);
+        calendar.setTime(new Date());
+        int currentYear = calendar.get(Calendar.YEAR);
+
+        assertTrue("There is unreal age!", birthYear <= currentYear);
     }
 
-    public void testGetAgeAfter5Year(){
+    public void testStudentAge() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(YEAR_OF_BIRTH, MONTH_OF_BIRTH, DAY_OF_BIRTH);
         user.setDateOfBirth(calendar.getTime());
-        assertEquals(AGE_AFTER_5_YEAR,user.getAge5());
+
+        assertTrue("Person is not in student age!", user.getAge() > ETALONE_MIN_STUDENT_AGE && user.getAge() < ETALONE_MAX_STUDENT_AGE);
     }
 
     protected void setUp() throws Exception {
@@ -66,7 +63,7 @@ public class UserTest extends TestCase {
         user = new User();
     }
 
-    protected void tearDown() throws Exception{
+    protected void tearDown() throws Exception {
         super.tearDown();
     }
 

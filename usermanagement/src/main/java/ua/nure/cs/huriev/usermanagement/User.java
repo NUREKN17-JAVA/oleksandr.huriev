@@ -3,7 +3,6 @@ package ua.nure.cs.huriev.usermanagement;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
 
 public class User implements Serializable {
 
@@ -14,8 +13,18 @@ public class User implements Serializable {
     private String lastName;
     private Date dateOfBirth;
 
+    public User() {
+    }
+
     public Long getId() {
         return id;
+    }
+
+    public User(Long id, String firstName, String lastName, Date dateOfBirth) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
     }
 
     public void setId(Long id) {
@@ -46,46 +55,16 @@ public class User implements Serializable {
         this.dateOfBirth = dateOfBirth;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) &&
-                Objects.equals(firstName, user.firstName) &&
-                Objects.equals(lastName, user.lastName) &&
-                Objects.equals(dateOfBirth, user.dateOfBirth);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, firstName, lastName, dateOfBirth);
-    }
 
     public String getFullName() {
         return getLastName() + ", " + getFirstName();
     }
-
     public int getAge() {
-        int currentYear = new Date().getYear();
-        int yearOfBirth = getDateOfBirth().getYear();
-        return currentYear - yearOfBirth;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        int currentYear = calendar.get(Calendar.YEAR);
+        calendar.setTime(getDateOfBirth());
+        int birthYear = calendar.get(Calendar.YEAR);
+        return currentYear - birthYear;
     }
-
-    public long getDay() {
-        Calendar now = Calendar.getInstance();
-        int day = now.get(Calendar.DAY_OF_MONTH);;
-        return day;
-    }
-    public int getMonthLeft(){
-        int currentMonth = new Date().getMonth();
-        int monthOfBirth = getDateOfBirth().getMonth();
-        return monthOfBirth - currentMonth;
-    }
-    public int getAge5() {
-        int currentYear = new Date().getYear();
-        int yearOfBirth = getDateOfBirth().getYear();
-        return (currentYear - yearOfBirth) + 5;
-    }
-
 }
