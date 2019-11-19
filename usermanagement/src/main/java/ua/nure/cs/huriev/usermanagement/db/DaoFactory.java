@@ -1,26 +1,41 @@
 package ua.nure.cs.huriev.usermanagement.db;
 
+import ua.nure.cs.huriev.usermanagement.User;
+
 import java.io.IOException;
 import java.util.Properties;
 
-public class DaoFactory {
-    private static final String USER_DAO = "dao.ua.nure.cs.huriev.usermanagement.db.UserDao";
-    private final Properties properties;
+public abstract class DaoFactory {
+    protected static final String USER_DAO = "dao.ua.nure.cs.huriev.usermanagement.db.UserDao";
+    protected static Properties properties;
 
-    private final static DaoFactory INSTANCE = new DaoFactory();
+    protected static DaoFactory instance;
+    private static final String DAO_FACTORY = "dao.factory";
 
-    public static DaoFactory getInstance() {
-        return INSTANCE;
+    public static synchronized DaoFactory getInstance() {
+        if (instance == null){
+            try {
+                Class factoryClass = Class.forName(properties
+                        .getProperty(DAO_FACTORY));
+                instance = (DaoFactory) factoryClass.newInstance();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return instance;
     }
 
-    private DaoFactory() {
+    static{
         properties = new Properties();
         try {
-            properties.load(getClass().getClassLoader().getResourceAsStream("settings.properties"));
+            properties.load(DaoFactory.class.getResourceAsStream(
+                    "settings.properties"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
+    protected DaoFactory() { }
 
     private ConnectionFactory getConnectionFactory() {
         String user = properties.getProperty("connection.user");
@@ -30,15 +45,10 @@ public class DaoFactory {
         return new ConnectionFactoryImpl(driver, url, user, password);
     }
 
-    public UserDao getUserDao() {
-        UserDao result = null;
-        try {
-            Class clazz = Class.forName(properties.getProperty(USER_DAO));
-            result = (UserDao) clazz.newInstance();
-            result.setConnectionFactory(getConnectionFactory());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return result;
+    public abstract Dao<User> getUserDao();
+
+    public void init(Properties properties){
+        this.properties = properties;
+        instance = null;
     }
 }

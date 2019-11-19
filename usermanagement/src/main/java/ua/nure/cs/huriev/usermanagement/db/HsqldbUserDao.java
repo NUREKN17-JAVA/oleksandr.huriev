@@ -8,7 +8,7 @@ import java.util.LinkedList;
 
 
 
-class HsqldbUserDao implements UserDao {
+class HsqldbUserDao implements Dao<User> {
 
     private static final String SELECT_FIND_ALL = "SELECT id, firstname, lastname, dateofbirth FROM users";
     private static final String INSERT_QUERY = "INSERT INTO users (firstname, lastname, dateofbirth) VALUES (?,?,?)";

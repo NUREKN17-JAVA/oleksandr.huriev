@@ -1,7 +1,5 @@
 package ua.nure.cs.huriev.usermanagement.db;
 
-import ua.nure.cs.huriev.usermanagement.User;
-
 import java.util.Collection;
 
 
