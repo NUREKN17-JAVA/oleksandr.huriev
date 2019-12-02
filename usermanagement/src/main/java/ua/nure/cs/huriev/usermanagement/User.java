@@ -1,5 +1,6 @@
 package ua.nure.cs.huriev.usermanagement;
 
+
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,18 +14,20 @@ public class User implements Serializable {
     private String lastName;
     private Date dateOfBirth;
 
-    public User() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
     public User(Long id, String firstName, String lastName, Date dateOfBirth) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
+    }
+    public User(String firstName, String lastName, Date dateOfBirth) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+    }
+    public User() { }
+    public Long getId() {
+        return id;
     }
 
     public void setId(Long id) {
@@ -53,6 +56,26 @@ public class User implements Serializable {
 
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (this == o) {
+            return true;
+        }
+        if (this.getId() == null && ((User) o).getId() == null) {
+            return true;
+        }
+        return this.getId().equals(((User) o).getId());
+    }
+
+    public int hashCode() {
+        if (this.getId() == null) {
+            return 0;
+        }
+        return this.getId().hashCode();
     }
 
 
