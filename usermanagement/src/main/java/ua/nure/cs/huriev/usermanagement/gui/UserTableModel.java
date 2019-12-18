@@ -10,7 +10,7 @@ import java.util.List;
 
 public class UserTableModel extends AbstractTableModel {
 
-    private List<User> users = null;
+    private List users = null;
     private static final String[] COLUMN_NAMES = {Messages.getString("UserTableModel.id"), Messages.getString("UserTableModel.first_name"), Messages.getString("UserTableModel.last_name")};
     private static final Class[] COLUMN_CLASSES = {Long.class, String.class, String.class};
 
@@ -22,12 +22,10 @@ public class UserTableModel extends AbstractTableModel {
         this.users = new ArrayList(users);
     }
 
-    @Override
     public int getColumnCount() {
         return COLUMN_NAMES.length;
     }
 
-    @Override
     public int getRowCount() {
         return users.size();
     }
@@ -36,11 +34,10 @@ public class UserTableModel extends AbstractTableModel {
         return COLUMN_CLASSES[columnIndex];
     }
 
-    public String getColumnName(int columnIndex) {
-        return COLUMN_NAMES[columnIndex];
+    public String getColumnName(int column) {
+        return COLUMN_NAMES[column];
     }
 
-    @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         User user = (User) users.get(rowIndex);
         switch (columnIndex) {

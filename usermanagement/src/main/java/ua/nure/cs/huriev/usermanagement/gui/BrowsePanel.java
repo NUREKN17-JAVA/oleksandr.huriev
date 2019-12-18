@@ -123,10 +123,20 @@ public class BrowsePanel extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String actionCommand = e.getActionCommand();
-		if ("add".equalsIgnoreCase(actionCommand)){
+		if ("add".equalsIgnoreCase(actionCommand)) { //$NON-NLS-1$
+			this.setVisible(false);
+			parent.showAddPanel();
+		}
+		if ("edit".equalsIgnoreCase(actionCommand)) { //$NON-NLS-1$
+			this.setVisible(false);
+			parent.showAddPanel();
+		}
+		if ("delete".equalsIgnoreCase(actionCommand)) { //$NON-NLS-1$
 			this.setVisible(false);
 			parent.showAddPanel();
 		}
 
+
 	}
+
 }

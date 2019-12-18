@@ -8,7 +8,7 @@ import java.util.LinkedList;
 
 
 
-class HsqldbUserDao implements Dao<User> {
+public abstract class HsqldbUserDao implements Dao {
 
 	private static final String DELETE_QUERY = "DELETE FROM users WHERE id=?";
 	private static final String SELECT_QUERY = "SELECT * FROM users WHERE id=?";
@@ -17,9 +17,7 @@ class HsqldbUserDao implements Dao<User> {
 	private static final String CALL_IDENTITY = "call IDENTITY()";
 	private static final String INSERT_QUERY = "INSERT INTO users (firstname, lastname, dateofbirth) VALUES (?,?,?)";
 	private static final String UPDATE_QUERY = "UPDATE users SET firstname = ?, lastname = ?, dateofbirth = ? WHERE id = ?";
-
-	public HsqldbUserDao() {
-	}
+	public HsqldbUserDao() {}
 
 	public HsqldbUserDao(ConnectionFactory connectionFactory) {
 		this.connectionFactory = connectionFactory;
@@ -84,7 +82,6 @@ class HsqldbUserDao implements Dao<User> {
 		}
 	}
 
-	@Override
 	public void delete(User entity) throws DatabaseException {
 		try {
 			Connection connection = connectionFactory.createConnection();
@@ -104,7 +101,6 @@ class HsqldbUserDao implements Dao<User> {
 
 	}
 
-	@Override
 	public User find(Long id) throws DatabaseException {
 		User entity = null;
 		try {
@@ -159,5 +155,6 @@ class HsqldbUserDao implements Dao<User> {
 		}
 		return result;
 	}
+
 
 }

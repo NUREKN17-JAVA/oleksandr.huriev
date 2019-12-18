@@ -22,7 +22,7 @@ public class AddPanel extends JPanel implements ActionListener {
 	private JTextField firstNameField;
 	private Color bgcolor;
 
-	public AddPanel(MainFrame mainFrame) {
+	public AddPanel(MainFrame parent) {
 		this.parent = parent;
 		initialize();
 	}
@@ -96,7 +96,7 @@ public class AddPanel extends JPanel implements ActionListener {
 		JLabel label = new JLabel(labelText);
 		label.setLabelFor(textField);
 		panel.add(label);
-		panel.add(textField);
+		label.add(textField);
 	}
 
 	private JTextField getFirstNameField() {
@@ -109,27 +109,30 @@ public class AddPanel extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if ("ok".equalsIgnoreCase(e.getActionCommand())){
+		if ("ok".equalsIgnoreCase(e.getActionCommand())) {
 			User user = new User();
 			user.setFirstName(getFirstNameField().getText());
 			user.setLastName(getLastNameField().getText());
 			DateFormat format = DateFormat.getDateInstance();
+
 			try {
 				user.setDateOfBirth(format.parse(getDateOfBirthField().getText()));
-			} catch (ParseException ex) {
+			} catch (ParseException e1) {
 				getDateOfBirthField().setBackground(Color.RED);
 				return;
 			}
+
+
 			try {
 				parent.getDao().create(user);
-			} catch (DatabaseException ex) {
-				JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",
-						JOptionPane.ERROR_MESSAGE);
+			} catch (DatabaseException e1) {
+				JOptionPane.showMessageDialog(this, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 		clearFields();
 		this.setVisible(false);
-		parent.showAddPanel();
+		parent.showBrowsePanel();
+
 	}
 
 	private void clearFields() {

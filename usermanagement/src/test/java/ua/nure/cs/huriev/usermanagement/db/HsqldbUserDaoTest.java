@@ -22,7 +22,12 @@ public class HsqldbUserDaoTest extends DatabaseTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        dao = new HsqldbUserDao(connectionFactory);
+        dao = new HsqldbUserDao(connectionFactory) {
+            @Override
+            public User find(long userId) throws DatabaseException {
+                return null;
+            }
+        };
 
         user = new User();
         user.setFirstName(FIRST_NAME);

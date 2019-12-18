@@ -1,35 +1,86 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="usermanagement" basedir="." default="test">
 
-    <property name="build-dir" value="${basedir}/target"/>
-    <property name="main-java-dir" value="${basedir}/src/main/java"/>
-    <property name="test-java-dir" value="${basedir}/src/test/java"/>
+<property name="build-dir" value="${basedir}/bin"/>
+<property name="test-java-dir" value="${basedir}/src/test/java"/>
+<property name="main-java-dir" value="${basedir}/src/main/java"/>
+<property name="lib-dir" value="${basedir}/lib"/>
+<property name="classes-dir" value="${build-dir}/target"/>
+<property name="main-resources-dir" value="${basedir}/src/main/resources"/>
+<property name="war-name" value="users"/>
+<property name="war-dir" value="${build-dir}/${war-name}"/>
+<property name="war-jsp-dir" value="${war-dir}"/>
+<property name="war-webinf-dir" value="${war-dir}/WEB-INF"/>
+<property name="war-lib-dir" value="${war-webinf-dir}/lib"/>
+<property name="war-classes-dir" value="${war-webinf-dir}/classes"/>
+<property name="main-webapp-dir" value="${basedir}/src/main/webapp"/>
+<property name="main-webapp-webinf-dir" value="${main-webapp-dir}/WEB-INF"/>
 
-    <target name="test" depends="test-compile" description="description">
-        <junit>
-            <classpath>
-                <pathelement location="${build-dir}"/>
-                <fileset dir="C:\Users\User\.m2\repository\junit\junit\3.8.2"/>
-            </classpath>
-            <test name="ua.nure.cs.huriev.usermanagement.UserTest"/>
-            <formatter type="plain"/>
-        </junit>
-    </target>
 
-    <target name="test-compile" depends="compile">
-        <javac srcdir="${test-java-dir}" destdir="${build-dir}"/>
-    </target>
+<target name="test" depends="test-compile" description="description">
+<junit>
+    <classpath>
+        <pathelement location="${build-dir}"/>
+    </classpath>
+    <formatter type="plain"/>
+    <batchtest>
+        <fileset dir="${test-java-dir}">
+            <include name="**/*.class"/>
+        </fileset>
+    </batchtest>
+</junit>
+</target>
 
-    <target name="compile" depends="initialise">
-        <javac srcdir="${main-java-dir}" destdir="${build-dir}"/>
-    </target>
+<target name="compile" depends="init">
+<javac srcdir="${main-java-dir}" destdir="${build-dir}"/>
+</target>
 
-    <target name="initialise" depends="clean">
-        <mkdir dir="${build-dir}"/>
-    </target>
+<target name="war.exploded" depends="compile">
+<copy todir="${war-jsp-dir}">
+    <fileset dir="${main-webapp-dir}"/>
+</copy>
+<copy todir="${war-lib-dir}">
+    <fileset dir="${lib-dir}">
+        <include name="hsqldb*.jar"/>
+        <include name="jstl*.jar"/>
+        <include name="standart*.jar"/>
+    </fileset>
+</copy>
+<copy todir="${war-classes-dir}">
+    <fileset dir="${main-resources-dir}"/>
+</copy>
+<copy todir="${war-classes-dir}">
+    <fileset dir="${classes-dir}"/>
+</copy>
+</target>
 
-    <target name="clean">
-        <mkdir dir="${build-dir}"/>
-    </target>
+<target name="war" depends="war.exploded">
+<delete file="${build-dir}/${war-name}.war" failonerror="no"/>
+<war destfile="${build-dir}/${war-name}.war" webxml="${main-webapp-webinf-dir}/web.xml">
+    <fileset dir="${war-jsp-dir}">
+        <exclude name="WEB-INF/*.*"/>
+    </fileset>
+    <classes dir="${war-classes-dir}"/>
+    <lib dir="${war-lib-dir}"/>
+    <webinf dir="${war-webinf-dir}">
+        <exclude name="web.xml"/>
+    </webinf>
+</war>
+</target>
 
+<target name="test-compile" depends="compile">
+<javac srcdir="${test-java-dir}" destdir="${build-dir}" includeantruntime="false">
+    <classpath>
+        <path id="org.junit" location="C:\Users\User\.m2\repository\junit\junit\3.8.2"/>
+    </classpath>
+</javac>
+</target>
+
+<target name="init" depends="clean">
+<mkdir dir="${build-dir}"/>
+</target>
+
+<target name="clean">
+<delete dir="${build-dir}" failonerror="no"/>
+</target>
 </project>

@@ -4,7 +4,6 @@ package ua.nure.cs.huriev.usermanagement.gui;
 import com.mockobjects.dynamic.Mock;
 import junit.extensions.jfcunit.JFCTestCase;
 import junit.extensions.jfcunit.JFCTestHelper;
-import junit.extensions.jfcunit.eventdata.JTableMouseEventData;
 import junit.extensions.jfcunit.eventdata.MouseEventData;
 import junit.extensions.jfcunit.eventdata.StringEventData;
 import junit.extensions.jfcunit.finder.NamedComponentFinder;
@@ -39,9 +38,9 @@ public class MainFrameTest extends JFCTestCase {
 	private static final String BROWSE_PANEL_COMPONENT_NAME = "browsePanel";
 	private static final String OK_BUTTON_COMPONENT_NAME = "okButton";
 	private static final String CANCEL_BUTTON_COMPONENT_NAME = "cancelButton";
+	private static final String FIND_ALL_COMMAND = "findAll";
 	private static final String FIRST_NAME = "John";
 	private static final String LAST_NAME = "Doe";
-	private static final String FIND_ALL_COMMAND = "findAll";
 	private static final Date DATE_OF_BIRTH = new Date();
 	private MainFrame mainFrame;
 	private Mock mockUserDao;
@@ -75,11 +74,12 @@ public class MainFrameTest extends JFCTestCase {
 		}
 	}
 
-	protected Component find(Class<?> componentClass, String componentName) {
-		NamedComponentFinder finder = new NamedComponentFinder(componentClass, componentName);
-		finder.setWait(0);
-		Component component = finder.find(mainFrame, 0);
-		assertNotNull("Could not find component '" + componentName + "'");
+	private Component find(Class<?> componentClass, String name) {
+		NamedComponentFinder componentFinder;
+		componentFinder = new NamedComponentFinder(componentClass, name);
+		componentFinder.setWait(0);
+		Component component = componentFinder.find(mainFrame, 0);
+		assertNotNull("Could not find component '" + name + "'",component);
 		return component;
 	}
 
@@ -101,9 +101,13 @@ public class MainFrameTest extends JFCTestCase {
 	public void testAddUser() {
 
 		try {
-			User user = new User(FIRST_NAME, LAST_NAME, DATE_OF_BIRTH);
+			String firstName = "John";
+			String lastName = "Doe";
+			Date now = new Date();
 
-			User expectedUser = new User(new Long(1), FIRST_NAME, LAST_NAME, DATE_OF_BIRTH);
+			User user = new User(firstName, lastName, now);
+
+			User expectedUser = new User(new Long(1), firstName, lastName, now);
 			mockUserDao.expectAndReturn("create", user, expectedUser);
 
 			ArrayList users = new ArrayList();
@@ -111,39 +115,29 @@ public class MainFrameTest extends JFCTestCase {
 			mockUserDao.expectAndReturn("findAll", users);
 
 			JTable table = (JTable) find(JTable.class, "userTable");
-			assertEquals(0, table.getRowCount());
+			assertEquals(1, table.getRowCount());
 
 			JButton addButton = (JButton) find(JButton.class, "addButton");
 			getHelper().enterClickAndLeave(new MouseEventData(this, addButton));
 
 			find(JPanel.class, "addPanel");
 
-			JTextField firstNameField = (JTextField) find(JTextField.class, "firstNameField");
-			JTextField lastNameField = (JTextField) find(JTextField.class, "lastNameField");
-			JTextField dateOfBirthField = (JTextField) find(JTextField.class, "dateOfBirthField");
+			fillField(firstName, lastName, now);
 
 			JButton okButton = (JButton) find(JButton.class, "okButton");
-			find(JButton.class, "cancelButton");
-
-
-			getHelper().sendString(new StringEventData(this, firstNameField, FIRST_NAME));
-
-			getHelper().sendString(new StringEventData(this, lastNameField, LAST_NAME));
-			DateFormat formatter = DateFormat.getDateInstance();
-
-			String date = formatter.format(DATE_OF_BIRTH);
-			getHelper().sendString(new StringEventData(this, dateOfBirthField, date));
-
-			getHelper().enterClickAndLeave(new MouseEventData(this, okButton));
+			getHelper().enterClickAndLeave(new MouseEventData(this,okButton));
 
 			find(JPanel.class, "browsePanel");
 			table = (JTable) find(JTable.class, "userTable");
-			assertEquals(1, table.getRowCount());
+			assertEquals(2, table.getRowCount());
+
+			mockUserDao.verify();
 		} catch (Exception e) {
-			e.printStackTrace();
+			fail(e.toString());
 		}
 
 	}
+	/*
 	public void testEditUser() {
 		User expectedUser = new User(new Long(1), FIRST_NAME, LAST_NAME, DATE_OF_BIRTH);
 
@@ -192,46 +186,23 @@ public class MainFrameTest extends JFCTestCase {
 		table = (JTable) find(JTable.class, "userTable");
 		assertEquals(0, table.getRowCount());
 	}
+*/
+	private void fillField(String firstName, String lastName, Date now) {
+		JTextField firstNameField = (JTextField) find(JTextField.class,
+				FIRST_NAME_FIELD_COMPONENT_NAME);
+		JTextField lastNameField = (JTextField) find(JTextField.class,
+				LAST_NAME_FIELD_COMPONENT_NAME);
+		JTextField dateOfBirthField = (JTextField) find(JTextField.class,
+				DATE_OF_BIRTH_FIELD_COMPONENT_NAME);
 
-	public void testDetailsUser() {
-		User expectedUser = new User(new Long(1), FIRST_NAME, LAST_NAME, DATE_OF_BIRTH);
-
-		ArrayList<User> users = new ArrayList<User>();
-		mockUserDao.expectAndReturn(FIND_ALL_COMMAND, users);
-
-		JTable table = (JTable) this.find(JTable.class, USER_TABLE_COMPONENT_NAME);
-		assertEquals(1, table.getRowCount());
-
-		JButton detailsButton = (JButton) this.find(JButton.class, DELETE_BUTTON_COMPONENT_NAME);
-		getHelper().enterClickAndLeave(new JTableMouseEventData(this, table, 0, 0, 1));
-		getHelper().enterClickAndLeave(new MouseEventData(this, detailsButton));
-
-		this.find(JPanel.class, DETAILS_PANEL);
-
-		this.find(JLabel.class, ID_LABEL);
-		this.find(JLabel.class, FIRST_NAME_LABEL);
-		this.find(JLabel.class, LAST_NAME_LABEL);
-		this.find(JLabel.class, BIRTH_DATE_LABEL);
-		this.find(JLabel.class, AGE_LABEL);
-
-		JButton cancelButton = (JButton) this.find(JButton.class, CANCEL_BUTTON_COMPONENT_NAME);
-		getHelper().enterClickAndLeave(new MouseEventData(this, cancelButton));
-
-		this.find(JPanel.class, BROWSE_PANEL_COMPONENT_NAME);
-		table = (JTable) this.find(JTable.class, USER_TABLE_COMPONENT_NAME);
-		assertEquals(1, table.getRowCount());
+		getHelper().sendString(
+				new StringEventData(this, firstNameField, firstName));
+		getHelper().sendString(
+				new StringEventData(this, lastNameField, lastName));
+		DateFormat formatter = DateFormat.getDateInstance();
+		String date = formatter.format(now);
+		getHelper().sendString(
+				new StringEventData(this, dateOfBirthField, date));
 	}
-
-	private void fillFields(String firstName, String lastName, Date dateOfBirth) {
-		JTextField firstNameField = (JTextField) find(JTextField.class, FIRST_NAME_FIELD_COMPONENT_NAME);
-		JTextField lastNameField = (JTextField) find(JTextField.class, LAST_NAME_FIELD_COMPONENT_NAME);
-		JTextField dateOfBirthField = (JTextField) find(JTextField.class, DATE_OF_BIRTH_FIELD_COMPONENT_NAME);
-
-		getHelper().sendString(new StringEventData(this, firstNameField, firstName));
-		getHelper().sendString(new StringEventData(this, lastNameField, lastName));
-		String dateString = DateFormat.getInstance().format(dateOfBirth);
-		getHelper().sendString(new StringEventData(this, dateOfBirthField, dateString));
-	}
-
 
 }
