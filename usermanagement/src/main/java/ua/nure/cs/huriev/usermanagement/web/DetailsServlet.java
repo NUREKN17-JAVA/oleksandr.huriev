@@ -1,4 +1,4 @@
 package ua.nure.cs.huriev.usermanagement.web;
 
-public class DeleteServletTest {
+public class DetailsServlet {
 }
