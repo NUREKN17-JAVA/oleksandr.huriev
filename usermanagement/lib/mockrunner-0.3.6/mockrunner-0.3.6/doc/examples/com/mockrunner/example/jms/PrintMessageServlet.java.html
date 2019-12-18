@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.jms.PrintMessageServlet (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">PrintMessageServlet.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.jms.index.html" target="packageFrame">com.mockrunner.example.jms</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.io.IOException;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="Import">import</FONT> javax.jms.JMSException;
+<A NAME="6"></A><FONT ID="Import">import</FONT> javax.jms.Queue;
+<A NAME="7"></A><FONT ID="Import">import</FONT> javax.jms.QueueConnection;
+<A NAME="8"></A><FONT ID="Import">import</FONT> javax.jms.QueueConnectionFactory;
+<A NAME="9"></A><FONT ID="Import">import</FONT> javax.jms.QueueReceiver;
+<A NAME="10"></A><FONT ID="Import">import</FONT> javax.jms.QueueSender;
+<A NAME="11"></A><FONT ID="Import">import</FONT> javax.jms.QueueSession;
+<A NAME="12"></A><FONT ID="Import">import</FONT> javax.jms.Session;
+<A NAME="13"></A><FONT ID="Import">import</FONT> javax.jms.TextMessage;
+<A NAME="14"></A><FONT ID="Import">import</FONT> javax.naming.InitialContext;
+<A NAME="15"></A><FONT ID="Import">import</FONT> javax.servlet.ServletException;
+<A NAME="16"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServlet;
+<A NAME="17"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletRequest;
+<A NAME="18"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletResponse;
+<A NAME="19"></A>
+<A NAME="20"></A><FONT ID="FormalComment">/**
+<A NAME="21"></A> * This example servlet registers a listener for a
+<A NAME="22"></A> * test queue. On each request a customer id is
+<A NAME="23"></A> * extracted an sent as a text message to the queue.
+<A NAME="24"></A> * The example simulates an online bank. The user
+<A NAME="25"></A> * can request a printout of his account data.
+<A NAME="26"></A> * This is done in an asynchronous manner, so
+<A NAME="27"></A> * the user gets an immediate response.
+<A NAME="28"></A> */</FONT>
+<A NAME="29"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> PrintMessageServlet <FONT ID="Extends">extends</FONT> HttpServlet
+<A NAME="30"></A>{
+<A NAME="31"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> init() <FONT ID="Throws">throws</FONT> ServletException
+<A NAME="32"></A>    {
+<A NAME="33"></A>        <FONT ID="Try">try</FONT>
+<A NAME="34"></A>        {
+<A NAME="35"></A>            InitialContext initialContext = <FONT ID="New">new</FONT> InitialContext();
+<A NAME="36"></A>            QueueConnectionFactory queueFactory = (QueueConnectionFactory)initialContext.lookup(<FONT ID="StringLiteral">"java:/ConnectionFactory"</FONT>);
+<A NAME="37"></A>            QueueConnection queueConnection = queueFactory.createQueueConnection();
+<A NAME="38"></A>            QueueSession queueSession = queueConnection.createQueueSession(<FONT ID="False">false</FONT>, Session.CLIENT_ACKNOWLEDGE);
+<A NAME="39"></A>            Queue queue = (Queue)initialContext.lookup(<FONT ID="StringLiteral">"queue/testQueue"</FONT>);
+<A NAME="40"></A>            QueueReceiver receiver = queueSession.createReceiver(queue);
+<A NAME="41"></A>            receiver.setMessageListener(<FONT ID="New">new</FONT> <A HREF="../../../../com/mockrunner/example/jms/PrintMessageListener.java.html">PrintMessageListener</A>());
+<A NAME="42"></A>            queueConnection.start();
+<A NAME="43"></A>        }
+<A NAME="44"></A>        <FONT ID="Catch">catch</FONT>(Exception exc)
+<A NAME="45"></A>        {
+<A NAME="46"></A>            exc.printStackTrace();
+<A NAME="47"></A>        }
+<A NAME="48"></A>    }
+<A NAME="49"></A>
+<A NAME="50"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> doGet(HttpServletRequest request, HttpServletResponse response) <FONT ID="Throws">throws</FONT> ServletException, IOException
+<A NAME="51"></A>    {
+<A NAME="52"></A>        doPost(request, response);
+<A NAME="53"></A>    }
+<A NAME="54"></A>
+<A NAME="55"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> doPost(HttpServletRequest request, HttpServletResponse response) <FONT ID="Throws">throws</FONT> ServletException, IOException
+<A NAME="56"></A>    {
+<A NAME="57"></A>        String customerId = request.getParameter(<FONT ID="StringLiteral">"customerId"</FONT>);
+<A NAME="58"></A>        QueueConnection queueConnection = <FONT ID="Null">null</FONT>;
+<A NAME="59"></A>        QueueSession queueSession = <FONT ID="Null">null</FONT>;
+<A NAME="60"></A>        QueueSender queueSender = <FONT ID="Null">null</FONT>;
+<A NAME="61"></A>        <FONT ID="Try">try</FONT>
+<A NAME="62"></A>        {   
+<A NAME="63"></A>            InitialContext initialContext = <FONT ID="New">new</FONT> InitialContext();
+<A NAME="64"></A>            QueueConnectionFactory queueFactory = (QueueConnectionFactory)initialContext.lookup(<FONT ID="StringLiteral">"java:/ConnectionFactory"</FONT>);
+<A NAME="65"></A>            queueConnection = queueFactory.createQueueConnection();
+<A NAME="66"></A>            queueSession = queueConnection.createQueueSession(<FONT ID="False">false</FONT>, Session.CLIENT_ACKNOWLEDGE);
+<A NAME="67"></A>            Queue queue = (Queue)initialContext.lookup(<FONT ID="StringLiteral">"queue/testQueue"</FONT>);
+<A NAME="68"></A>            TextMessage message = queueSession.createTextMessage(customerId);
+<A NAME="69"></A>            queueSender = queueSession.createSender(queue);
+<A NAME="70"></A>            queueSender.send(message);
+<A NAME="71"></A>            response.getWriter().write(<FONT ID="StringLiteral">"Print request for "</FONT> + customerId + <FONT ID="StringLiteral">" successfully sent"</FONT>);
+<A NAME="72"></A>        }
+<A NAME="73"></A>        <FONT ID="Catch">catch</FONT>(Exception exc)
+<A NAME="74"></A>        {
+<A NAME="75"></A>            response.getWriter().write(<FONT ID="StringLiteral">"Error sending print request for "</FONT> + customerId);
+<A NAME="76"></A>        }
+<A NAME="77"></A>        <FONT ID="Finally">finally</FONT>
+<A NAME="78"></A>        {
+<A NAME="79"></A>            <FONT ID="Try">try</FONT>
+<A NAME="80"></A>            {
+<A NAME="81"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != queueSender) queueSender.close();
+<A NAME="82"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != queueSession) queueSession.close();
+<A NAME="83"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != queueConnection) queueConnection.close();
+<A NAME="84"></A>            }
+<A NAME="85"></A>            <FONT ID="Catch">catch</FONT>(JMSException exc)
+<A NAME="86"></A>            {
+<A NAME="87"></A>                exc.printStackTrace();
+<A NAME="88"></A>            }
+<A NAME="89"></A>        }
+<A NAME="90"></A>    }
+<A NAME="91"></A>}
+<A NAME="92"></A></pre>
+</BODY>
+</HTML>

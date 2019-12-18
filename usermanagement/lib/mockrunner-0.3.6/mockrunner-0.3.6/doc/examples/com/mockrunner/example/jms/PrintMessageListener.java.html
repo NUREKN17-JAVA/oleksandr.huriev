@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.jms.PrintMessageListener (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">PrintMessageListener.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.jms.index.html" target="packageFrame">com.mockrunner.example.jms</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> javax.jms.JMSException;
+<A NAME="4"></A><FONT ID="Import">import</FONT> javax.jms.Message;
+<A NAME="5"></A><FONT ID="Import">import</FONT> javax.jms.MessageListener;
+<A NAME="6"></A><FONT ID="Import">import</FONT> javax.jms.TextMessage;
+<A NAME="7"></A>
+<A NAME="8"></A><FONT ID="FormalComment">/**
+<A NAME="9"></A> * Listener for {@link com.mockrunner.example.jms.PrintMessageServlet}.
+<A NAME="10"></A> * If the message is a text message, the customer data will be printed
+<A NAME="11"></A> * and the message will be acknowledged. The print code is omitted for 
+<A NAME="12"></A> * simplicity.
+<A NAME="13"></A> */</FONT>
+<A NAME="14"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> PrintMessageListener <FONT ID="Implements">implements</FONT> MessageListener
+<A NAME="15"></A>{
+<A NAME="16"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> onMessage(Message message)
+<A NAME="17"></A>    {
+<A NAME="18"></A>        <FONT ID="If">if</FONT>(message <FONT ID="InstanceOf">instanceof</FONT> TextMessage)
+<A NAME="19"></A>        {
+<A NAME="20"></A>            <FONT ID="SingleLineComment">//do print
+<A NAME="21"></A></FONT>        }
+<A NAME="22"></A>        <FONT ID="Try">try</FONT>
+<A NAME="23"></A>        {
+<A NAME="24"></A>            message.acknowledge();
+<A NAME="25"></A>        }
+<A NAME="26"></A>        <FONT ID="Catch">catch</FONT>(JMSException exc)
+<A NAME="27"></A>        {
+<A NAME="28"></A>            exc.printStackTrace();
+<A NAME="29"></A>        }
+<A NAME="30"></A>    }
+<A NAME="31"></A>}
+<A NAME="32"></A></pre>
+</BODY>
+</HTML>

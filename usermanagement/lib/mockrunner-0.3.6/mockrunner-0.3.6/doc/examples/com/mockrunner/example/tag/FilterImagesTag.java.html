@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.tag.FilterImagesTag (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">FilterImagesTag.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.tag.index.html" target="packageFrame">com.mockrunner.example.tag</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.io.IOException;
+<A NAME="4"></A><FONT ID="Import">import</FONT> java.io.StringWriter;
+<A NAME="5"></A><FONT ID="Import">import</FONT> java.util.regex.Matcher;
+<A NAME="6"></A><FONT ID="Import">import</FONT> java.util.regex.Pattern;
+<A NAME="7"></A>
+<A NAME="8"></A><FONT ID="Import">import</FONT> javax.servlet.jsp.JspException;
+<A NAME="9"></A><FONT ID="Import">import</FONT> javax.servlet.jsp.tagext.SimpleTagSupport;
+<A NAME="10"></A>
+<A NAME="11"></A><FONT ID="FormalComment">/**
+<A NAME="12"></A> * The purpose of this simple tag is to filter images. If its
+<A NAME="13"></A> * body contains HTML image tags of the form
+<A NAME="14"></A> * &lt;pre&gt;
+<A NAME="15"></A> * &amp;lt;img src="URL"&amp;gt;
+<A NAME="16"></A> * &lt;/pre&gt;
+<A NAME="17"></A> * it replaces the URL with &lt;i&gt;dummy.jpg&lt;/i&gt;.
+<A NAME="18"></A> * Image filtering can be enabled or disabled by setting the &lt;i&gt;filter&lt;/i&gt;
+<A NAME="19"></A> * attribute. Of course this attribute can be set dynamically with the help
+<A NAME="20"></A> * of an EL or scripting expression.
+<A NAME="21"></A> */</FONT>
+<A NAME="22"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> FilterImagesTag <FONT ID="Extends">extends</FONT> SimpleTagSupport
+<A NAME="23"></A>{
+<A NAME="24"></A>    <FONT ID="Private">private</FONT> <FONT ID="Final">final</FONT> <FONT ID="Static">static</FONT> Pattern pattern = Pattern.compile(<FONT ID="StringLiteral">"&lt;\\s*img[^&lt;&gt;]+src\\s*=\\s*\"[^&lt;&gt;]*\".*?&gt;"</FONT>);
+<A NAME="25"></A>    
+<A NAME="26"></A>    <FONT ID="Private">private</FONT> <FONT ID="Boolean">boolean</FONT> doFilter = <FONT ID="False">false</FONT>;
+<A NAME="27"></A>    
+<A NAME="28"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setFilter(<FONT ID="Boolean">boolean</FONT> doFilter)
+<A NAME="29"></A>    {
+<A NAME="30"></A>        <FONT ID="This">this</FONT>.doFilter = doFilter;
+<A NAME="31"></A>    }
+<A NAME="32"></A>    
+<A NAME="33"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> doTag() <FONT ID="Throws">throws</FONT> JspException, IOException
+<A NAME="34"></A>    {
+<A NAME="35"></A>        <FONT ID="If">if</FONT>(!doFilter)
+<A NAME="36"></A>        {
+<A NAME="37"></A>            getJspBody().invoke(<FONT ID="Null">null</FONT>);
+<A NAME="38"></A>        }
+<A NAME="39"></A>        <FONT ID="Else">else</FONT>
+<A NAME="40"></A>        {
+<A NAME="41"></A>            StringWriter writer = <FONT ID="New">new</FONT> StringWriter();
+<A NAME="42"></A>            getJspBody().invoke(writer);
+<A NAME="43"></A>            writer.flush();
+<A NAME="44"></A>            String filteredBody = doFilter(writer.toString());
+<A NAME="45"></A>            getJspContext().getOut().print(filteredBody);
+<A NAME="46"></A>        }
+<A NAME="47"></A>    }
+<A NAME="48"></A>    
+<A NAME="49"></A>    <FONT ID="Private">private</FONT> String doFilter(String body)
+<A NAME="50"></A>    {
+<A NAME="51"></A>        Matcher matcher = pattern.matcher(body);
+<A NAME="52"></A>        StringBuffer output = <FONT ID="New">new</FONT> StringBuffer();
+<A NAME="53"></A>        <FONT ID="While">while</FONT>(matcher.find())
+<A NAME="54"></A>        {
+<A NAME="55"></A>            String match = matcher.group();
+<A NAME="56"></A>            match = match.replaceFirst(<FONT ID="StringLiteral">"src.*=.*\".*\""</FONT>, <FONT ID="StringLiteral">"src=\"dummy.jpg\""</FONT>);
+<A NAME="57"></A>            matcher.appendReplacement(output, match);
+<A NAME="58"></A>        }
+<A NAME="59"></A>        matcher.appendTail(output);
+<A NAME="60"></A>        <FONT ID="Return">return</FONT> output.toString();
+<A NAME="61"></A>    }
+<A NAME="62"></A>}
+<A NAME="63"></A></pre>
+</BODY>
+</HTML>

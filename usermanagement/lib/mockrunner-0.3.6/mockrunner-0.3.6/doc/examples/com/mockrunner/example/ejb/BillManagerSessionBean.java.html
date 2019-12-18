@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.ejb.BillManagerSessionBean (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">BillManagerSessionBean.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.ejb.index.html" target="packageFrame">com.mockrunner.example.ejb</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.rmi.RemoteException;
+<A NAME="4"></A><FONT ID="Import">import</FONT> java.util.Collection;
+<A NAME="5"></A><FONT ID="Import">import</FONT> java.util.Iterator;
+<A NAME="6"></A>
+<A NAME="7"></A><FONT ID="Import">import</FONT> javax.ejb.CreateException;
+<A NAME="8"></A><FONT ID="Import">import</FONT> javax.ejb.EJBException;
+<A NAME="9"></A><FONT ID="Import">import</FONT> javax.ejb.SessionBean;
+<A NAME="10"></A><FONT ID="Import">import</FONT> javax.ejb.SessionContext;
+<A NAME="11"></A><FONT ID="Import">import</FONT> javax.naming.InitialContext;
+<A NAME="12"></A>
+<A NAME="13"></A><FONT ID="Import">import</FONT> <A HREF="../../../../com/mockrunner/example/ejb/interfaces/BillEntity.java.html">com.mockrunner.example.ejb.interfaces.BillEntity</A>;
+<A NAME="14"></A><FONT ID="Import">import</FONT> <A HREF="../../../../com/mockrunner/example/ejb/interfaces/BillEntityHome.java.html">com.mockrunner.example.ejb.interfaces.BillEntityHome</A>;
+<A NAME="15"></A>
+<A NAME="16"></A><FONT ID="MultiLineComment">/*
+<A NAME="17"></A> * @ejb:bean name="BillManagerSession"
+<A NAME="18"></A> *           display-name="BillManagerSessionBean"
+<A NAME="19"></A> *           type="Stateless"
+<A NAME="20"></A> *           transaction-type="Container"
+<A NAME="21"></A> *           jndi-name="de/test/BillManagerSession"
+<A NAME="22"></A> * 
+<A NAME="23"></A> * @ejb:ejb-ref ejb-name="BillEntity" view-type="remote" ref-name="ejb/BillEntity"
+<A NAME="24"></A> **/</FONT>
+<A NAME="25"></A><FONT ID="FormalComment">/**
+<A NAME="26"></A> * This simple EJB finds all {@link BillEntityBean} objects
+<A NAME="27"></A> * which are not paid and marks them as paid.
+<A NAME="28"></A> */</FONT>
+<A NAME="29"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> BillManagerSessionBean <FONT ID="Implements">implements</FONT> SessionBean
+<A NAME="30"></A>{
+<A NAME="31"></A>    <FONT ID="Private">private</FONT> SessionContext sessionContext;
+<A NAME="32"></A>    
+<A NAME="33"></A>    <FONT ID="MultiLineComment">/*
+<A NAME="34"></A>     * @ejb:interface-method
+<A NAME="35"></A>     * @ejb:transaction type="Required"
+<A NAME="36"></A>     **/</FONT>
+<A NAME="37"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> markAsPaid()
+<A NAME="38"></A>    {
+<A NAME="39"></A>        <FONT ID="Try">try</FONT>
+<A NAME="40"></A>        {
+<A NAME="41"></A>            InitialContext context = <FONT ID="New">new</FONT> InitialContext();
+<A NAME="42"></A>            <A HREF="../../../../com/mockrunner/example/ejb/interfaces/BillEntityHome.java.html">BillEntityHome</A> home = (<A HREF="../../../../com/mockrunner/example/ejb/interfaces/BillEntityHome.java.html">BillEntityHome</A>)context.lookup(<FONT ID="StringLiteral">"java:comp/env/ejb/BillEntity"</FONT>);
+<A NAME="43"></A>            Collection unpaid = home.findUnpaid();
+<A NAME="44"></A>            Iterator unpaidIterator = unpaid.iterator();
+<A NAME="45"></A>            <FONT ID="While">while</FONT>(unpaidIterator.hasNext())
+<A NAME="46"></A>            {
+<A NAME="47"></A>                <A HREF="../../../../com/mockrunner/example/ejb/interfaces/BillEntity.java.html">BillEntity</A> next = (<A HREF="../../../../com/mockrunner/example/ejb/interfaces/BillEntity.java.html">BillEntity</A>)unpaidIterator.next();
+<A NAME="48"></A>                next.setPaid(<FONT ID="True">true</FONT>);
+<A NAME="49"></A>            }
+<A NAME="50"></A>        }
+<A NAME="51"></A>        <FONT ID="Catch">catch</FONT>(Exception exc)
+<A NAME="52"></A>        {   
+<A NAME="53"></A>            sessionContext.setRollbackOnly();
+<A NAME="54"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> EJBException(exc.getMessage());
+<A NAME="55"></A>        } 
+<A NAME="56"></A>    }
+<A NAME="57"></A>    
+<A NAME="58"></A>    <FONT ID="MultiLineComment">/*
+<A NAME="59"></A>     * @ejb:create-method
+<A NAME="60"></A>     **/</FONT>
+<A NAME="61"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbCreate() <FONT ID="Throws">throws</FONT> CreateException
+<A NAME="62"></A>    {
+<A NAME="63"></A>        
+<A NAME="64"></A>    }
+<A NAME="65"></A>    
+<A NAME="66"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbActivate() <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="67"></A>    {
+<A NAME="68"></A>
+<A NAME="69"></A>    }
+<A NAME="70"></A>
+<A NAME="71"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbPassivate() <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="72"></A>    {
+<A NAME="73"></A>
+<A NAME="74"></A>    }
+<A NAME="75"></A>
+<A NAME="76"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbRemove() <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="77"></A>    {
+<A NAME="78"></A>
+<A NAME="79"></A>    }
+<A NAME="80"></A>
+<A NAME="81"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setSessionContext(SessionContext sessionContext) <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="82"></A>    {
+<A NAME="83"></A>        <FONT ID="This">this</FONT>.sessionContext = sessionContext;
+<A NAME="84"></A>    }
+<A NAME="85"></A>}
+<A NAME="86"></A></pre>
+</BODY>
+</HTML>

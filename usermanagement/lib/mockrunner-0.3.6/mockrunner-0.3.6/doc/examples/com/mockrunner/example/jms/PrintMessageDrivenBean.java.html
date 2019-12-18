@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.jms.PrintMessageDrivenBean (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">PrintMessageDrivenBean.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.jms.index.html" target="packageFrame">com.mockrunner.example.jms</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> javax.ejb.EJBException;
+<A NAME="4"></A><FONT ID="Import">import</FONT> javax.ejb.MessageDrivenBean;
+<A NAME="5"></A><FONT ID="Import">import</FONT> javax.ejb.MessageDrivenContext;
+<A NAME="6"></A><FONT ID="Import">import</FONT> javax.jms.Message;
+<A NAME="7"></A><FONT ID="Import">import</FONT> javax.jms.MessageListener;
+<A NAME="8"></A><FONT ID="Import">import</FONT> javax.jms.TextMessage;
+<A NAME="9"></A>
+<A NAME="10"></A><FONT ID="MultiLineComment">/*
+<A NAME="11"></A> * @ejb:bean name="test/TestMessage"
+<A NAME="12"></A> *           transaction-type="Container"
+<A NAME="13"></A> *           acknowledge-mode="Auto-acknowledge"
+<A NAME="14"></A> *           destination-type="javax.jms.Queue"
+<A NAME="15"></A> *           subscription-durability="NonDurable"
+<A NAME="16"></A> * 
+<A NAME="17"></A> * @ejb:transaction type="Required"
+<A NAME="18"></A> * @jboss:destination-jndi-name name="queue/testQueue"
+<A NAME="19"></A> */</FONT>
+<A NAME="20"></A><FONT ID="FormalComment">/**
+<A NAME="21"></A> * Receiver for {@link PrintSessionBean}.
+<A NAME="22"></A> */</FONT>
+<A NAME="23"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> PrintMessageDrivenBean <FONT ID="Implements">implements</FONT> MessageDrivenBean, MessageListener
+<A NAME="24"></A>{
+<A NAME="25"></A>    <FONT ID="Private">private</FONT> MessageDrivenContext context;
+<A NAME="26"></A>    
+<A NAME="27"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> onMessage(Message message)
+<A NAME="28"></A>    {
+<A NAME="29"></A>        <FONT ID="If">if</FONT>(message <FONT ID="InstanceOf">instanceof</FONT> TextMessage)
+<A NAME="30"></A>        {
+<A NAME="31"></A>            <FONT ID="SingleLineComment">//do print
+<A NAME="32"></A></FONT>        }
+<A NAME="33"></A>    }
+<A NAME="34"></A>   
+<A NAME="35"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setMessageDrivenContext(MessageDrivenContext context) <FONT ID="Throws">throws</FONT> EJBException
+<A NAME="36"></A>    {
+<A NAME="37"></A>        <FONT ID="This">this</FONT>.context = context;
+<A NAME="38"></A>    }
+<A NAME="39"></A>    
+<A NAME="40"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbCreate()
+<A NAME="41"></A>    {
+<A NAME="42"></A>    
+<A NAME="43"></A>    }
+<A NAME="44"></A>   
+<A NAME="45"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbRemove()
+<A NAME="46"></A>    {
+<A NAME="47"></A>    
+<A NAME="48"></A>    }
+<A NAME="49"></A>}
+<A NAME="50"></A></pre>
+</BODY>
+</HTML>

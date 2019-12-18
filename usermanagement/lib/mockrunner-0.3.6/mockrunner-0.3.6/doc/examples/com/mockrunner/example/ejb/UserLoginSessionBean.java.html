@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.ejb.UserLoginSessionBean (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">UserLoginSessionBean.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.ejb.index.html" target="packageFrame">com.mockrunner.example.ejb</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.rmi.RemoteException;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="Import">import</FONT> javax.ejb.CreateException;
+<A NAME="6"></A><FONT ID="Import">import</FONT> javax.ejb.EJBException;
+<A NAME="7"></A><FONT ID="Import">import</FONT> javax.ejb.FinderException;
+<A NAME="8"></A><FONT ID="Import">import</FONT> javax.ejb.SessionBean;
+<A NAME="9"></A><FONT ID="Import">import</FONT> javax.ejb.SessionContext;
+<A NAME="10"></A><FONT ID="Import">import</FONT> javax.naming.InitialContext;
+<A NAME="11"></A>
+<A NAME="12"></A><FONT ID="Import">import</FONT> <A HREF="../../../../com/mockrunner/example/ejb/interfaces/UserEntity.java.html">com.mockrunner.example.ejb.interfaces.UserEntity</A>;
+<A NAME="13"></A><FONT ID="Import">import</FONT> <A HREF="../../../../com/mockrunner/example/ejb/interfaces/UserEntityHome.java.html">com.mockrunner.example.ejb.interfaces.UserEntityHome</A>;
+<A NAME="14"></A>
+<A NAME="15"></A><FONT ID="MultiLineComment">/*
+<A NAME="16"></A> * @ejb:bean name="UserLoginSession"
+<A NAME="17"></A> *           display-name="UserLoginSessionBean"
+<A NAME="18"></A> *           type="Stateless"
+<A NAME="19"></A> *           transaction-type="Container"
+<A NAME="20"></A> *           jndi-name="de/test/UserLoginSession"
+<A NAME="21"></A> * 
+<A NAME="22"></A> * @ejb:ejb-ref ejb-name="UserEntity" view-type="remote" ref-name="ejb/UserEntity"
+<A NAME="23"></A> **/</FONT>
+<A NAME="24"></A><FONT ID="FormalComment">/**
+<A NAME="25"></A> * Facade session bean for {@link UserEntityBean}.
+<A NAME="26"></A> */</FONT>
+<A NAME="27"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> UserLoginSessionBean <FONT ID="Implements">implements</FONT> SessionBean
+<A NAME="28"></A>{
+<A NAME="29"></A>    <FONT ID="Private">private</FONT> SessionContext sessionContext;
+<A NAME="30"></A>    
+<A NAME="31"></A>    <FONT ID="MultiLineComment">/*
+<A NAME="32"></A>     * @ejb:interface-method
+<A NAME="33"></A>     * @ejb:transaction type="Required"
+<A NAME="34"></A>     **/</FONT>
+<A NAME="35"></A>    <FONT ID="Public">public</FONT> <FONT ID="Boolean">boolean</FONT> loginUser(String username, String password)
+<A NAME="36"></A>    {
+<A NAME="37"></A>        <FONT ID="Try">try</FONT>
+<A NAME="38"></A>        {
+<A NAME="39"></A>            InitialContext context = <FONT ID="New">new</FONT> InitialContext();
+<A NAME="40"></A>            <A HREF="../../../../com/mockrunner/example/ejb/interfaces/UserEntityHome.java.html">UserEntityHome</A> home = (<A HREF="../../../../com/mockrunner/example/ejb/interfaces/UserEntityHome.java.html">UserEntityHome</A>)context.lookup(<FONT ID="StringLiteral">"java:comp/env/ejb/UserEntity"</FONT>);
+<A NAME="41"></A>            <FONT ID="Try">try</FONT>
+<A NAME="42"></A>            {  
+<A NAME="43"></A>                <A HREF="../../../../com/mockrunner/example/ejb/interfaces/UserEntity.java.html">UserEntity</A> user = home.findByPrimaryKey(username);
+<A NAME="44"></A>                <FONT ID="If">if</FONT>(user.getPassword().equals(password))
+<A NAME="45"></A>                {
+<A NAME="46"></A>                    <FONT ID="Return">return</FONT> <FONT ID="True">true</FONT>;
+<A NAME="47"></A>                }
+<A NAME="48"></A>                <FONT ID="Return">return</FONT> <FONT ID="False">false</FONT>;
+<A NAME="49"></A>            }  
+<A NAME="50"></A>            <FONT ID="Catch">catch</FONT>(FinderException exc)
+<A NAME="51"></A>            {
+<A NAME="52"></A>                <FONT ID="Return">return</FONT> <FONT ID="False">false</FONT>;
+<A NAME="53"></A>            }  
+<A NAME="54"></A>        }
+<A NAME="55"></A>        <FONT ID="Catch">catch</FONT>(Exception exc)
+<A NAME="56"></A>        {   
+<A NAME="57"></A>            sessionContext.setRollbackOnly();
+<A NAME="58"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> EJBException(exc);
+<A NAME="59"></A>        }
+<A NAME="60"></A>    }
+<A NAME="61"></A>    
+<A NAME="62"></A>    <FONT ID="MultiLineComment">/*
+<A NAME="63"></A>     * @ejb:interface-method
+<A NAME="64"></A>     * @ejb:transaction type="Required"
+<A NAME="65"></A>     **/</FONT>
+<A NAME="66"></A>    <FONT ID="Public">public</FONT> <FONT ID="Boolean">boolean</FONT> createUser(String username, String password)
+<A NAME="67"></A>    {
+<A NAME="68"></A>        <FONT ID="Try">try</FONT>
+<A NAME="69"></A>        {
+<A NAME="70"></A>            InitialContext context = <FONT ID="New">new</FONT> InitialContext();
+<A NAME="71"></A>            <A HREF="../../../../com/mockrunner/example/ejb/interfaces/UserEntityHome.java.html">UserEntityHome</A> home = (<A HREF="../../../../com/mockrunner/example/ejb/interfaces/UserEntityHome.java.html">UserEntityHome</A>)context.lookup(<FONT ID="StringLiteral">"java:comp/env/ejb/UserEntity"</FONT>);
+<A NAME="72"></A>            <FONT ID="Try">try</FONT>
+<A NAME="73"></A>            {
+<A NAME="74"></A>                <A HREF="../../../../com/mockrunner/example/ejb/interfaces/UserEntity.java.html">UserEntity</A> user = home.create(username, password);
+<A NAME="75"></A>                <FONT ID="Return">return</FONT> <FONT ID="True">true</FONT>;
+<A NAME="76"></A>            } 
+<A NAME="77"></A>            <FONT ID="Catch">catch</FONT>(CreateException exc)
+<A NAME="78"></A>            {
+<A NAME="79"></A>                <FONT ID="Return">return</FONT> <FONT ID="False">false</FONT>;
+<A NAME="80"></A>            }
+<A NAME="81"></A>        }
+<A NAME="82"></A>        <FONT ID="Catch">catch</FONT>(Exception exc)
+<A NAME="83"></A>        {   
+<A NAME="84"></A>            sessionContext.setRollbackOnly();
+<A NAME="85"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> EJBException(exc);
+<A NAME="86"></A>        } 
+<A NAME="87"></A>    }
+<A NAME="88"></A>    
+<A NAME="89"></A>    <FONT ID="MultiLineComment">/*
+<A NAME="90"></A>     * @ejb:create-method
+<A NAME="91"></A>     **/</FONT>
+<A NAME="92"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbCreate() <FONT ID="Throws">throws</FONT> CreateException
+<A NAME="93"></A>    {
+<A NAME="94"></A>        
+<A NAME="95"></A>    }
+<A NAME="96"></A>    
+<A NAME="97"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbActivate() <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="98"></A>    {
+<A NAME="99"></A>
+<A NAME="100"></A>    }
+<A NAME="101"></A>
+<A NAME="102"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbPassivate() <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="103"></A>    {
+<A NAME="104"></A>
+<A NAME="105"></A>    }
+<A NAME="106"></A>
+<A NAME="107"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbRemove() <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="108"></A>    {
+<A NAME="109"></A>
+<A NAME="110"></A>    }
+<A NAME="111"></A>
+<A NAME="112"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setSessionContext(SessionContext sessionContext) <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="113"></A>    {
+<A NAME="114"></A>        <FONT ID="This">this</FONT>.sessionContext = sessionContext;
+<A NAME="115"></A>    }
+<A NAME="116"></A>}
+<A NAME="117"></A></pre>
+</BODY>
+</HTML>

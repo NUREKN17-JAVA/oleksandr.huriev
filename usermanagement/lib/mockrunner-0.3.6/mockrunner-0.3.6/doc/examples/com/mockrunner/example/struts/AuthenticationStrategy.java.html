@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.struts.AuthenticationStrategy (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">AuthenticationStrategy.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.struts.index.html" target="packageFrame">com.mockrunner.example.struts</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="FormalComment">/**
+<A NAME="4"></A> * Interface for different authentication strategies.
+<A NAME="5"></A> * Used by {@link AuthenticationAction}.
+<A NAME="6"></A> */</FONT>
+<A NAME="7"></A><FONT ID="Public">public</FONT> <FONT ID="Interface">interface</FONT> AuthenticationStrategy
+<A NAME="8"></A>{
+<A NAME="9"></A>    <FONT ID="Boolean">boolean</FONT> authenticate(String username, String password);
+<A NAME="10"></A>    <FONT ID="Boolean">boolean</FONT> wasLastUserKnown();
+<A NAME="11"></A>    <FONT ID="Boolean">boolean</FONT> wasLastPasswordOk();
+<A NAME="12"></A>}
+<A NAME="13"></A></pre>
+</BODY>
+</HTML>

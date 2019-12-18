@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.servlet.LogoutServletTest (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">LogoutServletTest.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.servlet.index.html" target="packageFrame">com.mockrunner.example.servlet</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletRequest;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="Import">import</FONT> com.mockrunner.servlet.BasicServletTestCaseAdapter;
+<A NAME="6"></A>
+<A NAME="7"></A><FONT ID="FormalComment">/**
+<A NAME="8"></A> * Example test for {@link LogoutServlet}.
+<A NAME="9"></A> * Demonstrates the usage of {@link com.mockrunner.servlet.ServletTestModule} 
+<A NAME="10"></A> * and {@link com.mockrunner.servlet.BasicServletTestCaseAdapter}
+<A NAME="11"></A> * with and without a filter.
+<A NAME="12"></A> */</FONT>
+<A NAME="13"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> LogoutServletTest <FONT ID="Extends">extends</FONT> BasicServletTestCaseAdapter
+<A NAME="14"></A>{
+<A NAME="15"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> setUp() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="16"></A>    {
+<A NAME="17"></A>        <FONT ID="Super">super</FONT>.setUp();
+<A NAME="18"></A>        createServlet(<A HREF="../../../../com/mockrunner/example/servlet/LogoutServlet.java.html">LogoutServlet</A>.<FONT ID="Class">class</FONT>);
+<A NAME="19"></A>    }
+<A NAME="20"></A>    
+<A NAME="21"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testDoLogout() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="22"></A>    {
+<A NAME="23"></A>        addRequestParameter(<FONT ID="StringLiteral">"logout"</FONT>, <FONT ID="StringLiteral">"true"</FONT>);
+<A NAME="24"></A>        doPost();
+<A NAME="25"></A>        assertFalse(getWebMockObjectFactory().getMockSession().isValid());
+<A NAME="26"></A>    }
+<A NAME="27"></A>    
+<A NAME="28"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testDoLogoutWithFilteredImageButton() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="29"></A>    {
+<A NAME="30"></A>        addRequestParameter(<FONT ID="StringLiteral">"logout.x"</FONT>, <FONT ID="StringLiteral">"11"</FONT>);
+<A NAME="31"></A>        addRequestParameter(<FONT ID="StringLiteral">"logout.y"</FONT>, <FONT ID="StringLiteral">"11"</FONT>);
+<A NAME="32"></A>        doPost();
+<A NAME="33"></A>        assertTrue(getWebMockObjectFactory().getMockSession().isValid());
+<A NAME="34"></A>        createFilter(<A HREF="../../../../com/mockrunner/example/servlet/ImageButtonFilter.java.html">ImageButtonFilter</A>.<FONT ID="Class">class</FONT>);
+<A NAME="35"></A>        setDoChain(<FONT ID="True">true</FONT>);
+<A NAME="36"></A>        doPost();
+<A NAME="37"></A>        assertFalse(getWebMockObjectFactory().getMockSession().isValid());
+<A NAME="38"></A>        HttpServletRequest filteredRequest = (HttpServletRequest)getFilteredRequest();
+<A NAME="39"></A>        assertEquals(<FONT ID="StringLiteral">"11"</FONT>, filteredRequest.getParameter(<FONT ID="StringLiteral">"logout"</FONT>));
+<A NAME="40"></A>        assertNull(filteredRequest.getParameter(<FONT ID="StringLiteral">"logout.x"</FONT>));
+<A NAME="41"></A>        assertNull(filteredRequest.getParameter(<FONT ID="StringLiteral">"logout.y"</FONT>));
+<A NAME="42"></A>    }
+<A NAME="43"></A>}
+<A NAME="44"></A></pre>
+</BODY>
+</HTML>

@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.struts.LogoutActionTest (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">LogoutActionTest.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.struts.index.html" target="packageFrame">com.mockrunner.example.struts</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletRequest;
+<A NAME="4"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletRequestWrapper;
+<A NAME="5"></A>
+<A NAME="6"></A><FONT ID="Import">import</FONT> <A HREF="../../../../com/mockrunner/example/servlet/ImageButtonFilter.java.html">com.mockrunner.example.servlet.ImageButtonFilter</A>;
+<A NAME="7"></A><FONT ID="Import">import</FONT> com.mockrunner.servlet.ServletTestModule;
+<A NAME="8"></A><FONT ID="Import">import</FONT> com.mockrunner.struts.ActionTestCaseAdapter;
+<A NAME="9"></A>
+<A NAME="10"></A><FONT ID="FormalComment">/**
+<A NAME="11"></A> * Example test for {@link LogoutAction}. Demonstrates the testing of 
+<A NAME="12"></A> * actions with specified filters. Also demonstrates how to prepare
+<A NAME="13"></A> * custom action mappings in tests. Please note that the use of
+<A NAME="14"></A> * custom action mappings relies on CGLib.
+<A NAME="15"></A> */</FONT>
+<A NAME="16"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> LogoutActionTest <FONT ID="Extends">extends</FONT> ActionTestCaseAdapter
+<A NAME="17"></A>{
+<A NAME="18"></A>    <FONT ID="Private">private</FONT> ServletTestModule servletModule;
+<A NAME="19"></A>    <FONT ID="Private">private</FONT> <A HREF="../../../../com/mockrunner/example/struts/LogoutActionMapping.java.html">LogoutActionMapping</A> logoutMapping;
+<A NAME="20"></A>    
+<A NAME="21"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> setUp() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="22"></A>    {
+<A NAME="23"></A>        <FONT ID="Super">super</FONT>.setUp();
+<A NAME="24"></A>        servletModule = createServletTestModule();
+<A NAME="25"></A>        logoutMapping = (<A HREF="../../../../com/mockrunner/example/struts/LogoutActionMapping.java.html">LogoutActionMapping</A>)getActionMockObjectFactory().prepareActionMapping(<A HREF="../../../../com/mockrunner/example/struts/LogoutActionMapping.java.html">LogoutActionMapping</A>.<FONT ID="Class">class</FONT>);
+<A NAME="26"></A>    }
+<A NAME="27"></A>
+<A NAME="28"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testLogout() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="29"></A>    {
+<A NAME="30"></A>        logoutMapping.setRequestParameterName(<FONT ID="StringLiteral">"logout"</FONT>);
+<A NAME="31"></A>        addRequestParameter(<FONT ID="StringLiteral">"logout.x"</FONT>, <FONT ID="StringLiteral">"11"</FONT>);
+<A NAME="32"></A>        addRequestParameter(<FONT ID="StringLiteral">"logout.y"</FONT>, <FONT ID="StringLiteral">"11"</FONT>);
+<A NAME="33"></A>        servletModule.createFilter(<A HREF="../../../../com/mockrunner/example/servlet/ImageButtonFilter.java.html">ImageButtonFilter</A>.<FONT ID="Class">class</FONT>);
+<A NAME="34"></A>        servletModule.setDoChain(<FONT ID="True">true</FONT>);
+<A NAME="35"></A>        servletModule.doFilter();
+<A NAME="36"></A>        getActionMockObjectFactory().addRequestWrapper(<FONT ID="New">new</FONT> HttpServletRequestWrapper((HttpServletRequest)servletModule.getFilteredRequest()));
+<A NAME="37"></A>        actionPerform(<A HREF="../../../../com/mockrunner/example/struts/LogoutAction.java.html">LogoutAction</A>.<FONT ID="Class">class</FONT>);
+<A NAME="38"></A>        assertFalse(getActionMockObjectFactory().getMockSession().isValid());
+<A NAME="39"></A>    }  
+<A NAME="40"></A>}
+<A NAME="41"></A></pre>
+</BODY>
+</HTML>

@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.tag.FilterImagesTagTest (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">FilterImagesTagTest.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.tag.index.html" target="packageFrame">com.mockrunner.example.tag</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.util.HashMap;
+<A NAME="4"></A><FONT ID="Import">import</FONT> java.util.Map;
+<A NAME="5"></A>
+<A NAME="6"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletRequest;
+<A NAME="7"></A>
+<A NAME="8"></A><FONT ID="Import">import</FONT> com.mockrunner.mock.web.WebMockObjectFactory;
+<A NAME="9"></A><FONT ID="Import">import</FONT> com.mockrunner.tag.AbstractDynamicChild;
+<A NAME="10"></A><FONT ID="Import">import</FONT> com.mockrunner.tag.BasicTagTestCaseAdapter;
+<A NAME="11"></A><FONT ID="Import">import</FONT> com.mockrunner.tag.NestedSimpleTag;
+<A NAME="12"></A>
+<A NAME="13"></A><FONT ID="FormalComment">/**
+<A NAME="14"></A> * Example test for the {@link FilterImagesTag}.
+<A NAME="15"></A> * The example demonstrates how to test simple tags
+<A NAME="16"></A> * and the usage of dynamic childs (i.e. simulated expressions or scriptlets).
+<A NAME="17"></A> * The simulated body of the tag consists of a static &lt;i&gt;img&lt;/i&gt;-tag
+<A NAME="18"></A> * and a dynamic version that takes the url from request. The JSP
+<A NAME="19"></A> * for the dynamic version may look like
+<A NAME="20"></A> * &lt;pre&gt;
+<A NAME="21"></A> * &amp;lt;img src="${requestScope.url}"&amp;gt;
+<A NAME="22"></A> * &lt;/pre&gt;
+<A NAME="23"></A> * The EL expression is simulated by a subclass of
+<A NAME="24"></A> * {@link com.mockrunner.tag.AbstractDynamicChild}.
+<A NAME="25"></A> */</FONT>
+<A NAME="26"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> FilterImagesTagTest <FONT ID="Extends">extends</FONT> BasicTagTestCaseAdapter
+<A NAME="27"></A>{ 
+<A NAME="28"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> prepareFilterImagesTag(String filterAttribute)
+<A NAME="29"></A>    {
+<A NAME="30"></A>        Map attributeMap = <FONT ID="New">new</FONT> HashMap();
+<A NAME="31"></A>        attributeMap.put(<FONT ID="StringLiteral">"filter"</FONT>, filterAttribute);
+<A NAME="32"></A>        NestedSimpleTag tag = (NestedSimpleTag)createNestedTag(<A HREF="../../../../com/mockrunner/example/tag/FilterImagesTag.java.html">FilterImagesTag</A>.<FONT ID="Class">class</FONT>, attributeMap);
+<A NAME="33"></A>        getWebMockObjectFactory().getMockRequest().setAttribute(<FONT ID="StringLiteral">"url"</FONT>, <FONT ID="StringLiteral">"/testimage.jpg"</FONT>);
+<A NAME="34"></A>        tag.addTextChild(<FONT ID="StringLiteral">"&lt;img src=\"/anotherimage.jpg\"&gt;"</FONT>);
+<A NAME="35"></A>        tag.addDynamicChild(<FONT ID="New">new</FONT> SessionImageChild(getWebMockObjectFactory()));
+<A NAME="36"></A>    }
+<A NAME="37"></A>    
+<A NAME="38"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testDoNotFilter()
+<A NAME="39"></A>    {
+<A NAME="40"></A>        prepareFilterImagesTag(<FONT ID="StringLiteral">"false"</FONT>);
+<A NAME="41"></A>        processTagLifecycle();
+<A NAME="42"></A>        verifyOutputContains(<FONT ID="StringLiteral">"src=\"/anotherimage.jpg\""</FONT>);
+<A NAME="43"></A>        verifyOutputContains(<FONT ID="StringLiteral">"src=\"/testimage.jpg\""</FONT>);
+<A NAME="44"></A>        assertTrue(-<FONT ID="IntegerLiteral">1</FONT> == getOutput().indexOf(<FONT ID="StringLiteral">"dummy.jpg"</FONT>));
+<A NAME="45"></A>    }
+<A NAME="46"></A>    
+<A NAME="47"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testDoFilter()
+<A NAME="48"></A>    {
+<A NAME="49"></A>        prepareFilterImagesTag(<FONT ID="StringLiteral">"true"</FONT>);
+<A NAME="50"></A>        processTagLifecycle();
+<A NAME="51"></A>        verifyOutputContains(<FONT ID="StringLiteral">"src=\"dummy.jpg\""</FONT>);
+<A NAME="52"></A>        assertTrue(-<FONT ID="IntegerLiteral">1</FONT> == getOutput().indexOf(<FONT ID="StringLiteral">"anotherimage.jpg"</FONT>));
+<A NAME="53"></A>        assertTrue(-<FONT ID="IntegerLiteral">1</FONT> == getOutput().indexOf(<FONT ID="StringLiteral">"testimage.jpg"</FONT>));
+<A NAME="54"></A>    }
+<A NAME="55"></A>
+<A NAME="56"></A>    <FONT ID="Private">private</FONT> <FONT ID="Class">class</FONT> SessionImageChild <FONT ID="Extends">extends</FONT> AbstractDynamicChild
+<A NAME="57"></A>    { 
+<A NAME="58"></A>        <FONT ID="Public">public</FONT> SessionImageChild(WebMockObjectFactory factory)
+<A NAME="59"></A>        {
+<A NAME="60"></A>            <FONT ID="Super">super</FONT>(factory);
+<A NAME="61"></A>        }
+<A NAME="62"></A>        
+<A NAME="63"></A>        <FONT ID="Public">public</FONT> Object evaluate()
+<A NAME="64"></A>        {
+<A NAME="65"></A>            HttpServletRequest request = getWebMockObjectFactory().getMockRequest();
+<A NAME="66"></A>            <FONT ID="Return">return</FONT> <FONT ID="StringLiteral">"&lt;img src=\""</FONT> +  request.getAttribute(<FONT ID="StringLiteral">"url"</FONT>) + <FONT ID="StringLiteral">"\"&gt;"</FONT>;
+<A NAME="67"></A>        }
+<A NAME="68"></A>    }
+<A NAME="69"></A>}
+<A NAME="70"></A></pre>
+</BODY>
+</HTML>

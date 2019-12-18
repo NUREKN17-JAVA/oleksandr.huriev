@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.struts.OrderActionTest (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">OrderActionTest.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.struts.index.html" target="packageFrame">com.mockrunner.example.struts</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> javax.servlet.ServletContext;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="Import">import</FONT> junit.framework.TestCase;
+<A NAME="6"></A>
+<A NAME="7"></A><FONT ID="Import">import</FONT> com.mockrunner.mock.web.ActionMockObjectFactory;
+<A NAME="8"></A><FONT ID="Import">import</FONT> com.mockrunner.struts.ActionTestModule;
+<A NAME="9"></A>
+<A NAME="10"></A><FONT ID="FormalComment">/**
+<A NAME="11"></A> * Example test for the {@link OrderAction}.
+<A NAME="12"></A> * This is an example how to write tests if you do not
+<A NAME="13"></A> * subclass {@link com.mockrunner.struts.ActionTestCaseAdapter} or
+<A NAME="14"></A> * {@link com.mockrunner.struts.BasicActionTestCaseAdapter}.
+<A NAME="15"></A> */</FONT>
+<A NAME="16"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> OrderActionTest <FONT ID="Extends">extends</FONT> TestCase
+<A NAME="17"></A>{
+<A NAME="18"></A>    <FONT ID="Private">private</FONT> ActionMockObjectFactory mockFactory;
+<A NAME="19"></A>    <FONT ID="Private">private</FONT> ActionTestModule module;
+<A NAME="20"></A>    <FONT ID="Private">private</FONT> <A HREF="../../../../com/mockrunner/example/struts/MockOrderManager.java.html">MockOrderManager</A> orderManager;
+<A NAME="21"></A>    <FONT ID="Private">private</FONT> <A HREF="../../../../com/mockrunner/example/struts/OrderForm.java.html">OrderForm</A> form;
+<A NAME="22"></A>        
+<A NAME="23"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> setUp() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="24"></A>    {
+<A NAME="25"></A>        <FONT ID="Super">super</FONT>.setUp();
+<A NAME="26"></A>        orderManager = <FONT ID="New">new</FONT> <A HREF="../../../../com/mockrunner/example/struts/MockOrderManager.java.html">MockOrderManager</A>();
+<A NAME="27"></A>        mockFactory = <FONT ID="New">new</FONT> ActionMockObjectFactory();
+<A NAME="28"></A>        module = <FONT ID="New">new</FONT> ActionTestModule(mockFactory);
+<A NAME="29"></A>        ServletContext context = mockFactory.getMockServletContext();
+<A NAME="30"></A>        context.setAttribute(<A HREF="../../../../com/mockrunner/example/struts/OrderManager.java.html">OrderManager</A>.<FONT ID="Class">class</FONT>.getName(), orderManager);
+<A NAME="31"></A>        form = (<A HREF="../../../../com/mockrunner/example/struts/OrderForm.java.html">OrderForm</A>)module.createActionForm(<A HREF="../../../../com/mockrunner/example/struts/OrderForm.java.html">OrderForm</A>.<FONT ID="Class">class</FONT>);
+<A NAME="32"></A>        module.setValidate(<FONT ID="True">true</FONT>);
+<A NAME="33"></A>    }
+<A NAME="34"></A>    
+<A NAME="35"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testSuccessfulOrder()
+<A NAME="36"></A>    {
+<A NAME="37"></A>        form.setId(<FONT ID="StringLiteral">"testProduct"</FONT>);
+<A NAME="38"></A>        form.setAmount(<FONT ID="IntegerLiteral">10</FONT>);
+<A NAME="39"></A>        orderManager.setStock(<FONT ID="StringLiteral">"testProduct"</FONT>, <FONT ID="IntegerLiteral">20</FONT>);
+<A NAME="40"></A>        module.actionPerform(<A HREF="../../../../com/mockrunner/example/struts/OrderAction.java.html">OrderAction</A>.<FONT ID="Class">class</FONT>, form);
+<A NAME="41"></A>        module.verifyNoActionErrors();
+<A NAME="42"></A>        module.verifyNoActionMessages();
+<A NAME="43"></A>        module.verifyForward(<FONT ID="StringLiteral">"success"</FONT>);
+<A NAME="44"></A>    }
+<A NAME="45"></A>    
+<A NAME="46"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testFailureOrder()
+<A NAME="47"></A>    {
+<A NAME="48"></A>        module.addRequestParameter(<FONT ID="StringLiteral">"id"</FONT>, <FONT ID="StringLiteral">"testProduct"</FONT>);
+<A NAME="49"></A>        module.addRequestParameter(<FONT ID="StringLiteral">"amount"</FONT>, <FONT ID="StringLiteral">"10"</FONT>);
+<A NAME="50"></A>        orderManager.setStock(<FONT ID="StringLiteral">"testProduct"</FONT>, <FONT ID="IntegerLiteral">5</FONT>);
+<A NAME="51"></A>        module.actionPerform(<A HREF="../../../../com/mockrunner/example/struts/OrderAction.java.html">OrderAction</A>.<FONT ID="Class">class</FONT>, form);
+<A NAME="52"></A>        module.verifyNumberActionErrors(<FONT ID="IntegerLiteral">1</FONT>);
+<A NAME="53"></A>        module.verifyActionErrorPresent(<FONT ID="StringLiteral">"not.enough.in.stock"</FONT>);
+<A NAME="54"></A>        module.verifyActionErrorValue(<FONT ID="StringLiteral">"not.enough.in.stock"</FONT>, <FONT ID="StringLiteral">"testProduct"</FONT>);
+<A NAME="55"></A>        module.verifyNoActionMessages();
+<A NAME="56"></A>        module.verifyForward(<FONT ID="StringLiteral">"failure"</FONT>);
+<A NAME="57"></A>    }
+<A NAME="58"></A>}
+<A NAME="59"></A></pre>
+</BODY>
+</HTML>

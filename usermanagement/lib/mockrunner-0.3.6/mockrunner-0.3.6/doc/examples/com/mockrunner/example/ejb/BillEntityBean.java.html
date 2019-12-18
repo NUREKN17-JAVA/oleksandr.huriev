@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.ejb.BillEntityBean (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">BillEntityBean.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.ejb.index.html" target="packageFrame">com.mockrunner.example.ejb</A>;
+<A NAME="2"></A>
+<A NAME="3"></A>
+<A NAME="4"></A><FONT ID="Import">import</FONT> java.util.Date;
+<A NAME="5"></A>
+<A NAME="6"></A><FONT ID="Import">import</FONT> javax.ejb.CreateException;
+<A NAME="7"></A><FONT ID="Import">import</FONT> javax.ejb.EJBException;
+<A NAME="8"></A><FONT ID="Import">import</FONT> javax.ejb.EntityBean;
+<A NAME="9"></A><FONT ID="Import">import</FONT> javax.ejb.EntityContext;
+<A NAME="10"></A><FONT ID="Import">import</FONT> javax.ejb.RemoveException;
+<A NAME="11"></A>
+<A NAME="12"></A><FONT ID="MultiLineComment">/*
+<A NAME="13"></A> * @ejb:bean name="BillEntity"
+<A NAME="14"></A> *           display-name="BillEntity"
+<A NAME="15"></A> *           type="CMP"
+<A NAME="16"></A> *           cmp-version="2.x"
+<A NAME="17"></A> *           primkey-field="id"
+<A NAME="18"></A> *           jndi-name="de/test/BillEntity"
+<A NAME="19"></A> *
+<A NAME="20"></A> * @ejb:pk class="java.lang.Integer"
+<A NAME="21"></A> *
+<A NAME="22"></A> * @ejb:transaction type="Required"
+<A NAME="23"></A> * 
+<A NAME="24"></A> * @ejb:finder signature="java.util.Collection findUnpaid()"
+<A NAME="25"></A> *             query="SELECT OBJECT(t) FROM BillEntity as t WHERE t.paid = false"
+<A NAME="26"></A> * 
+<A NAME="27"></A> * @ejb:finder signature="java.util.Collection findAll()"
+<A NAME="28"></A> *             
+<A NAME="29"></A> * @jboss:persistence datasource="java:/MySQLDB"
+<A NAME="30"></A> *                    table-name="BillEntity"
+<A NAME="31"></A> *                    create-table="true"
+<A NAME="32"></A> *                    remove-table="false"
+<A NAME="33"></A> **/</FONT>
+<A NAME="34"></A><FONT ID="FormalComment">/**
+<A NAME="35"></A> * This CMP entity bean represents a bill.
+<A NAME="36"></A> * It has a date, and a marker if it is paid.
+<A NAME="37"></A> * It has two custom finders, namely
+<A NAME="38"></A> * &lt;code&gt;findUnpaid()&lt;/code&gt; and &lt;code&gt;findAll()&lt;/code&gt;.
+<A NAME="39"></A> */</FONT>
+<A NAME="40"></A><FONT ID="Public">public</FONT> <FONT ID="Abstract">abstract</FONT> <FONT ID="Class">class</FONT> BillEntityBean <FONT ID="Implements">implements</FONT> EntityBean
+<A NAME="41"></A>{
+<A NAME="42"></A>    <FONT ID="Public">public</FONT> EntityContext entityContext;
+<A NAME="43"></A>   
+<A NAME="44"></A>    <FONT ID="MultiLineComment">/*
+<A NAME="45"></A>     * @ejb:interface-method
+<A NAME="46"></A>     * @ejb:persistence
+<A NAME="47"></A>     * @ejb:pk-field
+<A NAME="48"></A>     * @jboss:column-name name="id"
+<A NAME="49"></A>     **/</FONT>
+<A NAME="50"></A>    <FONT ID="Public">public</FONT> <FONT ID="Abstract">abstract</FONT> Integer getId();
+<A NAME="51"></A>    <FONT ID="Public">public</FONT> <FONT ID="Abstract">abstract</FONT> <FONT ID="Void">void</FONT> setId(Integer id);
+<A NAME="52"></A>   
+<A NAME="53"></A>    <FONT ID="MultiLineComment">/*
+<A NAME="54"></A>     * @ejb:interface-method
+<A NAME="55"></A>     * @ejb:persistence
+<A NAME="56"></A>     * @jboss:column-name name="date" sql-type="DATETIME" jdbc-type="DATE"
+<A NAME="57"></A>     **/</FONT>
+<A NAME="58"></A>    <FONT ID="Public">public</FONT> <FONT ID="Abstract">abstract</FONT> Date getDate();
+<A NAME="59"></A>    
+<A NAME="60"></A>    <FONT ID="MultiLineComment">/*
+<A NAME="61"></A>     * @ejb:interface-method
+<A NAME="62"></A>     **/</FONT>
+<A NAME="63"></A>    <FONT ID="Public">public</FONT> <FONT ID="Abstract">abstract</FONT> <FONT ID="Void">void</FONT> setDate(Date date);
+<A NAME="64"></A>   
+<A NAME="65"></A>    <FONT ID="MultiLineComment">/*
+<A NAME="66"></A>     * @ejb:interface-method
+<A NAME="67"></A>     * @ejb:persistence
+<A NAME="68"></A>     * @jboss:column-name name="paid"
+<A NAME="69"></A>     **/</FONT>
+<A NAME="70"></A>    <FONT ID="Public">public</FONT> <FONT ID="Abstract">abstract</FONT> <FONT ID="Boolean">boolean</FONT> getPaid();
+<A NAME="71"></A>    
+<A NAME="72"></A>    <FONT ID="MultiLineComment">/*
+<A NAME="73"></A>     * @ejb:interface-method
+<A NAME="74"></A>     **/</FONT>
+<A NAME="75"></A>    <FONT ID="Public">public</FONT> <FONT ID="Abstract">abstract</FONT> <FONT ID="Void">void</FONT> setPaid(<FONT ID="Boolean">boolean</FONT> isPaid);
+<A NAME="76"></A>   
+<A NAME="77"></A>    <FONT ID="MultiLineComment">/*
+<A NAME="78"></A>     * @ejb:create-method
+<A NAME="79"></A>     **/</FONT>
+<A NAME="80"></A>    <FONT ID="Public">public</FONT> Integer ejbCreate(Integer id) <FONT ID="Throws">throws</FONT> EJBException, CreateException
+<A NAME="81"></A>    {
+<A NAME="82"></A>        setId(id);
+<A NAME="83"></A>        <FONT ID="Return">return</FONT> <FONT ID="Null">null</FONT>;
+<A NAME="84"></A>    }
+<A NAME="85"></A>   
+<A NAME="86"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbPostCreate(Integer id)
+<A NAME="87"></A>    {
+<A NAME="88"></A>    }
+<A NAME="89"></A>   
+<A NAME="90"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setEntityContext(EntityContext context)
+<A NAME="91"></A>    {
+<A NAME="92"></A>        entityContext = context;
+<A NAME="93"></A>    }
+<A NAME="94"></A>   
+<A NAME="95"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> unsetEntityContext()
+<A NAME="96"></A>    {
+<A NAME="97"></A>        entityContext = <FONT ID="Null">null</FONT>;
+<A NAME="98"></A>    }
+<A NAME="99"></A>   
+<A NAME="100"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbActivate()
+<A NAME="101"></A>    {
+<A NAME="102"></A>    }
+<A NAME="103"></A>   
+<A NAME="104"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbPassivate()
+<A NAME="105"></A>    {
+<A NAME="106"></A>    }
+<A NAME="107"></A>   
+<A NAME="108"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbLoad()
+<A NAME="109"></A>    {
+<A NAME="110"></A>    }
+<A NAME="111"></A>   
+<A NAME="112"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbStore()
+<A NAME="113"></A>    {
+<A NAME="114"></A>    }
+<A NAME="115"></A>   
+<A NAME="116"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbRemove() <FONT ID="Throws">throws</FONT> RemoveException
+<A NAME="117"></A>    {
+<A NAME="118"></A>    }
+<A NAME="119"></A>}
+<A NAME="120"></A></pre>
+</BODY>
+</HTML>

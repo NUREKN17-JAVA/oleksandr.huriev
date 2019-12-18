@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.struts.OrderAction (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">OrderAction.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.struts.index.html" target="packageFrame">com.mockrunner.example.struts</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletRequest;
+<A NAME="4"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletResponse;
+<A NAME="5"></A>
+<A NAME="6"></A><FONT ID="Import">import</FONT> org.apache.struts.action.Action;
+<A NAME="7"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionForm;
+<A NAME="8"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionForward;
+<A NAME="9"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionMapping;
+<A NAME="10"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionMessage;
+<A NAME="11"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionMessages;
+<A NAME="12"></A>
+<A NAME="13"></A><FONT ID="FormalComment">/**
+<A NAME="14"></A> * This action fulfils the order for some type of product. 
+<A NAME="15"></A> * If there's not enough in the stock, an error is returned.
+<A NAME="16"></A> * This action will be tested with {@link OrderActionTest} in order 
+<A NAME="17"></A> * to demonstrate the usage of {@link com.mockrunner.struts.ActionTestModule}.
+<A NAME="18"></A> */</FONT>
+<A NAME="19"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> OrderAction <FONT ID="Extends">extends</FONT> Action
+<A NAME="20"></A>{
+<A NAME="21"></A>    <FONT ID="Public">public</FONT> ActionForward execute(ActionMapping mapping,
+<A NAME="22"></A>                                 ActionForm form,
+<A NAME="23"></A>                                 HttpServletRequest request,
+<A NAME="24"></A>                                 HttpServletResponse response) <FONT ID="Throws">throws</FONT> Exception
+<A NAME="25"></A>    { 
+<A NAME="26"></A>        <A HREF="../../../../com/mockrunner/example/struts/OrderForm.java.html">OrderForm</A> orderForm = (<A HREF="../../../../com/mockrunner/example/struts/OrderForm.java.html">OrderForm</A>)form;
+<A NAME="27"></A>        String id = orderForm.getId();
+<A NAME="28"></A>        <FONT ID="Int">int</FONT> amount = orderForm.getAmount();   
+<A NAME="29"></A>        <A HREF="../../../../com/mockrunner/example/struts/OrderManager.java.html">OrderManager</A> orderManager = OrderManager.instance(request.getSession().getServletContext());
+<A NAME="30"></A>        <FONT ID="If">if</FONT>(orderManager.getStock(id) &lt; amount)
+<A NAME="31"></A>        {
+<A NAME="32"></A>            ActionMessages errors = <FONT ID="New">new</FONT> ActionMessages();
+<A NAME="33"></A>            ActionMessage error = <FONT ID="New">new</FONT> ActionMessage(<FONT ID="StringLiteral">"not.enough.in.stock"</FONT>, id);
+<A NAME="34"></A>            errors.add(ActionMessages.GLOBAL_MESSAGE, error);
+<A NAME="35"></A>            saveErrors(request, errors);
+<A NAME="36"></A>            <FONT ID="Return">return</FONT> mapping.findForward(<FONT ID="StringLiteral">"failure"</FONT>);
+<A NAME="37"></A>        }
+<A NAME="38"></A>        orderManager.order(id, amount);
+<A NAME="39"></A>        <FONT ID="Return">return</FONT> mapping.findForward(<FONT ID="StringLiteral">"success"</FONT>);
+<A NAME="40"></A>    } 
+<A NAME="41"></A>}
+<A NAME="42"></A></pre>
+</BODY>
+</HTML>

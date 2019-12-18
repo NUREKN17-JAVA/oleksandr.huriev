@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.ejb.PaySessionTest (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">PaySessionTest.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.ejb.index.html" target="packageFrame">com.mockrunner.example.ejb</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> org.mockejb.TransactionPolicy;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="Import">import</FONT> com.mockrunner.ejb.EJBTestCaseAdapter;
+<A NAME="6"></A><FONT ID="Import">import</FONT> <A HREF="../../../../com/mockrunner/example/ejb/interfaces/PaySession.java.html">com.mockrunner.example.ejb.interfaces.PaySession</A>;
+<A NAME="7"></A><FONT ID="Import">import</FONT> com.mockrunner.jdbc.JDBCTestModule;
+<A NAME="8"></A><FONT ID="Import">import</FONT> com.mockrunner.jdbc.StatementResultSetHandler;
+<A NAME="9"></A><FONT ID="Import">import</FONT> com.mockrunner.mock.jdbc.MockResultSet;
+<A NAME="10"></A>
+<A NAME="11"></A><FONT ID="FormalComment">/**
+<A NAME="12"></A> * Example test for {@link PaySessionBean}. This example demonstrates
+<A NAME="13"></A> * how to use {@link com.mockrunner.jdbc.JDBCTestModule} and 
+<A NAME="14"></A> * {@link com.mockrunner.ejb.EJBTestModule} in conjunction. 
+<A NAME="15"></A> * The tests are similar to {@link com.mockrunner.example.jdbc.PayActionTest} 
+<A NAME="16"></A> * but instead of an action we test an EJB. This example works with the simulated 
+<A NAME="17"></A> * JDBC environment of Mockrunner.
+<A NAME="18"></A> */</FONT>
+<A NAME="19"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> PaySessionTest <FONT ID="Extends">extends</FONT> EJBTestCaseAdapter
+<A NAME="20"></A>{
+<A NAME="21"></A>    <FONT ID="Private">private</FONT> JDBCTestModule jdbcModule;
+<A NAME="22"></A>    <FONT ID="Private">private</FONT> <A HREF="../../../../com/mockrunner/example/ejb/interfaces/PaySession.java.html">PaySession</A> bean;
+<A NAME="23"></A>    <FONT ID="Private">private</FONT> StatementResultSetHandler statementHandler;
+<A NAME="24"></A>    
+<A NAME="25"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> setUp() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="26"></A>    {
+<A NAME="27"></A>        <FONT ID="Super">super</FONT>.setUp();
+<A NAME="28"></A>        jdbcModule = createJDBCTestModule();
+<A NAME="29"></A>        setInterfacePackage(<FONT ID="StringLiteral">"com.mockrunner.example.ejb.interfaces"</FONT>);
+<A NAME="30"></A>        deploySessionBean(<FONT ID="StringLiteral">"com/mockrunner/example/PaySession"</FONT>, <A HREF="../../../../com/mockrunner/example/ejb/PaySessionBean.java.html">PaySessionBean</A>.<FONT ID="Class">class</FONT>, TransactionPolicy.REQUIRED);
+<A NAME="31"></A>        bindToContext(<FONT ID="StringLiteral">"java:comp/env/jdbc/MySQLDB"</FONT>, getJDBCMockObjectFactory().getMockDataSource());
+<A NAME="32"></A>        bean = (<A HREF="../../../../com/mockrunner/example/ejb/interfaces/PaySession.java.html">PaySession</A>)createBean(<FONT ID="StringLiteral">"com/mockrunner/example/PaySession"</FONT>);
+<A NAME="33"></A>        statementHandler = getJDBCMockObjectFactory().getMockConnection().getStatementResultSetHandler();
+<A NAME="34"></A>    }
+<A NAME="35"></A>    
+<A NAME="36"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> createValidCustomerResult()
+<A NAME="37"></A>    {
+<A NAME="38"></A>        MockResultSet result = statementHandler.createResultSet();
+<A NAME="39"></A>        result.addColumn(<FONT ID="StringLiteral">"name"</FONT>, <FONT ID="New">new</FONT> String[] {<FONT ID="StringLiteral">"MyName"</FONT>});
+<A NAME="40"></A>        statementHandler.prepareResultSet(<FONT ID="StringLiteral">"select name"</FONT>, result);
+<A NAME="41"></A>    }
+<A NAME="42"></A>
+<A NAME="43"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> createValidBillResult()
+<A NAME="44"></A>    {
+<A NAME="45"></A>        MockResultSet result = statementHandler.createResultSet();
+<A NAME="46"></A>        result.addColumn(<FONT ID="StringLiteral">"id"</FONT>, <FONT ID="New">new</FONT> String[] {<FONT ID="StringLiteral">"1"</FONT>});
+<A NAME="47"></A>        result.addColumn(<FONT ID="StringLiteral">"customerid"</FONT>, <FONT ID="New">new</FONT> String[] {<FONT ID="StringLiteral">"1"</FONT>});
+<A NAME="48"></A>        result.addColumn(<FONT ID="StringLiteral">"amount"</FONT>, <FONT ID="New">new</FONT> Double[] {<FONT ID="New">new</FONT> Double(<FONT ID="IntegerLiteral">100</FONT>)});
+<A NAME="49"></A>        statementHandler.prepareResultSet(<FONT ID="StringLiteral">"select * from openbills"</FONT>, result);
+<A NAME="50"></A>    }
+<A NAME="51"></A>
+<A NAME="52"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testUnknownCustomer() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="53"></A>    {
+<A NAME="54"></A>        MockResultSet result = statementHandler.createResultSet();
+<A NAME="55"></A>        result.addColumn(<FONT ID="StringLiteral">"name"</FONT>);
+<A NAME="56"></A>        statementHandler.prepareResultSet(<FONT ID="StringLiteral">"select name"</FONT>, result);
+<A NAME="57"></A>        <FONT ID="Try">try</FONT>
+<A NAME="58"></A>        {
+<A NAME="59"></A>            bean.payBill(<FONT ID="StringLiteral">"1"</FONT>, <FONT ID="StringLiteral">"1"</FONT>, <FONT ID="IntegerLiteral">100</FONT>);
+<A NAME="60"></A>            fail();
+<A NAME="61"></A>        }
+<A NAME="62"></A>        <FONT ID="Catch">catch</FONT>(<A HREF="../../../../com/mockrunner/example/ejb/PaySessionException.java.html">PaySessionException</A> exc)
+<A NAME="63"></A>        {
+<A NAME="64"></A>            assertEquals(PaySessionException.UNKNOWN_CUSTOMER, exc.getCode());
+<A NAME="65"></A>        }
+<A NAME="66"></A>        verifyMarkedForRollback();
+<A NAME="67"></A>        verifyRolledBack();
+<A NAME="68"></A>        jdbcModule.verifySQLStatementExecuted(<FONT ID="StringLiteral">"select name"</FONT>);
+<A NAME="69"></A>        jdbcModule.verifySQLStatementNotExecuted(<FONT ID="StringLiteral">"delete from openbills"</FONT>);
+<A NAME="70"></A>        jdbcModule.verifySQLStatementNotExecuted(<FONT ID="StringLiteral">"insert into paidbills"</FONT>);
+<A NAME="71"></A>        jdbcModule.verifyAllResultSetsClosed();
+<A NAME="72"></A>        jdbcModule.verifyAllStatementsClosed();
+<A NAME="73"></A>        jdbcModule.verifyConnectionClosed();
+<A NAME="74"></A>    }
+<A NAME="75"></A>    
+<A NAME="76"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testUnknownBill() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="77"></A>    {
+<A NAME="78"></A>        createValidCustomerResult();
+<A NAME="79"></A>        MockResultSet result = statementHandler.createResultSet();
+<A NAME="80"></A>        result.addColumn(<FONT ID="StringLiteral">"id"</FONT>);
+<A NAME="81"></A>        result.addColumn(<FONT ID="StringLiteral">"customerid"</FONT>);
+<A NAME="82"></A>        result.addColumn(<FONT ID="StringLiteral">"amount"</FONT>);
+<A NAME="83"></A>        statementHandler.prepareResultSet(<FONT ID="StringLiteral">"select * from openbills"</FONT>, result);
+<A NAME="84"></A>        <FONT ID="Try">try</FONT>
+<A NAME="85"></A>        {
+<A NAME="86"></A>            bean.payBill(<FONT ID="StringLiteral">"1"</FONT>, <FONT ID="StringLiteral">"1"</FONT>, <FONT ID="IntegerLiteral">100</FONT>);
+<A NAME="87"></A>            fail();
+<A NAME="88"></A>        }
+<A NAME="89"></A>        <FONT ID="Catch">catch</FONT>(<A HREF="../../../../com/mockrunner/example/ejb/PaySessionException.java.html">PaySessionException</A> exc)
+<A NAME="90"></A>        {
+<A NAME="91"></A>            assertEquals(PaySessionException.UNKNOWN_BILL, exc.getCode());
+<A NAME="92"></A>        }
+<A NAME="93"></A>        verifyMarkedForRollback();
+<A NAME="94"></A>        verifyRolledBack();
+<A NAME="95"></A>        jdbcModule.verifySQLStatementExecuted(<FONT ID="StringLiteral">"select * from openbills"</FONT>);
+<A NAME="96"></A>        jdbcModule.verifySQLStatementNotExecuted(<FONT ID="StringLiteral">"delete from openbills"</FONT>);
+<A NAME="97"></A>        jdbcModule.verifySQLStatementNotExecuted(<FONT ID="StringLiteral">"insert into paidbills"</FONT>);
+<A NAME="98"></A>        jdbcModule.verifyAllResultSetsClosed();
+<A NAME="99"></A>        jdbcModule.verifyAllStatementsClosed();
+<A NAME="100"></A>        jdbcModule.verifyConnectionClosed();
+<A NAME="101"></A>    }
+<A NAME="102"></A>    
+<A NAME="103"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testCustomerIdMismatch() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="104"></A>    {
+<A NAME="105"></A>        createValidCustomerResult();
+<A NAME="106"></A>        createValidBillResult();
+<A NAME="107"></A>        <FONT ID="Try">try</FONT>
+<A NAME="108"></A>        {
+<A NAME="109"></A>            bean.payBill(<FONT ID="StringLiteral">"2"</FONT>, <FONT ID="StringLiteral">"1"</FONT>, <FONT ID="IntegerLiteral">100</FONT>);
+<A NAME="110"></A>            fail();
+<A NAME="111"></A>        }
+<A NAME="112"></A>        <FONT ID="Catch">catch</FONT>(<A HREF="../../../../com/mockrunner/example/ejb/PaySessionException.java.html">PaySessionException</A> exc)
+<A NAME="113"></A>        {
+<A NAME="114"></A>            assertEquals(PaySessionException.WRONG_BILL_FOR_CUSTOMER, exc.getCode());
+<A NAME="115"></A>        }
+<A NAME="116"></A>        verifyMarkedForRollback();
+<A NAME="117"></A>        verifyRolledBack();
+<A NAME="118"></A>        jdbcModule.verifySQLStatementExecuted(<FONT ID="StringLiteral">"select * from openbills"</FONT>);
+<A NAME="119"></A>        jdbcModule.verifySQLStatementNotExecuted(<FONT ID="StringLiteral">"delete from openbills"</FONT>);
+<A NAME="120"></A>        jdbcModule.verifySQLStatementNotExecuted(<FONT ID="StringLiteral">"insert into paidbills"</FONT>);
+<A NAME="121"></A>        jdbcModule.verifyAllResultSetsClosed();
+<A NAME="122"></A>        jdbcModule.verifyAllStatementsClosed();
+<A NAME="123"></A>        jdbcModule.verifyConnectionClosed();
+<A NAME="124"></A>    }
+<A NAME="125"></A>    
+<A NAME="126"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testAmountMismatch() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="127"></A>    {
+<A NAME="128"></A>        createValidCustomerResult();
+<A NAME="129"></A>        createValidBillResult();
+<A NAME="130"></A>        <FONT ID="Try">try</FONT>
+<A NAME="131"></A>        {
+<A NAME="132"></A>            bean.payBill(<FONT ID="StringLiteral">"1"</FONT>, <FONT ID="StringLiteral">"1"</FONT>, <FONT ID="IntegerLiteral">200</FONT>);
+<A NAME="133"></A>            fail();
+<A NAME="134"></A>        }
+<A NAME="135"></A>        <FONT ID="Catch">catch</FONT>(<A HREF="../../../../com/mockrunner/example/ejb/PaySessionException.java.html">PaySessionException</A> exc)
+<A NAME="136"></A>        {
+<A NAME="137"></A>            assertEquals(PaySessionException.WRONG_AMOUNT_FOR_BILL, exc.getCode());
+<A NAME="138"></A>        }
+<A NAME="139"></A>        verifyMarkedForRollback();
+<A NAME="140"></A>        verifyRolledBack();
+<A NAME="141"></A>        jdbcModule.verifySQLStatementExecuted(<FONT ID="StringLiteral">"select * from openbills"</FONT>);
+<A NAME="142"></A>        jdbcModule.verifySQLStatementNotExecuted(<FONT ID="StringLiteral">"delete from openbills"</FONT>);
+<A NAME="143"></A>        jdbcModule.verifySQLStatementNotExecuted(<FONT ID="StringLiteral">"insert into paidbills"</FONT>);
+<A NAME="144"></A>        jdbcModule.verifyAllResultSetsClosed();
+<A NAME="145"></A>        jdbcModule.verifyAllStatementsClosed();
+<A NAME="146"></A>        jdbcModule.verifyConnectionClosed();
+<A NAME="147"></A>    }
+<A NAME="148"></A>
+<A NAME="149"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testValidTransaction() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="150"></A>    {
+<A NAME="151"></A>        createValidCustomerResult();
+<A NAME="152"></A>        createValidBillResult();
+<A NAME="153"></A>        bean.payBill(<FONT ID="StringLiteral">"1"</FONT>, <FONT ID="StringLiteral">"1"</FONT>, <FONT ID="IntegerLiteral">100</FONT>);
+<A NAME="154"></A>        verifyNotMarkedForRollback();
+<A NAME="155"></A>        verifyCommitted();
+<A NAME="156"></A>        jdbcModule.verifySQLStatementExecuted(<FONT ID="StringLiteral">"delete from openbills where id='1'"</FONT>);
+<A NAME="157"></A>        jdbcModule.verifySQLStatementExecuted(<FONT ID="StringLiteral">"insert into paidbills values('1','1',100.0)"</FONT>);
+<A NAME="158"></A>        jdbcModule.verifyAllResultSetsClosed();
+<A NAME="159"></A>        jdbcModule.verifyAllStatementsClosed();
+<A NAME="160"></A>        jdbcModule.verifyConnectionClosed();
+<A NAME="161"></A>    }
+<A NAME="162"></A>}
+<A NAME="163"></A></pre>
+</BODY>
+</HTML>

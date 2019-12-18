@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.ejb.PaySessionException (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">PaySessionException.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.ejb.index.html" target="packageFrame">com.mockrunner.example.ejb</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="FormalComment">/**
+<A NAME="4"></A> * Exception class for 
+<A NAME="5"></A> * {@link PaySessionBean}.
+<A NAME="6"></A> */</FONT>
+<A NAME="7"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> PaySessionException <FONT ID="Extends">extends</FONT> Exception
+<A NAME="8"></A>{
+<A NAME="9"></A>    <FONT ID="Public">public</FONT> <FONT ID="Final">final</FONT> <FONT ID="Static">static</FONT> <FONT ID="Int">int</FONT> UNKNOWN = <FONT ID="IntegerLiteral">0</FONT>;
+<A NAME="10"></A>    <FONT ID="Public">public</FONT> <FONT ID="Final">final</FONT> <FONT ID="Static">static</FONT> <FONT ID="Int">int</FONT> UNKNOWN_CUSTOMER = <FONT ID="IntegerLiteral">1</FONT>;
+<A NAME="11"></A>    <FONT ID="Public">public</FONT> <FONT ID="Final">final</FONT> <FONT ID="Static">static</FONT> <FONT ID="Int">int</FONT> UNKNOWN_BILL = <FONT ID="IntegerLiteral">2</FONT>;
+<A NAME="12"></A>    <FONT ID="Public">public</FONT> <FONT ID="Final">final</FONT> <FONT ID="Static">static</FONT> <FONT ID="Int">int</FONT> WRONG_BILL_FOR_CUSTOMER = <FONT ID="IntegerLiteral">3</FONT>;
+<A NAME="13"></A>    <FONT ID="Public">public</FONT> <FONT ID="Final">final</FONT> <FONT ID="Static">static</FONT> <FONT ID="Int">int</FONT> WRONG_AMOUNT_FOR_BILL = <FONT ID="IntegerLiteral">4</FONT>;
+<A NAME="14"></A>    
+<A NAME="15"></A>    <FONT ID="Private">private</FONT> <FONT ID="Int">int</FONT> code = UNKNOWN;
+<A NAME="16"></A>    
+<A NAME="17"></A>    <FONT ID="Public">public</FONT> PaySessionException(<FONT ID="Int">int</FONT> code)
+<A NAME="18"></A>    {
+<A NAME="19"></A>        <FONT ID="This">this</FONT>.code = code;
+<A NAME="20"></A>    }
+<A NAME="21"></A>    
+<A NAME="22"></A>    <FONT ID="Public">public</FONT> <FONT ID="Int">int</FONT> getCode()
+<A NAME="23"></A>    {
+<A NAME="24"></A>        <FONT ID="Return">return</FONT> code;
+<A NAME="25"></A>    }
+<A NAME="26"></A>}
+<A NAME="27"></A></pre>
+</BODY>
+</HTML>

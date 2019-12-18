@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.struts.AuthenticationActionTest (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">AuthenticationActionTest.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.struts.index.html" target="packageFrame">com.mockrunner.example.struts</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> com.mockrunner.struts.BasicActionTestCaseAdapter;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="FormalComment">/**
+<A NAME="6"></A> * Example test for the {@link AuthenticationAction}.
+<A NAME="7"></A> * Demonstrates most of the features of {@link com.mockrunner.struts.ActionTestModule} 
+<A NAME="8"></A> * and {@link com.mockrunner.struts.BasicActionTestCaseAdapter}.
+<A NAME="9"></A> */</FONT>
+<A NAME="10"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> AuthenticationActionTest <FONT ID="Extends">extends</FONT> BasicActionTestCaseAdapter
+<A NAME="11"></A>{
+<A NAME="12"></A>    <FONT ID="Private">private</FONT> <A HREF="../../../../com/mockrunner/example/struts/MockAuthenticationStrategy.java.html">MockAuthenticationStrategy</A> strategy;
+<A NAME="13"></A>    <FONT ID="Private">private</FONT> <A HREF="../../../../com/mockrunner/example/struts/AuthenticationForm.java.html">AuthenticationForm</A> form;
+<A NAME="14"></A>    
+<A NAME="15"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> setUp() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="16"></A>    {
+<A NAME="17"></A>        <FONT ID="Super">super</FONT>.setUp();
+<A NAME="18"></A>        strategy = <FONT ID="New">new</FONT> <A HREF="../../../../com/mockrunner/example/struts/MockAuthenticationStrategy.java.html">MockAuthenticationStrategy</A>();
+<A NAME="19"></A>        getActionMockObjectFactory().getMockServletContext().setAttribute(<A HREF="../../../../com/mockrunner/example/struts/AuthenticationStrategy.java.html">AuthenticationStrategy</A>.<FONT ID="Class">class</FONT>.getName(), strategy);
+<A NAME="20"></A>        form = (<A HREF="../../../../com/mockrunner/example/struts/AuthenticationForm.java.html">AuthenticationForm</A>)createActionForm(<A HREF="../../../../com/mockrunner/example/struts/AuthenticationForm.java.html">AuthenticationForm</A>.<FONT ID="Class">class</FONT>);
+<A NAME="21"></A>        setValidate(<FONT ID="True">true</FONT>);
+<A NAME="22"></A>    }
+<A NAME="23"></A>
+<A NAME="24"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testSuccessfulLogin()
+<A NAME="25"></A>    {
+<A NAME="26"></A>        addRequestParameter(<FONT ID="StringLiteral">"username"</FONT>, <FONT ID="StringLiteral">"test"</FONT>);
+<A NAME="27"></A>        addRequestParameter(<FONT ID="StringLiteral">"password"</FONT>, <FONT ID="StringLiteral">"test"</FONT>);
+<A NAME="28"></A>        strategy.setupLoginOk(<FONT ID="True">true</FONT>);
+<A NAME="29"></A>        actionPerform(<A HREF="../../../../com/mockrunner/example/struts/AuthenticationAction.java.html">AuthenticationAction</A>.<FONT ID="Class">class</FONT>, form);
+<A NAME="30"></A>        verifyNoActionErrors();
+<A NAME="31"></A>        verifyNumberActionMessages(<FONT ID="IntegerLiteral">1</FONT>);
+<A NAME="32"></A>        verifyActionMessagePresent(<FONT ID="StringLiteral">"auth.login.successful"</FONT>);
+<A NAME="33"></A>        verifyForward(<FONT ID="StringLiteral">"success"</FONT>);
+<A NAME="34"></A>    }
+<A NAME="35"></A>    
+<A NAME="36"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testEmptyInput()
+<A NAME="37"></A>    {
+<A NAME="38"></A>        form.setUsername(<FONT ID="StringLiteral">""</FONT>);
+<A NAME="39"></A>        form.setPassword(<FONT ID="StringLiteral">"test"</FONT>);
+<A NAME="40"></A>        strategy.setupLoginOk(<FONT ID="True">true</FONT>);
+<A NAME="41"></A>        actionPerform(<A HREF="../../../../com/mockrunner/example/struts/AuthenticationAction.java.html">AuthenticationAction</A>.<FONT ID="Class">class</FONT>, form);
+<A NAME="42"></A>        verifyNumberActionErrors(<FONT ID="IntegerLiteral">1</FONT>);
+<A NAME="43"></A>        verifyActionErrorPresent(<FONT ID="StringLiteral">"field.value.missing"</FONT>);
+<A NAME="44"></A>        verifyActionErrorValue(<FONT ID="StringLiteral">"field.value.missing"</FONT>, <FONT ID="StringLiteral">"username"</FONT>);
+<A NAME="45"></A>        form.setUsername(<FONT ID="StringLiteral">"test"</FONT>);
+<A NAME="46"></A>        form.setPassword(<FONT ID="StringLiteral">""</FONT>);
+<A NAME="47"></A>        actionPerform(<A HREF="../../../../com/mockrunner/example/struts/AuthenticationAction.java.html">AuthenticationAction</A>.<FONT ID="Class">class</FONT>, form);
+<A NAME="48"></A>        verifyNumberActionErrors(<FONT ID="IntegerLiteral">1</FONT>);
+<A NAME="49"></A>        verifyActionErrorPresent(<FONT ID="StringLiteral">"field.value.missing"</FONT>);
+<A NAME="50"></A>        verifyActionErrorValue(<FONT ID="StringLiteral">"field.value.missing"</FONT>, <FONT ID="StringLiteral">"password"</FONT>);
+<A NAME="51"></A>        strategy.setupLoginOk(<FONT ID="False">false</FONT>);
+<A NAME="52"></A>        strategy.setupUserKnown(<FONT ID="False">false</FONT>);
+<A NAME="53"></A>        actionPerform(<A HREF="../../../../com/mockrunner/example/struts/AuthenticationAction.java.html">AuthenticationAction</A>.<FONT ID="Class">class</FONT>, form);
+<A NAME="54"></A>        verifyActionErrorNotPresent(<FONT ID="StringLiteral">"auth.username.unknown"</FONT>);
+<A NAME="55"></A>    }
+<A NAME="56"></A>    
+<A NAME="57"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testUnknownUser()
+<A NAME="58"></A>    {
+<A NAME="59"></A>        form.setUsername(<FONT ID="StringLiteral">"test"</FONT>);
+<A NAME="60"></A>        form.setPassword(<FONT ID="StringLiteral">"test"</FONT>);
+<A NAME="61"></A>        strategy.setupLoginOk(<FONT ID="False">false</FONT>);
+<A NAME="62"></A>        strategy.setupUserKnown(<FONT ID="False">false</FONT>);
+<A NAME="63"></A>        actionPerform(<A HREF="../../../../com/mockrunner/example/struts/AuthenticationAction.java.html">AuthenticationAction</A>.<FONT ID="Class">class</FONT>, form);
+<A NAME="64"></A>        verifyNumberActionErrors(<FONT ID="IntegerLiteral">1</FONT>);
+<A NAME="65"></A>        verifyActionErrorPresent(<FONT ID="StringLiteral">"auth.username.unknown"</FONT>);
+<A NAME="66"></A>        verifyActionErrorValue(<FONT ID="StringLiteral">"auth.username.unknown"</FONT>, <FONT ID="StringLiteral">"test"</FONT>);
+<A NAME="67"></A>        verifyForward(<FONT ID="StringLiteral">"failure"</FONT>);
+<A NAME="68"></A>    }
+<A NAME="69"></A>    
+<A NAME="70"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testWrongPassword()
+<A NAME="71"></A>    {
+<A NAME="72"></A>        form.setUsername(<FONT ID="StringLiteral">"test"</FONT>);
+<A NAME="73"></A>        form.setPassword(<FONT ID="StringLiteral">"test"</FONT>);
+<A NAME="74"></A>        strategy.setupLoginOk(<FONT ID="False">false</FONT>);
+<A NAME="75"></A>        strategy.setupUserKnown(<FONT ID="True">true</FONT>);
+<A NAME="76"></A>        strategy.setupPasswordOk(<FONT ID="False">false</FONT>);
+<A NAME="77"></A>        actionPerform(<A HREF="../../../../com/mockrunner/example/struts/AuthenticationAction.java.html">AuthenticationAction</A>.<FONT ID="Class">class</FONT>, form);
+<A NAME="78"></A>        verifyNumberActionErrors(<FONT ID="IntegerLiteral">1</FONT>);
+<A NAME="79"></A>        verifyActionErrorPresent(<FONT ID="StringLiteral">"auth.password.wrong"</FONT>);
+<A NAME="80"></A>        verifyForward(<FONT ID="StringLiteral">"failure"</FONT>);
+<A NAME="81"></A>    }
+<A NAME="82"></A>    
+<A NAME="83"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testGeneralError()
+<A NAME="84"></A>    {
+<A NAME="85"></A>        form.setUsername(<FONT ID="StringLiteral">"test"</FONT>);
+<A NAME="86"></A>        form.setPassword(<FONT ID="StringLiteral">"test"</FONT>);
+<A NAME="87"></A>        strategy.setupLoginOk(<FONT ID="False">false</FONT>);
+<A NAME="88"></A>        strategy.setupUserKnown(<FONT ID="True">true</FONT>);
+<A NAME="89"></A>        strategy.setupPasswordOk(<FONT ID="True">true</FONT>);
+<A NAME="90"></A>        actionPerform(<A HREF="../../../../com/mockrunner/example/struts/AuthenticationAction.java.html">AuthenticationAction</A>.<FONT ID="Class">class</FONT>, form);
+<A NAME="91"></A>        verifyNumberActionErrors(<FONT ID="IntegerLiteral">1</FONT>);
+<A NAME="92"></A>        verifyActionErrorPresent(<FONT ID="StringLiteral">"auth.general.error"</FONT>);
+<A NAME="93"></A>        verifyForward(<FONT ID="StringLiteral">"failure"</FONT>);
+<A NAME="94"></A>    }
+<A NAME="95"></A>}
+<A NAME="96"></A></pre>
+</BODY>
+</HTML>

@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.struts.MockOrderManager (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">MockOrderManager.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.struts.index.html" target="packageFrame">com.mockrunner.example.struts</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.util.HashMap;
+<A NAME="4"></A><FONT ID="Import">import</FONT> java.util.Map;
+<A NAME="5"></A>
+<A NAME="6"></A><FONT ID="FormalComment">/**
+<A NAME="7"></A> * Mock implementation of {@link OrderManager}.
+<A NAME="8"></A> * Used in the test {@link OrderActionTest}.
+<A NAME="9"></A> */</FONT>
+<A NAME="10"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> MockOrderManager <FONT ID="Extends">extends</FONT> <A HREF="../../../../com/mockrunner/example/struts/OrderManager.java.html">OrderManager</A>
+<A NAME="11"></A>{
+<A NAME="12"></A>    <FONT ID="Private">private</FONT> Map products = <FONT ID="New">new</FONT> HashMap();
+<A NAME="13"></A>    
+<A NAME="14"></A>    <FONT ID="Public">public</FONT> MockOrderManager()
+<A NAME="15"></A>    {
+<A NAME="16"></A>    
+<A NAME="17"></A>    }
+<A NAME="18"></A>
+<A NAME="19"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setStock(String id, <FONT ID="Int">int</FONT> amount)
+<A NAME="20"></A>    {
+<A NAME="21"></A>        products.put(id, <FONT ID="New">new</FONT> Integer(amount));
+<A NAME="22"></A>    }
+<A NAME="23"></A>    
+<A NAME="24"></A>    <FONT ID="Public">public</FONT> <FONT ID="Int">int</FONT> getStock(String id)
+<A NAME="25"></A>    {
+<A NAME="26"></A>        Integer amount = (Integer)products.get(id);
+<A NAME="27"></A>        <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> == amount) <FONT ID="Return">return</FONT> <FONT ID="IntegerLiteral">0</FONT>;
+<A NAME="28"></A>        <FONT ID="Return">return</FONT> amount.intValue();
+<A NAME="29"></A>    }
+<A NAME="30"></A>
+<A NAME="31"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> order(String id, <FONT ID="Int">int</FONT> amount)
+<A NAME="32"></A>    {
+<A NAME="33"></A>        <FONT ID="Int">int</FONT> available = getStock(id);
+<A NAME="34"></A>        <FONT ID="If">if</FONT>(available &lt; amount) <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> RuntimeException(<FONT ID="StringLiteral">"not enough in stock"</FONT>);
+<A NAME="35"></A>        Integer newStock = <FONT ID="New">new</FONT> Integer(available - amount);
+<A NAME="36"></A>        products.put(id, newStock);
+<A NAME="37"></A>    }
+<A NAME="38"></A>
+<A NAME="39"></A>}
+<A NAME="40"></A></pre>
+</BODY>
+</HTML>

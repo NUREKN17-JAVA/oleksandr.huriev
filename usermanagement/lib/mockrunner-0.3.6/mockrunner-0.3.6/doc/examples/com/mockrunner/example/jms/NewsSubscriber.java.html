@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.jms.NewsSubscriber (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">NewsSubscriber.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.jms.index.html" target="packageFrame">com.mockrunner.example.jms</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.util.Hashtable;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="Import">import</FONT> javax.jms.JMSException;
+<A NAME="6"></A><FONT ID="Import">import</FONT> javax.jms.Message;
+<A NAME="7"></A><FONT ID="Import">import</FONT> javax.jms.MessageListener;
+<A NAME="8"></A><FONT ID="Import">import</FONT> javax.jms.Session;
+<A NAME="9"></A><FONT ID="Import">import</FONT> javax.jms.TextMessage;
+<A NAME="10"></A><FONT ID="Import">import</FONT> javax.jms.Topic;
+<A NAME="11"></A><FONT ID="Import">import</FONT> javax.jms.TopicConnection;
+<A NAME="12"></A><FONT ID="Import">import</FONT> javax.jms.TopicConnectionFactory;
+<A NAME="13"></A><FONT ID="Import">import</FONT> javax.jms.TopicSession;
+<A NAME="14"></A><FONT ID="Import">import</FONT> javax.jms.TopicSubscriber;
+<A NAME="15"></A><FONT ID="Import">import</FONT> javax.naming.Context;
+<A NAME="16"></A><FONT ID="Import">import</FONT> javax.naming.InitialContext;
+<A NAME="17"></A><FONT ID="Import">import</FONT> javax.naming.NamingException;
+<A NAME="18"></A>
+<A NAME="19"></A><FONT ID="FormalComment">/**
+<A NAME="20"></A> * Simple class that connects to a message server and dumps all
+<A NAME="21"></A> * messages to stdout. The first command line parameter is
+<A NAME="22"></A> * the INITIAL_CONTEXT_FACTORY of the server, the second one
+<A NAME="23"></A> * is the PROVIDER_URL. With the third parameter, received messages
+<A NAME="24"></A> * can be limited to those, that match a specified subject (i.e.
+<A NAME="25"></A> * a string property with the name &lt;code&gt;subject&lt;/code&gt;).
+<A NAME="26"></A> */</FONT>
+<A NAME="27"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> NewsSubscriber
+<A NAME="28"></A>{
+<A NAME="29"></A>    <FONT ID="Private">private</FONT> InitialContext context;
+<A NAME="30"></A>    <FONT ID="Private">private</FONT> String subject;
+<A NAME="31"></A>    
+<A NAME="32"></A>    <FONT ID="Public">public</FONT> <FONT ID="Static">static</FONT> <FONT ID="Void">void</FONT> main(String[] args)
+<A NAME="33"></A>    {
+<A NAME="34"></A>        <FONT ID="If">if</FONT>(args.length &lt; <FONT ID="IntegerLiteral">3</FONT>)
+<A NAME="35"></A>        {
+<A NAME="36"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> RuntimeException(<FONT ID="StringLiteral">"Please specify INITIAL_CONTEXT_FACTORY (first parameter) "</FONT> + 
+<A NAME="37"></A>                                       <FONT ID="StringLiteral">"PROVIDER_URL (second parameter) "</FONT> +
+<A NAME="38"></A>                                       <FONT ID="StringLiteral">"subject (third parameter)"</FONT>);
+<A NAME="39"></A>        }
+<A NAME="40"></A>        <FONT ID="Try">try</FONT>
+<A NAME="41"></A>        {
+<A NAME="42"></A>            <FONT ID="New">new</FONT> <A HREF="../../../../com/mockrunner/example/jms/NewsSubscriber.java.html">NewsSubscriber</A>(args[<FONT ID="IntegerLiteral">0</FONT>], args[<FONT ID="IntegerLiteral">1</FONT>], args[<FONT ID="IntegerLiteral">2</FONT>]).init();
+<A NAME="43"></A>        }
+<A NAME="44"></A>        <FONT ID="Catch">catch</FONT>(Exception exc)
+<A NAME="45"></A>        {
+<A NAME="46"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> RuntimeException(exc.getMessage());
+<A NAME="47"></A>        }
+<A NAME="48"></A>    }
+<A NAME="49"></A>    
+<A NAME="50"></A>    <FONT ID="Public">public</FONT> NewsSubscriber(String contextFactory, String providerURL, String subject) <FONT ID="Throws">throws</FONT> NamingException
+<A NAME="51"></A>    {
+<A NAME="52"></A>        <FONT ID="This">this</FONT>.subject = subject;
+<A NAME="53"></A>        Hashtable env = <FONT ID="New">new</FONT> Hashtable();
+<A NAME="54"></A>        env.put(Context.INITIAL_CONTEXT_FACTORY, contextFactory);
+<A NAME="55"></A>        env.put(Context.PROVIDER_URL, subject);
+<A NAME="56"></A>        context = <FONT ID="New">new</FONT> InitialContext(env);
+<A NAME="57"></A>    }
+<A NAME="58"></A>
+<A NAME="59"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> init() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="60"></A>    {
+<A NAME="61"></A>        TopicConnectionFactory topicFactory = (TopicConnectionFactory)context.lookup(<FONT ID="StringLiteral">"ConnectionFactory"</FONT>);
+<A NAME="62"></A>        TopicConnection topicConnection = topicFactory.createTopicConnection();
+<A NAME="63"></A>        TopicSession topicSession = topicConnection.createTopicSession(<FONT ID="False">false</FONT>, Session.AUTO_ACKNOWLEDGE);
+<A NAME="64"></A>        Topic topic = (Topic)context.lookup(<FONT ID="StringLiteral">"topic/newsTopic"</FONT>);
+<A NAME="65"></A>        TopicSubscriber subscriber = topicSession.createSubscriber(topic, <FONT ID="StringLiteral">"subject = '"</FONT> + subject + <FONT ID="StringLiteral">"'"</FONT>, <FONT ID="False">false</FONT>);
+<A NAME="66"></A>        subscriber.setMessageListener(<FONT ID="New">new</FONT> InternalSubscriber());
+<A NAME="67"></A>        topicConnection.start();
+<A NAME="68"></A>        Thread.currentThread().join();
+<A NAME="69"></A>    }
+<A NAME="70"></A>    
+<A NAME="71"></A>    <FONT ID="Private">private</FONT> <FONT ID="Static">static</FONT> <FONT ID="Class">class</FONT> InternalSubscriber <FONT ID="Implements">implements</FONT> MessageListener
+<A NAME="72"></A>    {
+<A NAME="73"></A>        <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> onMessage(Message message)
+<A NAME="74"></A>        {
+<A NAME="75"></A>            <FONT ID="If">if</FONT>(message <FONT ID="InstanceOf">instanceof</FONT> TextMessage)
+<A NAME="76"></A>            {
+<A NAME="77"></A>                <FONT ID="Try">try</FONT>
+<A NAME="78"></A>                {
+<A NAME="79"></A>                    System.out.println(((TextMessage)message).getText());
+<A NAME="80"></A>                }
+<A NAME="81"></A>                <FONT ID="Catch">catch</FONT>(JMSException exc)
+<A NAME="82"></A>                {
+<A NAME="83"></A>                    exc.printStackTrace();
+<A NAME="84"></A>                }
+<A NAME="85"></A>            }
+<A NAME="86"></A>        }
+<A NAME="87"></A>    }
+<A NAME="88"></A>}
+<A NAME="89"></A></pre>
+</BODY>
+</HTML>

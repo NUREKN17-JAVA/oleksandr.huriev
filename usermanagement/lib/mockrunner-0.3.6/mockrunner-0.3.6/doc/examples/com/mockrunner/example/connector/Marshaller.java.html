@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.connector.Marshaller (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">Marshaller.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.connector.index.html" target="packageFrame">com.mockrunner.example.connector</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.io.UnsupportedEncodingException;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="FormalComment">/**
+<A NAME="6"></A> * Helper class to convert Java types to commarea bytes and back.
+<A NAME="7"></A> */</FONT>
+<A NAME="8"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> Marshaller
+<A NAME="9"></A>{
+<A NAME="10"></A>    <FONT ID="Public">public</FONT> <FONT ID="Static">static</FONT> <FONT ID="Byte">byte</FONT>[] marshalString(String data, <FONT ID="Int">int</FONT> size)
+<A NAME="11"></A>    {
+<A NAME="12"></A>        <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> == data) data = <FONT ID="StringLiteral">""</FONT>;
+<A NAME="13"></A>        <FONT ID="If">if</FONT>(data.length() &gt; size) data = data.substring(<FONT ID="IntegerLiteral">0</FONT>, size);
+<A NAME="14"></A>        StringBuffer buffer = <FONT ID="New">new</FONT> StringBuffer(data);
+<A NAME="15"></A>        <FONT ID="For">for</FONT>(<FONT ID="Int">int</FONT> ii = buffer.length(); ii &lt; size; ii++)
+<A NAME="16"></A>        {
+<A NAME="17"></A>            buffer.append(<FONT ID="StringLiteral">" "</FONT>);
+<A NAME="18"></A>        }
+<A NAME="19"></A>        <FONT ID="Try">try</FONT>
+<A NAME="20"></A>        {
+<A NAME="21"></A>            <FONT ID="Return">return</FONT> buffer.toString().getBytes(<FONT ID="StringLiteral">"Cp273"</FONT>);
+<A NAME="22"></A>        } 
+<A NAME="23"></A>        <FONT ID="Catch">catch</FONT> (UnsupportedEncodingException exc)
+<A NAME="24"></A>        {
+<A NAME="25"></A>            exc.printStackTrace();
+<A NAME="26"></A>        }
+<A NAME="27"></A>        <FONT ID="Return">return</FONT> <FONT ID="New">new</FONT> <FONT ID="Byte">byte</FONT>[size];
+<A NAME="28"></A>    }
+<A NAME="29"></A>
+<A NAME="30"></A>    <FONT ID="Public">public</FONT> <FONT ID="Static">static</FONT> String unmarshalString(<FONT ID="Byte">byte</FONT>[] data)
+<A NAME="31"></A>    {
+<A NAME="32"></A>        <FONT ID="Try">try</FONT>
+<A NAME="33"></A>        {
+<A NAME="34"></A>            <FONT ID="Return">return</FONT> <FONT ID="New">new</FONT> String(data, <FONT ID="StringLiteral">"Cp273"</FONT>);
+<A NAME="35"></A>        }
+<A NAME="36"></A>        <FONT ID="Catch">catch</FONT> (UnsupportedEncodingException exc)
+<A NAME="37"></A>        {
+<A NAME="38"></A>            exc.printStackTrace();
+<A NAME="39"></A>        }
+<A NAME="40"></A>        <FONT ID="Return">return</FONT> <FONT ID="StringLiteral">""</FONT>;
+<A NAME="41"></A>    }
+<A NAME="42"></A>    
+<A NAME="43"></A>    <FONT ID="Public">public</FONT> <FONT ID="Static">static</FONT> <FONT ID="Byte">byte</FONT>[] marshalNumber(<FONT ID="Int">int</FONT> number)
+<A NAME="44"></A>    {
+<A NAME="45"></A>        <FONT ID="Return">return</FONT> <FONT ID="New">new</FONT> <FONT ID="Byte">byte</FONT>[] {(<FONT ID="Byte">byte</FONT>)((number &gt;&gt; <FONT ID="IntegerLiteral">24</FONT>) &amp; <FONT ID="IntegerLiteral">0xFF</FONT>), (<FONT ID="Byte">byte</FONT>)((number &gt;&gt; <FONT ID="IntegerLiteral">16</FONT>) &amp; <FONT ID="IntegerLiteral">0xFF</FONT>), 
+<A NAME="46"></A>                           (<FONT ID="Byte">byte</FONT>)((number &gt;&gt; <FONT ID="IntegerLiteral">8</FONT>) &amp; <FONT ID="IntegerLiteral">0xFF</FONT>), (<FONT ID="Byte">byte</FONT>)(number &amp; <FONT ID="IntegerLiteral">0xFF</FONT>)};
+<A NAME="47"></A>    }
+<A NAME="48"></A>
+<A NAME="49"></A>    <FONT ID="Public">public</FONT> <FONT ID="Static">static</FONT> <FONT ID="Int">int</FONT> unmarshalNumber(<FONT ID="Byte">byte</FONT>[] data)
+<A NAME="50"></A>    {
+<A NAME="51"></A>        <FONT ID="Int">int</FONT> shiftBits = (data.length - <FONT ID="IntegerLiteral">1</FONT>) * <FONT ID="IntegerLiteral">8</FONT>;
+<A NAME="52"></A>        <FONT ID="Int">int</FONT> result = <FONT ID="IntegerLiteral">0</FONT>;
+<A NAME="53"></A>        <FONT ID="For">for</FONT>(<FONT ID="Int">int</FONT> ii = <FONT ID="IntegerLiteral">0</FONT>; ii &lt; data.length; ii++)
+<A NAME="54"></A>        {
+<A NAME="55"></A>              result |= ((<FONT ID="IntegerLiteral">0xFF</FONT> &amp; (<FONT ID="Int">int</FONT>)data[ii]) &lt;&lt; (shiftBits - (ii * <FONT ID="IntegerLiteral">8</FONT>)));
+<A NAME="56"></A>        }
+<A NAME="57"></A>        <FONT ID="Return">return</FONT> result;
+<A NAME="58"></A>    }
+<A NAME="59"></A>}
+<A NAME="60"></A></pre>
+</BODY>
+</HTML>

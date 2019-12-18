@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.tag.TableEnumTag (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">TableEnumTag.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.tag.index.html" target="packageFrame">com.mockrunner.example.tag</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.io.IOException;
+<A NAME="4"></A><FONT ID="Import">import</FONT> java.util.Collection;
+<A NAME="5"></A><FONT ID="Import">import</FONT> java.util.Iterator;
+<A NAME="6"></A>
+<A NAME="7"></A><FONT ID="Import">import</FONT> javax.servlet.jsp.JspException;
+<A NAME="8"></A><FONT ID="Import">import</FONT> javax.servlet.jsp.JspWriter;
+<A NAME="9"></A><FONT ID="Import">import</FONT> javax.servlet.jsp.PageContext;
+<A NAME="10"></A><FONT ID="Import">import</FONT> javax.servlet.jsp.tagext.BodyTagSupport;
+<A NAME="11"></A>
+<A NAME="12"></A><FONT ID="FormalComment">/**
+<A NAME="13"></A> * This example tag creates an HTML table with multiple rows. It takes
+<A NAME="14"></A> * a &lt;code&gt;Collection&lt;/code&gt; from the session (attribute key is 
+<A NAME="15"></A> * &lt;i&gt;currentCollection&lt;/i&gt;) and iterates through the elements. 
+<A NAME="16"></A> * The elements are stored in the request (attribute key is &lt;i&gt;currentObject&lt;/i&gt;).
+<A NAME="17"></A> * The body of the tag will be evaluated multiple times, and if it's not empty,
+<A NAME="18"></A> * an HTML row will be created.
+<A NAME="19"></A> * A Struts &lt;i&gt;bean:write&lt;/i&gt; or JSTL&lt;i&gt;c:out&lt;/i&gt;tag can be used to write the 
+<A NAME="20"></A> * elements from the &lt;code&gt;Collection&lt;/code&gt; as a string to the page.
+<A NAME="21"></A> * If you store a &lt;code&gt;List&lt;/code&gt; with one entry &lt;i&gt;Entry1&lt;/i&gt; in the session 
+<A NAME="22"></A> * and specify the following JSP code (&lt;i&gt;enumtag&lt;/i&gt; is our tag)
+<A NAME="23"></A> * 
+<A NAME="24"></A> * &lt;pre&gt;
+<A NAME="25"></A> * &amp;lt;mytags:enumtag label="myLabel"&amp;gt;
+<A NAME="26"></A> *   &amp;lt;bean:write scope="request" name="currentObject"/&amp;gt;
+<A NAME="27"></A> * &amp;lt;/mytags:enumtag&amp;gt;
+<A NAME="28"></A> * &lt;/pre&gt;
+<A NAME="29"></A> * 
+<A NAME="30"></A> * then the html output will be
+<A NAME="31"></A> * 
+<A NAME="32"></A> * &lt;pre&gt;
+<A NAME="33"></A> * &amp;lt;table&amp;gt;
+<A NAME="34"></A> * &amp;lt;tr&amp;gt;
+<A NAME="35"></A> *  &amp;lt;td&amp;gt;
+<A NAME="36"></A> *      myLabel
+<A NAME="37"></A> *  &amp;lt;/td&amp;gt;
+<A NAME="38"></A> *  &amp;lt;td&amp;gt;
+<A NAME="39"></A> *      Entry1
+<A NAME="40"></A> *  &amp;lt;/td&amp;gt;
+<A NAME="41"></A> * &amp;lt;/tr&amp;gt;
+<A NAME="42"></A> * &amp;lt;/table&amp;gt;
+<A NAME="43"></A> * &lt;/pre&gt;
+<A NAME="44"></A> * 
+<A NAME="45"></A> * Note: The &lt;i&gt;bean:write&lt;/i&gt; tag is the common Struts tag.
+<A NAME="46"></A> * Check out {@link TableEnumTagTest} to see how to write a test for
+<A NAME="47"></A> * this tag.
+<A NAME="48"></A> */</FONT>
+<A NAME="49"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> TableEnumTag <FONT ID="Extends">extends</FONT> BodyTagSupport
+<A NAME="50"></A>{
+<A NAME="51"></A>    <FONT ID="Private">private</FONT> String label;
+<A NAME="52"></A>    <FONT ID="Private">private</FONT> Iterator iterator;
+<A NAME="53"></A>    
+<A NAME="54"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setLabel(String label)
+<A NAME="55"></A>    {
+<A NAME="56"></A>        <FONT ID="This">this</FONT>.label = label;
+<A NAME="57"></A>    }
+<A NAME="58"></A>    
+<A NAME="59"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> release()
+<A NAME="60"></A>    {       
+<A NAME="61"></A>        <FONT ID="Super">super</FONT>.release();
+<A NAME="62"></A>        label = <FONT ID="Null">null</FONT>;
+<A NAME="63"></A>        iterator = <FONT ID="Null">null</FONT>;
+<A NAME="64"></A>    }
+<A NAME="65"></A>    
+<A NAME="66"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> copyNextObjectToRequest()
+<A NAME="67"></A>    {
+<A NAME="68"></A>        Object nextAttribute = iterator.next();
+<A NAME="69"></A>        pageContext.setAttribute(<FONT ID="StringLiteral">"currentObject"</FONT>, nextAttribute, PageContext.REQUEST_SCOPE);
+<A NAME="70"></A>    }
+<A NAME="71"></A>    
+<A NAME="72"></A>    <FONT ID="Public">public</FONT> <FONT ID="Int">int</FONT> doStartTag() <FONT ID="Throws">throws</FONT> JspException
+<A NAME="73"></A>    {
+<A NAME="74"></A>        <FONT ID="Try">try</FONT>
+<A NAME="75"></A>        {
+<A NAME="76"></A>            Collection col = (Collection)pageContext.getAttribute(<FONT ID="StringLiteral">"currentCollection"</FONT>, PageContext.SESSION_SCOPE);
+<A NAME="77"></A>            iterator = col.iterator();
+<A NAME="78"></A>            <FONT ID="If">if</FONT>(iterator.hasNext())
+<A NAME="79"></A>            {
+<A NAME="80"></A>                pageContext.getOut().println(<FONT ID="StringLiteral">"&lt;table&gt;"</FONT>);
+<A NAME="81"></A>                copyNextObjectToRequest();
+<A NAME="82"></A>                <FONT ID="Return">return</FONT> EVAL_BODY_BUFFERED;
+<A NAME="83"></A>            }
+<A NAME="84"></A>            <FONT ID="Return">return</FONT> SKIP_BODY;
+<A NAME="85"></A>        }
+<A NAME="86"></A>        <FONT ID="Catch">catch</FONT>(IOException exc)
+<A NAME="87"></A>        {
+<A NAME="88"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> JspException(exc.getMessage());
+<A NAME="89"></A>        }
+<A NAME="90"></A>    }
+<A NAME="91"></A>    
+<A NAME="92"></A>    <FONT ID="Public">public</FONT> <FONT ID="Int">int</FONT> doAfterBody() <FONT ID="Throws">throws</FONT> JspException
+<A NAME="93"></A>    {
+<A NAME="94"></A>        String bodyString = getBodyContent().getString();
+<A NAME="95"></A>        JspWriter out = getBodyContent().getEnclosingWriter();
+<A NAME="96"></A>        <FONT ID="Try">try</FONT>
+<A NAME="97"></A>        {
+<A NAME="98"></A>            <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != bodyString &amp;&amp; bodyString.length() != <FONT ID="IntegerLiteral">0</FONT>)
+<A NAME="99"></A>            {
+<A NAME="100"></A>                out.println(<FONT ID="StringLiteral">"&lt;tr&gt;"</FONT>);
+<A NAME="101"></A>                out.println(<FONT ID="StringLiteral">"\t&lt;td&gt;"</FONT>);
+<A NAME="102"></A>                out.println(<FONT ID="StringLiteral">"\t\t"</FONT> + label);
+<A NAME="103"></A>                out.println(<FONT ID="StringLiteral">"\t&lt;/td&gt;"</FONT>);
+<A NAME="104"></A>                out.println(<FONT ID="StringLiteral">"\t&lt;td&gt;"</FONT>);
+<A NAME="105"></A>                out.println(<FONT ID="StringLiteral">"\t\t"</FONT> + bodyString);
+<A NAME="106"></A>                out.println(<FONT ID="StringLiteral">"\t&lt;/td&gt;"</FONT>);
+<A NAME="107"></A>                out.println(<FONT ID="StringLiteral">"&lt;/tr&gt;"</FONT>);
+<A NAME="108"></A>            }
+<A NAME="109"></A>            <FONT ID="If">if</FONT>(iterator.hasNext())
+<A NAME="110"></A>            {
+<A NAME="111"></A>                copyNextObjectToRequest();
+<A NAME="112"></A>                getBodyContent().clear();
+<A NAME="113"></A>                <FONT ID="Return">return</FONT> EVAL_BODY_AGAIN;
+<A NAME="114"></A>            }
+<A NAME="115"></A>            out.println(<FONT ID="StringLiteral">"&lt;/table&gt;"</FONT>);
+<A NAME="116"></A>            <FONT ID="Return">return</FONT> SKIP_BODY;
+<A NAME="117"></A>        }
+<A NAME="118"></A>        <FONT ID="Catch">catch</FONT>(IOException exc)
+<A NAME="119"></A>        {
+<A NAME="120"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> JspException(exc.getMessage());
+<A NAME="121"></A>        }  
+<A NAME="122"></A>    }
+<A NAME="123"></A>
+<A NAME="124"></A>    <FONT ID="Public">public</FONT> <FONT ID="Int">int</FONT> doEndTag() <FONT ID="Throws">throws</FONT> JspException
+<A NAME="125"></A>    {
+<A NAME="126"></A>        <FONT ID="Return">return</FONT> EVAL_PAGE;
+<A NAME="127"></A>    }
+<A NAME="128"></A>}
+<A NAME="129"></A></pre>
+</BODY>
+</HTML>

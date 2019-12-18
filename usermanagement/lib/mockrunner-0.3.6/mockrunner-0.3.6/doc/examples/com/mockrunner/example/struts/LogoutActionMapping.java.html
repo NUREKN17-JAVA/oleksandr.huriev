@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.struts.LogoutActionMapping (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">LogoutActionMapping.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.struts.index.html" target="packageFrame">com.mockrunner.example.struts</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionMapping;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="FormalComment">/**
+<A NAME="6"></A> * This custom action mapping is used by {@link LogoutAction}
+<A NAME="7"></A> * to get the parameter name for the logout request parameter.
+<A NAME="8"></A> * The parameter name can be set in the struts-config.xml file using
+<A NAME="9"></A> * &amp;lt;set-property property="requestParameterName" value="logout"/&amp;gt;
+<A NAME="10"></A> */</FONT>
+<A NAME="11"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> LogoutActionMapping <FONT ID="Extends">extends</FONT> ActionMapping
+<A NAME="12"></A>{
+<A NAME="13"></A>    <FONT ID="Private">private</FONT> String requestParameterName;
+<A NAME="14"></A>
+<A NAME="15"></A>    <FONT ID="Public">public</FONT> String getRequestParameterName()
+<A NAME="16"></A>    {
+<A NAME="17"></A>        <FONT ID="Return">return</FONT> requestParameterName;
+<A NAME="18"></A>    }
+<A NAME="19"></A>
+<A NAME="20"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setRequestParameterName(String requestParameterName)
+<A NAME="21"></A>    {
+<A NAME="22"></A>        <FONT ID="This">this</FONT>.requestParameterName = requestParameterName;
+<A NAME="23"></A>    }
+<A NAME="24"></A>}
+<A NAME="25"></A></pre>
+</BODY>
+</HTML>

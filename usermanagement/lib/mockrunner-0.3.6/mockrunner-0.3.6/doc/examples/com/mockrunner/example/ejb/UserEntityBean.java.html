@@ -1,0 +1,351 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.ejb.UserEntityBean (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">UserEntityBean.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.ejb.index.html" target="packageFrame">com.mockrunner.example.ejb</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.rmi.RemoteException;
+<A NAME="4"></A><FONT ID="Import">import</FONT> java.sql.Connection;
+<A NAME="5"></A><FONT ID="Import">import</FONT> java.sql.PreparedStatement;
+<A NAME="6"></A><FONT ID="Import">import</FONT> java.sql.ResultSet;
+<A NAME="7"></A><FONT ID="Import">import</FONT> java.sql.SQLException;
+<A NAME="8"></A><FONT ID="Import">import</FONT> java.sql.Statement;
+<A NAME="9"></A><FONT ID="Import">import</FONT> java.util.ArrayList;
+<A NAME="10"></A><FONT ID="Import">import</FONT> java.util.Collection;
+<A NAME="11"></A><FONT ID="Import">import</FONT> java.util.List;
+<A NAME="12"></A>
+<A NAME="13"></A><FONT ID="Import">import</FONT> javax.ejb.CreateException;
+<A NAME="14"></A><FONT ID="Import">import</FONT> javax.ejb.EJBException;
+<A NAME="15"></A><FONT ID="Import">import</FONT> javax.ejb.EntityBean;
+<A NAME="16"></A><FONT ID="Import">import</FONT> javax.ejb.EntityContext;
+<A NAME="17"></A><FONT ID="Import">import</FONT> javax.ejb.FinderException;
+<A NAME="18"></A><FONT ID="Import">import</FONT> javax.ejb.NoSuchEntityException;
+<A NAME="19"></A><FONT ID="Import">import</FONT> javax.ejb.ObjectNotFoundException;
+<A NAME="20"></A><FONT ID="Import">import</FONT> javax.ejb.RemoveException;
+<A NAME="21"></A><FONT ID="Import">import</FONT> javax.naming.InitialContext;
+<A NAME="22"></A><FONT ID="Import">import</FONT> javax.sql.DataSource;
+<A NAME="23"></A>
+<A NAME="24"></A><FONT ID="MultiLineComment">/*
+<A NAME="25"></A> * @ejb:bean name="UserEntity"
+<A NAME="26"></A> *           display-name="UserEntity"
+<A NAME="27"></A> *           type="BMP"
+<A NAME="28"></A> *           jndi-name="de/test/UserEntity"
+<A NAME="29"></A> *
+<A NAME="30"></A> * @ejb:pk class="java.lang.String"
+<A NAME="31"></A> *
+<A NAME="32"></A> * @ejb:transaction type="Required"
+<A NAME="33"></A> * 
+<A NAME="34"></A> * @ejb:resource-ref res-ref-name="jdbc/MySQLDB"
+<A NAME="35"></A> *                   res-type="javax.sql.DataSource"
+<A NAME="36"></A> *                   res-auth="Container"
+<A NAME="37"></A> *                   res-sharing-scope="Shareable"
+<A NAME="38"></A> * 
+<A NAME="39"></A> * @jboss:resource-manager res-man-name="jdbc/MySQLDB" res-man-jndi-name="java:/MySQLDB"
+<A NAME="40"></A> **/</FONT>
+<A NAME="41"></A><FONT ID="FormalComment">/**
+<A NAME="42"></A> * Implementation of a BMP entity bean representing
+<A NAME="43"></A> * a user with a username and a password.
+<A NAME="44"></A> */</FONT>
+<A NAME="45"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> UserEntityBean <FONT ID="Implements">implements</FONT> EntityBean
+<A NAME="46"></A>{
+<A NAME="47"></A>    <FONT ID="Private">private</FONT> EntityContext entityContext;
+<A NAME="48"></A>    <FONT ID="Private">private</FONT> DataSource dataSource;
+<A NAME="49"></A>    
+<A NAME="50"></A>    <FONT ID="Private">private</FONT> String username;
+<A NAME="51"></A>    <FONT ID="Private">private</FONT> String password;
+<A NAME="52"></A>
+<A NAME="53"></A>    <FONT ID="MultiLineComment">/*
+<A NAME="54"></A>     * @ejb:interface-method
+<A NAME="55"></A>     **/</FONT>
+<A NAME="56"></A>    <FONT ID="Public">public</FONT> String getPassword()
+<A NAME="57"></A>    {
+<A NAME="58"></A>        <FONT ID="Return">return</FONT> password;
+<A NAME="59"></A>    }
+<A NAME="60"></A>    
+<A NAME="61"></A>    <FONT ID="MultiLineComment">/*
+<A NAME="62"></A>     * @ejb:interface-method
+<A NAME="63"></A>     **/</FONT>
+<A NAME="64"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setPassword(String password)
+<A NAME="65"></A>    {
+<A NAME="66"></A>        <FONT ID="This">this</FONT>.password = password;
+<A NAME="67"></A>    }
+<A NAME="68"></A>    
+<A NAME="69"></A>    <FONT ID="MultiLineComment">/*
+<A NAME="70"></A>     * @ejb:interface-method
+<A NAME="71"></A>     **/</FONT>
+<A NAME="72"></A>    <FONT ID="Public">public</FONT> String getUsername()
+<A NAME="73"></A>    {
+<A NAME="74"></A>        <FONT ID="Return">return</FONT> username;
+<A NAME="75"></A>    }
+<A NAME="76"></A>    
+<A NAME="77"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setUsername(String username)
+<A NAME="78"></A>    {
+<A NAME="79"></A>        <FONT ID="This">this</FONT>.username = username;
+<A NAME="80"></A>    }
+<A NAME="81"></A>    
+<A NAME="82"></A>    <FONT ID="MultiLineComment">/*
+<A NAME="83"></A>     * @ejb:create-method
+<A NAME="84"></A>     **/</FONT>
+<A NAME="85"></A>    <FONT ID="Public">public</FONT> String ejbCreate(String username, String password) <FONT ID="Throws">throws</FONT> CreateException
+<A NAME="86"></A>    {
+<A NAME="87"></A>        Connection connection = <FONT ID="Null">null</FONT>;
+<A NAME="88"></A>        PreparedStatement statement = <FONT ID="Null">null</FONT>;
+<A NAME="89"></A>        <FONT ID="Try">try</FONT>
+<A NAME="90"></A>        {
+<A NAME="91"></A>            connection = dataSource.getConnection();
+<A NAME="92"></A>            statement = connection.prepareStatement(<FONT ID="StringLiteral">"insert into usertable values(?, ?)"</FONT>);
+<A NAME="93"></A>            statement.setString(<FONT ID="IntegerLiteral">1</FONT>, username);
+<A NAME="94"></A>            statement.setString(<FONT ID="IntegerLiteral">2</FONT>, password);
+<A NAME="95"></A>            statement.executeUpdate();
+<A NAME="96"></A>            <FONT ID="This">this</FONT>.username = username;
+<A NAME="97"></A>            <FONT ID="This">this</FONT>.password = password;
+<A NAME="98"></A>            <FONT ID="Return">return</FONT> username;
+<A NAME="99"></A>        } 
+<A NAME="100"></A>        <FONT ID="Catch">catch</FONT>(SQLException exc)
+<A NAME="101"></A>        {
+<A NAME="102"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> CreateException(exc.getMessage());
+<A NAME="103"></A>        }
+<A NAME="104"></A>        <FONT ID="Finally">finally</FONT>
+<A NAME="105"></A>        {
+<A NAME="106"></A>            <FONT ID="Try">try</FONT>
+<A NAME="107"></A>            {
+<A NAME="108"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != statement) statement.close();
+<A NAME="109"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != connection) connection.close();
+<A NAME="110"></A>            } 
+<A NAME="111"></A>            <FONT ID="Catch">catch</FONT>(SQLException exc)
+<A NAME="112"></A>            {
+<A NAME="113"></A>                
+<A NAME="114"></A>            }
+<A NAME="115"></A>        }
+<A NAME="116"></A>    }
+<A NAME="117"></A>
+<A NAME="118"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbPostCreate(String username, String password) <FONT ID="Throws">throws</FONT> CreateException
+<A NAME="119"></A>    {
+<A NAME="120"></A>
+<A NAME="121"></A>    }
+<A NAME="122"></A>
+<A NAME="123"></A>    <FONT ID="Public">public</FONT> String ejbFindByPrimaryKey(String username) <FONT ID="Throws">throws</FONT> FinderException
+<A NAME="124"></A>    {
+<A NAME="125"></A>        Connection connection = <FONT ID="Null">null</FONT>;
+<A NAME="126"></A>        PreparedStatement statement = <FONT ID="Null">null</FONT>;
+<A NAME="127"></A>        ResultSet result = <FONT ID="Null">null</FONT>;
+<A NAME="128"></A>        <FONT ID="Try">try</FONT>
+<A NAME="129"></A>        {
+<A NAME="130"></A>            connection = dataSource.getConnection();
+<A NAME="131"></A>            statement = connection.prepareStatement(<FONT ID="StringLiteral">"select username from usertable where username=?"</FONT>);
+<A NAME="132"></A>            statement.setString(<FONT ID="IntegerLiteral">1</FONT>, username);
+<A NAME="133"></A>            result = statement.executeQuery();
+<A NAME="134"></A>            <FONT ID="If">if</FONT>(!result.next())
+<A NAME="135"></A>            {
+<A NAME="136"></A>                <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> ObjectNotFoundException(<FONT ID="StringLiteral">"No user with username "</FONT> + username + <FONT ID="StringLiteral">" found"</FONT>);
+<A NAME="137"></A>            }
+<A NAME="138"></A>            <FONT ID="Return">return</FONT> result.getString(<FONT ID="IntegerLiteral">1</FONT>);
+<A NAME="139"></A>        } 
+<A NAME="140"></A>        <FONT ID="Catch">catch</FONT>(SQLException exc)
+<A NAME="141"></A>        {
+<A NAME="142"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> EJBException(exc);
+<A NAME="143"></A>        }
+<A NAME="144"></A>        <FONT ID="Finally">finally</FONT>
+<A NAME="145"></A>        {
+<A NAME="146"></A>            <FONT ID="Try">try</FONT>
+<A NAME="147"></A>            {
+<A NAME="148"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != result) result.close();
+<A NAME="149"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != statement) statement.close();
+<A NAME="150"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != connection) connection.close();
+<A NAME="151"></A>            } 
+<A NAME="152"></A>            <FONT ID="Catch">catch</FONT>(SQLException exc)
+<A NAME="153"></A>            {
+<A NAME="154"></A>                
+<A NAME="155"></A>            }
+<A NAME="156"></A>        }
+<A NAME="157"></A>    }
+<A NAME="158"></A>
+<A NAME="159"></A>    <FONT ID="Public">public</FONT> Collection ejbFindAll() <FONT ID="Throws">throws</FONT> FinderException
+<A NAME="160"></A>    {
+<A NAME="161"></A>        Connection connection = <FONT ID="Null">null</FONT>;
+<A NAME="162"></A>        Statement statement = <FONT ID="Null">null</FONT>;
+<A NAME="163"></A>        ResultSet result = <FONT ID="Null">null</FONT>;
+<A NAME="164"></A>        <FONT ID="Try">try</FONT>
+<A NAME="165"></A>        {
+<A NAME="166"></A>            connection = dataSource.getConnection();
+<A NAME="167"></A>            List foundKeys = <FONT ID="New">new</FONT> ArrayList();
+<A NAME="168"></A>            statement = connection.createStatement();
+<A NAME="169"></A>            result = statement.executeQuery(<FONT ID="StringLiteral">"select username from usertable"</FONT>);
+<A NAME="170"></A>            <FONT ID="While">while</FONT>(result.next())
+<A NAME="171"></A>            {
+<A NAME="172"></A>                foundKeys.add(result.getString(<FONT ID="IntegerLiteral">1</FONT>));
+<A NAME="173"></A>            }
+<A NAME="174"></A>            <FONT ID="Return">return</FONT> foundKeys;
+<A NAME="175"></A>        } 
+<A NAME="176"></A>        <FONT ID="Catch">catch</FONT>(SQLException exc)
+<A NAME="177"></A>        {
+<A NAME="178"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> EJBException(exc);
+<A NAME="179"></A>        }
+<A NAME="180"></A>        <FONT ID="Finally">finally</FONT>
+<A NAME="181"></A>        {
+<A NAME="182"></A>            <FONT ID="Try">try</FONT>
+<A NAME="183"></A>            {
+<A NAME="184"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != result) result.close();
+<A NAME="185"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != statement) statement.close();
+<A NAME="186"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != connection) connection.close();
+<A NAME="187"></A>            } 
+<A NAME="188"></A>            <FONT ID="Catch">catch</FONT>(SQLException exc)
+<A NAME="189"></A>            {
+<A NAME="190"></A>                
+<A NAME="191"></A>            }
+<A NAME="192"></A>        }
+<A NAME="193"></A>    }
+<A NAME="194"></A>
+<A NAME="195"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbLoad() <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="196"></A>    {
+<A NAME="197"></A>        Connection connection = <FONT ID="Null">null</FONT>;
+<A NAME="198"></A>        PreparedStatement statement = <FONT ID="Null">null</FONT>;
+<A NAME="199"></A>        ResultSet result = <FONT ID="Null">null</FONT>;
+<A NAME="200"></A>        <FONT ID="Try">try</FONT>
+<A NAME="201"></A>        {
+<A NAME="202"></A>            connection = dataSource.getConnection();
+<A NAME="203"></A>            statement = connection.prepareStatement(<FONT ID="StringLiteral">"select * from usertable where username=?"</FONT>);
+<A NAME="204"></A>            statement.setString(<FONT ID="IntegerLiteral">1</FONT>, (String)entityContext.getPrimaryKey());
+<A NAME="205"></A>            result = statement.executeQuery();
+<A NAME="206"></A>            <FONT ID="If">if</FONT>(result.next())
+<A NAME="207"></A>            {
+<A NAME="208"></A>                <FONT ID="This">this</FONT>.username = result.getString(<FONT ID="IntegerLiteral">1</FONT>);
+<A NAME="209"></A>                <FONT ID="This">this</FONT>.password = result.getString(<FONT ID="IntegerLiteral">2</FONT>);
+<A NAME="210"></A>            }
+<A NAME="211"></A>            <FONT ID="Else">else</FONT>
+<A NAME="212"></A>            {
+<A NAME="213"></A>                <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> NoSuchEntityException(<FONT ID="StringLiteral">"Entity for key "</FONT> + entityContext.getPrimaryKey() + <FONT ID="StringLiteral">" not found"</FONT>);
+<A NAME="214"></A>            }
+<A NAME="215"></A>        } 
+<A NAME="216"></A>        <FONT ID="Catch">catch</FONT>(SQLException exc)
+<A NAME="217"></A>        {
+<A NAME="218"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> EJBException(exc);
+<A NAME="219"></A>        }
+<A NAME="220"></A>        <FONT ID="Finally">finally</FONT>
+<A NAME="221"></A>        {
+<A NAME="222"></A>            <FONT ID="Try">try</FONT>
+<A NAME="223"></A>            {
+<A NAME="224"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != result) result.close();
+<A NAME="225"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != statement) statement.close();
+<A NAME="226"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != connection) connection.close();
+<A NAME="227"></A>            } 
+<A NAME="228"></A>            <FONT ID="Catch">catch</FONT>(SQLException exc)
+<A NAME="229"></A>            {
+<A NAME="230"></A>                
+<A NAME="231"></A>            }
+<A NAME="232"></A>        }
+<A NAME="233"></A>    }
+<A NAME="234"></A>
+<A NAME="235"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbRemove() <FONT ID="Throws">throws</FONT> RemoveException, EJBException, RemoteException
+<A NAME="236"></A>    {
+<A NAME="237"></A>        Connection connection = <FONT ID="Null">null</FONT>;
+<A NAME="238"></A>        PreparedStatement statement = <FONT ID="Null">null</FONT>;
+<A NAME="239"></A>        <FONT ID="Try">try</FONT>
+<A NAME="240"></A>        {
+<A NAME="241"></A>            connection = dataSource.getConnection();
+<A NAME="242"></A>            statement = connection.prepareStatement(<FONT ID="StringLiteral">"delete from usertable where username=?"</FONT>);
+<A NAME="243"></A>            statement.setString(<FONT ID="IntegerLiteral">1</FONT>, (String)entityContext.getPrimaryKey());
+<A NAME="244"></A>            <FONT ID="Int">int</FONT> updateCount = statement.executeUpdate();
+<A NAME="245"></A>            <FONT ID="If">if</FONT>(updateCount &lt; <FONT ID="IntegerLiteral">1</FONT>)
+<A NAME="246"></A>            {
+<A NAME="247"></A>                <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> RemoveException(<FONT ID="StringLiteral">"Delete error for key "</FONT> + entityContext.getPrimaryKey());
+<A NAME="248"></A>            }
+<A NAME="249"></A>        } 
+<A NAME="250"></A>        <FONT ID="Catch">catch</FONT>(SQLException exc)
+<A NAME="251"></A>        {
+<A NAME="252"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> EJBException(exc);
+<A NAME="253"></A>        }
+<A NAME="254"></A>        <FONT ID="Finally">finally</FONT>
+<A NAME="255"></A>        {
+<A NAME="256"></A>            <FONT ID="Try">try</FONT>
+<A NAME="257"></A>            {
+<A NAME="258"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != statement) statement.close();
+<A NAME="259"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != connection) connection.close();
+<A NAME="260"></A>            } 
+<A NAME="261"></A>            <FONT ID="Catch">catch</FONT>(SQLException exc)
+<A NAME="262"></A>            {
+<A NAME="263"></A>                
+<A NAME="264"></A>            }
+<A NAME="265"></A>        }
+<A NAME="266"></A>    }
+<A NAME="267"></A>
+<A NAME="268"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbStore() <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="269"></A>    {
+<A NAME="270"></A>        Connection connection = <FONT ID="Null">null</FONT>;
+<A NAME="271"></A>        PreparedStatement statement = <FONT ID="Null">null</FONT>;
+<A NAME="272"></A>        <FONT ID="Try">try</FONT>
+<A NAME="273"></A>        {
+<A NAME="274"></A>            connection = dataSource.getConnection();
+<A NAME="275"></A>            statement = connection.prepareStatement(<FONT ID="StringLiteral">"update usertable set password=? where username=?"</FONT>);
+<A NAME="276"></A>            statement.setString(<FONT ID="IntegerLiteral">1</FONT>, <FONT ID="This">this</FONT>.password);
+<A NAME="277"></A>            statement.setString(<FONT ID="IntegerLiteral">2</FONT>, <FONT ID="This">this</FONT>.username);
+<A NAME="278"></A>            <FONT ID="Int">int</FONT> updateCount = statement.executeUpdate();
+<A NAME="279"></A>            <FONT ID="If">if</FONT>(updateCount &lt; <FONT ID="IntegerLiteral">1</FONT>)
+<A NAME="280"></A>            {
+<A NAME="281"></A>                <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> NoSuchEntityException(<FONT ID="StringLiteral">"Entity for key "</FONT> + username + <FONT ID="StringLiteral">" not found"</FONT>);
+<A NAME="282"></A>            }
+<A NAME="283"></A>        } 
+<A NAME="284"></A>        <FONT ID="Catch">catch</FONT>(SQLException exc)
+<A NAME="285"></A>        {
+<A NAME="286"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> EJBException(exc);
+<A NAME="287"></A>        }
+<A NAME="288"></A>        <FONT ID="Finally">finally</FONT>
+<A NAME="289"></A>        {
+<A NAME="290"></A>            <FONT ID="Try">try</FONT>
+<A NAME="291"></A>            {
+<A NAME="292"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != statement) statement.close();
+<A NAME="293"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != connection) connection.close();
+<A NAME="294"></A>            } 
+<A NAME="295"></A>            <FONT ID="Catch">catch</FONT>(SQLException exc)
+<A NAME="296"></A>            {
+<A NAME="297"></A>                
+<A NAME="298"></A>            }
+<A NAME="299"></A>        }
+<A NAME="300"></A>    }
+<A NAME="301"></A>    
+<A NAME="302"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbActivate() <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="303"></A>    {
+<A NAME="304"></A>
+<A NAME="305"></A>    }
+<A NAME="306"></A>    
+<A NAME="307"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbPassivate() <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="308"></A>    {
+<A NAME="309"></A>
+<A NAME="310"></A>    }
+<A NAME="311"></A>
+<A NAME="312"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setEntityContext(EntityContext entityContext) <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="313"></A>    {
+<A NAME="314"></A>        <FONT ID="This">this</FONT>.entityContext = entityContext;
+<A NAME="315"></A>        <FONT ID="Try">try</FONT>
+<A NAME="316"></A>        {
+<A NAME="317"></A>            InitialContext context = <FONT ID="New">new</FONT> InitialContext();
+<A NAME="318"></A>            dataSource = (DataSource)context.lookup(<FONT ID="StringLiteral">"java:comp/env/jdbc/MySQLDB"</FONT>);
+<A NAME="319"></A>        }
+<A NAME="320"></A>        <FONT ID="Catch">catch</FONT>(Exception exc)
+<A NAME="321"></A>        {
+<A NAME="322"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> EJBException(exc);
+<A NAME="323"></A>        }
+<A NAME="324"></A>    }
+<A NAME="325"></A>
+<A NAME="326"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> unsetEntityContext() <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="327"></A>    {
+<A NAME="328"></A>        entityContext = <FONT ID="Null">null</FONT>;
+<A NAME="329"></A>        dataSource = <FONT ID="Null">null</FONT>;
+<A NAME="330"></A>    }
+<A NAME="331"></A>}
+<A NAME="332"></A></pre>
+</BODY>
+</HTML>

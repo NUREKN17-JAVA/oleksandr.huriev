@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.servlet.RedirectServletTest (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">RedirectServletTest.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.servlet.index.html" target="packageFrame">com.mockrunner.example.servlet</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.io.BufferedReader;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="Import">import</FONT> org.jdom.Element;
+<A NAME="6"></A>
+<A NAME="7"></A><FONT ID="Import">import</FONT> com.mockrunner.servlet.BasicServletTestCaseAdapter;
+<A NAME="8"></A>
+<A NAME="9"></A><FONT ID="FormalComment">/**
+<A NAME="10"></A> * Example test for {@link RedirectServlet}.
+<A NAME="11"></A> * Demonstrates the usage of {@link com.mockrunner.servlet.ServletTestModule} 
+<A NAME="12"></A> * and {@link com.mockrunner.servlet.BasicServletTestCaseAdapter}.
+<A NAME="13"></A> * Demonstrates the testing of output data as string as well as parsed
+<A NAME="14"></A> * HTML data (&lt;code&gt;testServletOutputAsXML&lt;/code&gt;).
+<A NAME="15"></A> * 
+<A NAME="16"></A> */</FONT>
+<A NAME="17"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> RedirectServletTest <FONT ID="Extends">extends</FONT> BasicServletTestCaseAdapter
+<A NAME="18"></A>{
+<A NAME="19"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> setUp() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="20"></A>    {
+<A NAME="21"></A>        <FONT ID="Super">super</FONT>.setUp();
+<A NAME="22"></A>        createServlet(<A HREF="../../../../com/mockrunner/example/servlet/RedirectServlet.java.html">RedirectServlet</A>.<FONT ID="Class">class</FONT>);
+<A NAME="23"></A>    }
+<A NAME="24"></A>    
+<A NAME="25"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testServletOutput() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="26"></A>    {
+<A NAME="27"></A>        addRequestParameter(<FONT ID="StringLiteral">"redirecturl"</FONT>, <FONT ID="StringLiteral">"http://www.mockrunner.com"</FONT>);
+<A NAME="28"></A>        doPost();
+<A NAME="29"></A>        BufferedReader reader = getOutputAsBufferedReader();
+<A NAME="30"></A>        assertEquals(<FONT ID="StringLiteral">"&lt;html&gt;"</FONT>, reader.readLine().trim());
+<A NAME="31"></A>        assertEquals(<FONT ID="StringLiteral">"&lt;head&gt;"</FONT>, reader.readLine().trim());
+<A NAME="32"></A>        reader.readLine();
+<A NAME="33"></A>        assertEquals(<FONT ID="StringLiteral">"&lt;/head&gt;"</FONT>, reader.readLine().trim());
+<A NAME="34"></A>        assertEquals(<FONT ID="StringLiteral">"&lt;body&gt;"</FONT>, reader.readLine().trim());
+<A NAME="35"></A>        reader.readLine();
+<A NAME="36"></A>        assertEquals(<FONT ID="StringLiteral">"&lt;/body&gt;"</FONT>, reader.readLine().trim());
+<A NAME="37"></A>        assertEquals(<FONT ID="StringLiteral">"&lt;/html&gt;"</FONT>, reader.readLine().trim());
+<A NAME="38"></A>        verifyOutputContains(<FONT ID="StringLiteral">"URL=http://www.mockrunner.com"</FONT>);
+<A NAME="39"></A>    }
+<A NAME="40"></A>    
+<A NAME="41"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testServletOutputAsXML() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="42"></A>    {
+<A NAME="43"></A>        addRequestParameter(<FONT ID="StringLiteral">"redirecturl"</FONT>, <FONT ID="StringLiteral">"http://www.mockrunner.com"</FONT>);
+<A NAME="44"></A>        doPost();
+<A NAME="45"></A>        Element root = getOutputAsJDOMDocument().getRootElement();
+<A NAME="46"></A>        assertEquals(<FONT ID="StringLiteral">"html"</FONT>, root.getName());
+<A NAME="47"></A>        Element head = root.getChild(<FONT ID="StringLiteral">"head"</FONT>);
+<A NAME="48"></A>        Element meta = head.getChild(<FONT ID="StringLiteral">"meta"</FONT>);
+<A NAME="49"></A>        assertEquals(<FONT ID="StringLiteral">"refresh"</FONT>, meta.getAttributeValue(<FONT ID="StringLiteral">"http-equiv"</FONT>));
+<A NAME="50"></A>        assertEquals(<FONT ID="StringLiteral">"0;URL=http://www.mockrunner.com"</FONT>, meta.getAttributeValue(<FONT ID="StringLiteral">"content"</FONT>));
+<A NAME="51"></A>    }
+<A NAME="52"></A>}
+<A NAME="53"></A></pre>
+</BODY>
+</HTML>

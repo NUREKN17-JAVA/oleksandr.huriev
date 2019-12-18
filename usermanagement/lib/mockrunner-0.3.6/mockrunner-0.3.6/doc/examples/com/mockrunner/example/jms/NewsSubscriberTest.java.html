@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.jms.NewsSubscriberTest (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">NewsSubscriberTest.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.jms.index.html" target="packageFrame">com.mockrunner.example.jms</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> javax.jms.JMSException;
+<A NAME="4"></A><FONT ID="Import">import</FONT> javax.jms.Session;
+<A NAME="5"></A><FONT ID="Import">import</FONT> javax.jms.Topic;
+<A NAME="6"></A><FONT ID="Import">import</FONT> javax.jms.TopicConnection;
+<A NAME="7"></A><FONT ID="Import">import</FONT> javax.jms.TopicPublisher;
+<A NAME="8"></A><FONT ID="Import">import</FONT> javax.jms.TopicSession;
+<A NAME="9"></A>
+<A NAME="10"></A><FONT ID="Import">import</FONT> com.mockrunner.ejb.EJBTestModule;
+<A NAME="11"></A><FONT ID="Import">import</FONT> com.mockrunner.jms.JMSTestCaseAdapter;
+<A NAME="12"></A><FONT ID="Import">import</FONT> com.mockrunner.mock.jms.MockTextMessage;
+<A NAME="13"></A>
+<A NAME="14"></A><FONT ID="FormalComment">/**
+<A NAME="15"></A> * Example test for {@link NewsSubscriber}. Demonstrates
+<A NAME="16"></A> * message selector usage. Only messages with the &lt;code&gt;subject&lt;/code&gt;
+<A NAME="17"></A> * property &lt;code&gt;Java&lt;/code&gt; will be received by {@link NewsSubscriber}.
+<A NAME="18"></A> * There's one problem with {@link NewsSubscriber}. It blocks the current
+<A NAME="19"></A> * thread. To get around of this, we can use a simple trick. We call the 
+<A NAME="20"></A> * main method of {@link NewsSubscriber} from a different thread and interrupt 
+<A NAME="21"></A> * it immediately. Then we can send messages from the main thread, that are 
+<A NAME="22"></A> * received synchronously by {@link NewsSubscriber}.
+<A NAME="23"></A> * Please note, that the JMS test framework is not thread safe at the moment
+<A NAME="24"></A> * and should not be accessed by multiple threads concurrently. In this test
+<A NAME="25"></A> * the &lt;code&gt;TestNewsSubscriberThread&lt;/code&gt; and the main thread do not run
+<A NAME="26"></A> * concurrently, so it's ok.
+<A NAME="27"></A> */</FONT>
+<A NAME="28"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> NewsSubscriberTest <FONT ID="Extends">extends</FONT> JMSTestCaseAdapter
+<A NAME="29"></A>{
+<A NAME="30"></A>    <FONT ID="Private">private</FONT> EJBTestModule ejbModule;
+<A NAME="31"></A>    
+<A NAME="32"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> setUp() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="33"></A>    {
+<A NAME="34"></A>        <FONT ID="Super">super</FONT>.setUp();
+<A NAME="35"></A>        ejbModule = createEJBTestModule();
+<A NAME="36"></A>        ejbModule.bindToContext(<FONT ID="StringLiteral">"ConnectionFactory"</FONT>, getJMSMockObjectFactory().getMockTopicConnectionFactory());
+<A NAME="37"></A>        Topic topic = getDestinationManager().createTopic(<FONT ID="StringLiteral">"topic"</FONT>);
+<A NAME="38"></A>        ejbModule.bindToContext(<FONT ID="StringLiteral">"topic/newsTopic"</FONT>, topic);
+<A NAME="39"></A>    }
+<A NAME="40"></A>    
+<A NAME="41"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testMain() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="42"></A>    {
+<A NAME="43"></A>        callMain(<FONT ID="StringLiteral">"Java"</FONT>);
+<A NAME="44"></A>        TopicPublisher publisher = createTestPublisher();
+<A NAME="45"></A>        MockTextMessage message1 = <FONT ID="New">new</FONT> MockTextMessage(<FONT ID="StringLiteral">"message1"</FONT>);
+<A NAME="46"></A>        message1.setStringProperty(<FONT ID="StringLiteral">"subject"</FONT>, <FONT ID="StringLiteral">"C++"</FONT>);
+<A NAME="47"></A>        MockTextMessage message2 = <FONT ID="New">new</FONT> MockTextMessage(<FONT ID="StringLiteral">"message2"</FONT>);
+<A NAME="48"></A>        message2.setStringProperty(<FONT ID="StringLiteral">"subject"</FONT>, <FONT ID="StringLiteral">"Java"</FONT>);
+<A NAME="49"></A>        publisher.publish(message1);
+<A NAME="50"></A>        publisher.publish(message2);
+<A NAME="51"></A>        verifyNumberOfReceivedTopicMessages(<FONT ID="StringLiteral">"topic"</FONT>, <FONT ID="IntegerLiteral">2</FONT>);
+<A NAME="52"></A>        verifyNumberOfCurrentTopicMessages(<FONT ID="StringLiteral">"topic"</FONT>, <FONT ID="IntegerLiteral">1</FONT>);
+<A NAME="53"></A>    }
+<A NAME="54"></A>
+<A NAME="55"></A>    <FONT ID="Private">private</FONT> TopicPublisher createTestPublisher() <FONT ID="Throws">throws</FONT> JMSException
+<A NAME="56"></A>    {
+<A NAME="57"></A>        TopicConnection connection = getJMSMockObjectFactory().getMockTopicConnectionFactory().createTopicConnection();
+<A NAME="58"></A>        TopicSession session = connection.createTopicSession(<FONT ID="False">false</FONT>, Session.AUTO_ACKNOWLEDGE);
+<A NAME="59"></A>        <FONT ID="Return">return</FONT> session.createPublisher(getDestinationManager().getTopic(<FONT ID="StringLiteral">"topic"</FONT>));
+<A NAME="60"></A>    }
+<A NAME="61"></A>    
+<A NAME="62"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> callMain(String subject) <FONT ID="Throws">throws</FONT> Exception
+<A NAME="63"></A>    {
+<A NAME="64"></A>        String contextFactory = <FONT ID="StringLiteral">"org.mockejb.jndi.MockContextFactory"</FONT>;
+<A NAME="65"></A>        String providerURL = <FONT ID="StringLiteral">"org.mockejb.jndi"</FONT>;
+<A NAME="66"></A>        TestNewsSubscriberThread thread = <FONT ID="New">new</FONT> TestNewsSubscriberThread(contextFactory, providerURL, subject);
+<A NAME="67"></A>        thread.start();
+<A NAME="68"></A>        thread.interrupt();
+<A NAME="69"></A>        thread.join();  
+<A NAME="70"></A>    }
+<A NAME="71"></A>
+<A NAME="72"></A>    <FONT ID="Private">private</FONT> <FONT ID="Class">class</FONT> TestNewsSubscriberThread <FONT ID="Extends">extends</FONT> Thread
+<A NAME="73"></A>    {
+<A NAME="74"></A>        <FONT ID="Private">private</FONT> String contextFactory;
+<A NAME="75"></A>        <FONT ID="Private">private</FONT> String providerURL;
+<A NAME="76"></A>        <FONT ID="Private">private</FONT> String subject;
+<A NAME="77"></A>        
+<A NAME="78"></A>        <FONT ID="Public">public</FONT> TestNewsSubscriberThread(String contextFactory, String providerURL, String subject)
+<A NAME="79"></A>        {
+<A NAME="80"></A>            <FONT ID="This">this</FONT>.contextFactory = contextFactory;
+<A NAME="81"></A>            <FONT ID="This">this</FONT>.providerURL = providerURL;
+<A NAME="82"></A>            <FONT ID="This">this</FONT>.subject = subject;
+<A NAME="83"></A>        }
+<A NAME="84"></A>        
+<A NAME="85"></A>        <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> run()
+<A NAME="86"></A>        {
+<A NAME="87"></A>            <FONT ID="Try">try</FONT>
+<A NAME="88"></A>            {
+<A NAME="89"></A>                NewsSubscriber.main(<FONT ID="New">new</FONT> String[] {contextFactory, providerURL, subject});
+<A NAME="90"></A>            }
+<A NAME="91"></A>            <FONT ID="Catch">catch</FONT>(RuntimeException exc)
+<A NAME="92"></A>            {
+<A NAME="93"></A>                
+<A NAME="94"></A>            }
+<A NAME="95"></A>        }
+<A NAME="96"></A>    }
+<A NAME="97"></A>}
+<A NAME="98"></A></pre>
+</BODY>
+</HTML>

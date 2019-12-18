@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.struts.AuthenticationForm (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">AuthenticationForm.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.struts.index.html" target="packageFrame">com.mockrunner.example.struts</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletRequest;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionErrors;
+<A NAME="6"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionForm;
+<A NAME="7"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionMapping;
+<A NAME="8"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionMessage;
+<A NAME="9"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionMessages;
+<A NAME="10"></A>
+<A NAME="11"></A><FONT ID="FormalComment">/**
+<A NAME="12"></A> * The &lt;code&gt;ActionForm&lt;/code&gt; for the {@link AuthenticationAction}.
+<A NAME="13"></A> * The {@link #validate} method will check if an username and a password
+<A NAME="14"></A> * is present and generates the approriate &lt;code&gt;ActionErrors&lt;/code&gt;.
+<A NAME="15"></A> * See {@link AuthenticationActionTest}.
+<A NAME="16"></A> */</FONT>
+<A NAME="17"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> AuthenticationForm <FONT ID="Extends">extends</FONT> ActionForm
+<A NAME="18"></A>{
+<A NAME="19"></A>    <FONT ID="Private">private</FONT> String username;
+<A NAME="20"></A>    <FONT ID="Private">private</FONT> String password;
+<A NAME="21"></A>
+<A NAME="22"></A>    <FONT ID="Public">public</FONT> String getPassword()
+<A NAME="23"></A>    {
+<A NAME="24"></A>        <FONT ID="Return">return</FONT> password;
+<A NAME="25"></A>    }
+<A NAME="26"></A>
+<A NAME="27"></A>    <FONT ID="Public">public</FONT> String getUsername()
+<A NAME="28"></A>    {
+<A NAME="29"></A>        <FONT ID="Return">return</FONT> username;
+<A NAME="30"></A>    }
+<A NAME="31"></A>
+<A NAME="32"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setPassword(String password)
+<A NAME="33"></A>    {
+<A NAME="34"></A>        <FONT ID="This">this</FONT>.password = password;
+<A NAME="35"></A>    }
+<A NAME="36"></A>
+<A NAME="37"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setUsername(String username)
+<A NAME="38"></A>    {
+<A NAME="39"></A>        <FONT ID="This">this</FONT>.username = username;
+<A NAME="40"></A>    }
+<A NAME="41"></A>
+<A NAME="42"></A>    <FONT ID="Public">public</FONT> ActionErrors validate(ActionMapping mapping, HttpServletRequest request)
+<A NAME="43"></A>    {
+<A NAME="44"></A>        ActionErrors errors = <FONT ID="New">new</FONT> ActionErrors();
+<A NAME="45"></A>        <FONT ID="If">if</FONT> (<FONT ID="Null">null</FONT> == username || <FONT ID="IntegerLiteral">0</FONT> == username.length())
+<A NAME="46"></A>        {
+<A NAME="47"></A>            addMissingValueError(errors, <FONT ID="StringLiteral">"username"</FONT>);
+<A NAME="48"></A>        }
+<A NAME="49"></A>        <FONT ID="If">if</FONT> (<FONT ID="Null">null</FONT> == password || <FONT ID="IntegerLiteral">0</FONT> == password.length())
+<A NAME="50"></A>        {
+<A NAME="51"></A>            addMissingValueError(errors, <FONT ID="StringLiteral">"password"</FONT>);
+<A NAME="52"></A>        }
+<A NAME="53"></A>        <FONT ID="Return">return</FONT> errors;
+<A NAME="54"></A>    }
+<A NAME="55"></A>
+<A NAME="56"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> addMissingValueError(ActionErrors errors, String field)
+<A NAME="57"></A>    {
+<A NAME="58"></A>        ActionMessage error = <FONT ID="New">new</FONT> ActionMessage(<FONT ID="StringLiteral">"field.value.missing"</FONT>, field);
+<A NAME="59"></A>        errors.add(ActionMessages.GLOBAL_MESSAGE, error);
+<A NAME="60"></A>    }
+<A NAME="61"></A>}
+<A NAME="62"></A></pre>
+</BODY>
+</HTML>

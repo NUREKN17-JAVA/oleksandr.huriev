@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.struts.MemoryBasedRepository (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">MemoryBasedRepository.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.struts.index.html" target="packageFrame">com.mockrunner.example.struts</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.util.HashMap;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="Import">import</FONT> javax.servlet.ServletContext;
+<A NAME="6"></A>
+<A NAME="7"></A><FONT ID="FormalComment">/**
+<A NAME="8"></A> * A simple data repository stored in the &lt;ServletContext&gt;.
+<A NAME="9"></A> * The implementation is not thread safe. Used by
+<A NAME="10"></A> * {@link StoreDataActionTest}.
+<A NAME="11"></A> */</FONT>
+<A NAME="12"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> MemoryBasedRepository
+<A NAME="13"></A>{
+<A NAME="14"></A>    <FONT ID="Private">private</FONT> HashMap dataStore;
+<A NAME="15"></A>    
+<A NAME="16"></A>    <FONT ID="Private">private</FONT> MemoryBasedRepository()
+<A NAME="17"></A>    {
+<A NAME="18"></A>        dataStore = <FONT ID="New">new</FONT> HashMap();
+<A NAME="19"></A>    }
+<A NAME="20"></A>    
+<A NAME="21"></A>    <FONT ID="Public">public</FONT> <FONT ID="Static">static</FONT> <A HREF="../../../../com/mockrunner/example/struts/MemoryBasedRepository.java.html">MemoryBasedRepository</A> instance(ServletContext context)
+<A NAME="22"></A>    {
+<A NAME="23"></A>        <A HREF="../../../../com/mockrunner/example/struts/MemoryBasedRepository.java.html">MemoryBasedRepository</A> instance = (<A HREF="../../../../com/mockrunner/example/struts/MemoryBasedRepository.java.html">MemoryBasedRepository</A>)context.getAttribute(<A HREF="../../../../com/mockrunner/example/struts/MemoryBasedRepository.java.html">MemoryBasedRepository</A>.<FONT ID="Class">class</FONT>.getName());
+<A NAME="24"></A>        <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != instance) <FONT ID="Return">return</FONT> instance;
+<A NAME="25"></A>        instance = <FONT ID="New">new</FONT> <A HREF="../../../../com/mockrunner/example/struts/MemoryBasedRepository.java.html">MemoryBasedRepository</A>();
+<A NAME="26"></A>        context.setAttribute(<A HREF="../../../../com/mockrunner/example/struts/MemoryBasedRepository.java.html">MemoryBasedRepository</A>.<FONT ID="Class">class</FONT>.getName(), instance);
+<A NAME="27"></A>        <FONT ID="Return">return</FONT> instance;
+<A NAME="28"></A>    }
+<A NAME="29"></A>    
+<A NAME="30"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> set(String id, Object data)
+<A NAME="31"></A>    {
+<A NAME="32"></A>        dataStore.put(id, data);
+<A NAME="33"></A>    }
+<A NAME="34"></A>    
+<A NAME="35"></A>    <FONT ID="Public">public</FONT> Object get(String id)
+<A NAME="36"></A>    {
+<A NAME="37"></A>        <FONT ID="Return">return</FONT> dataStore.get(id);
+<A NAME="38"></A>    }
+<A NAME="39"></A>}
+<A NAME="40"></A></pre>
+</BODY>
+</HTML>

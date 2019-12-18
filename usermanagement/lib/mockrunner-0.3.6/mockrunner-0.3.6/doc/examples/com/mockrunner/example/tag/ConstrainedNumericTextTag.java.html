@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.tag.ConstrainedNumericTextTag (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">ConstrainedNumericTextTag.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.tag.index.html" target="packageFrame">com.mockrunner.example.tag</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> javax.servlet.jsp.JspException;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="Import">import</FONT> org.apache.struts.taglib.html.TextTag;
+<A NAME="6"></A>
+<A NAME="7"></A><FONT ID="FormalComment">/**
+<A NAME="8"></A> * This example tag extends the Struts &lt;code&gt;TextTag&lt;/code&gt;
+<A NAME="9"></A> * and adds a JavaScript handler for checking numeric constraints.
+<A NAME="10"></A> * Have a look at {@link ConstrainedNumericTextTagTest} to see
+<A NAME="11"></A> * how to test simple tags.
+<A NAME="12"></A> */</FONT>
+<A NAME="13"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> ConstrainedNumericTextTag <FONT ID="Extends">extends</FONT> TextTag
+<A NAME="14"></A>{
+<A NAME="15"></A>    <FONT ID="Private">private</FONT> <FONT ID="Int">int</FONT> minValue = <FONT ID="IntegerLiteral">0</FONT>;
+<A NAME="16"></A>    <FONT ID="Private">private</FONT> <FONT ID="Int">int</FONT> maxValue = Integer.MAX_VALUE;
+<A NAME="17"></A>    
+<A NAME="18"></A>    <FONT ID="Public">public</FONT> <FONT ID="Int">int</FONT> getMaxValue()
+<A NAME="19"></A>    {
+<A NAME="20"></A>        <FONT ID="Return">return</FONT> maxValue;
+<A NAME="21"></A>    }
+<A NAME="22"></A>
+<A NAME="23"></A>    <FONT ID="Public">public</FONT> <FONT ID="Int">int</FONT> getMinValue()
+<A NAME="24"></A>    {
+<A NAME="25"></A>        <FONT ID="Return">return</FONT> minValue;
+<A NAME="26"></A>    }
+<A NAME="27"></A>
+<A NAME="28"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setMaxValue(<FONT ID="Int">int</FONT> maxValue)
+<A NAME="29"></A>    {
+<A NAME="30"></A>        <FONT ID="This">this</FONT>.maxValue = maxValue;
+<A NAME="31"></A>    }
+<A NAME="32"></A>
+<A NAME="33"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setMinValue(<FONT ID="Int">int</FONT> minValue)
+<A NAME="34"></A>    {
+<A NAME="35"></A>        <FONT ID="This">this</FONT>.minValue = minValue;
+<A NAME="36"></A>    }
+<A NAME="37"></A>
+<A NAME="38"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> release()
+<A NAME="39"></A>    {
+<A NAME="40"></A>        <FONT ID="Super">super</FONT>.release();
+<A NAME="41"></A>        minValue = <FONT ID="IntegerLiteral">0</FONT>;
+<A NAME="42"></A>        maxValue = Integer.MAX_VALUE;
+<A NAME="43"></A>    }
+<A NAME="44"></A>
+<A NAME="45"></A>    <FONT ID="Public">public</FONT> <FONT ID="Int">int</FONT> doStartTag() <FONT ID="Throws">throws</FONT> JspException
+<A NAME="46"></A>    {
+<A NAME="47"></A>        setOnblur(createJavaScriptHandler());
+<A NAME="48"></A>        <FONT ID="Return">return</FONT> <FONT ID="Super">super</FONT>.doStartTag();
+<A NAME="49"></A>    }
+<A NAME="50"></A>    
+<A NAME="51"></A>    <FONT ID="Private">private</FONT> String createJavaScriptHandler()
+<A NAME="52"></A>    {
+<A NAME="53"></A>        StringBuffer handler = <FONT ID="New">new</FONT> StringBuffer();
+<A NAME="54"></A>        handler.append(<FONT ID="StringLiteral">"checkConstraints("</FONT>);
+<A NAME="55"></A>        handler.append(<FONT ID="StringLiteral">"this,"</FONT>);
+<A NAME="56"></A>        handler.append(getMinValue() + <FONT ID="StringLiteral">","</FONT>);
+<A NAME="57"></A>        handler.append(getMaxValue() + <FONT ID="StringLiteral">");"</FONT>);
+<A NAME="58"></A>        <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != getOnblur()) handler.append(getOnblur());
+<A NAME="59"></A>        <FONT ID="Return">return</FONT> handler.toString();
+<A NAME="60"></A>    }
+<A NAME="61"></A>}
+<A NAME="62"></A></pre>
+</BODY>
+</HTML>

@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.struts.ShoppingCartAction (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">ShoppingCartAction.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.struts.index.html" target="packageFrame">com.mockrunner.example.struts</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.util.HashMap;
+<A NAME="4"></A><FONT ID="Import">import</FONT> java.util.Map;
+<A NAME="5"></A>
+<A NAME="6"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletRequest;
+<A NAME="7"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletResponse;
+<A NAME="8"></A>
+<A NAME="9"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionForm;
+<A NAME="10"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionForward;
+<A NAME="11"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionMapping;
+<A NAME="12"></A><FONT ID="Import">import</FONT> org.apache.struts.actions.LookupDispatchAction;
+<A NAME="13"></A>
+<A NAME="14"></A><FONT ID="FormalComment">/**
+<A NAME="15"></A> * This simple &lt;code&gt;LookupDispatchAction&lt;/code&gt; returns
+<A NAME="16"></A> * different forwards, depending on the called handler method.
+<A NAME="17"></A> * Demonstrates how to test a &lt;code&gt;LookupDispatchAction&lt;/code&gt;.
+<A NAME="18"></A> */</FONT>
+<A NAME="19"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> ShoppingCartAction <FONT ID="Extends">extends</FONT> LookupDispatchAction
+<A NAME="20"></A>{
+<A NAME="21"></A>    <FONT ID="Protected">protected</FONT> Map getKeyMethodMap()
+<A NAME="22"></A>    {
+<A NAME="23"></A>        Map map = <FONT ID="New">new</FONT> HashMap();
+<A NAME="24"></A>        map.put(<FONT ID="StringLiteral">"button.add"</FONT>, <FONT ID="StringLiteral">"add"</FONT>);
+<A NAME="25"></A>        map.put(<FONT ID="StringLiteral">"button.order"</FONT>, <FONT ID="StringLiteral">"order"</FONT>);
+<A NAME="26"></A>        <FONT ID="Return">return</FONT> map;
+<A NAME="27"></A>    }
+<A NAME="28"></A>
+<A NAME="29"></A>    <FONT ID="Public">public</FONT> ActionForward add(ActionMapping mapping,
+<A NAME="30"></A>                             ActionForm form,
+<A NAME="31"></A>                             HttpServletRequest request,
+<A NAME="32"></A>                             HttpServletResponse response) <FONT ID="Throws">throws</FONT> Exception
+<A NAME="33"></A>    {
+<A NAME="34"></A>        <FONT ID="Return">return</FONT> mapping.findForward(<FONT ID="StringLiteral">"add"</FONT>);
+<A NAME="35"></A>    }
+<A NAME="36"></A>          
+<A NAME="37"></A>    <FONT ID="Public">public</FONT> ActionForward order(ActionMapping mapping,
+<A NAME="38"></A>                               ActionForm form,
+<A NAME="39"></A>                               HttpServletRequest request,
+<A NAME="40"></A>                               HttpServletResponse response) <FONT ID="Throws">throws</FONT> Exception
+<A NAME="41"></A>    {
+<A NAME="42"></A>        <FONT ID="Return">return</FONT> mapping.findForward(<FONT ID="StringLiteral">"order"</FONT>);
+<A NAME="43"></A>    }
+<A NAME="44"></A>}
+<A NAME="45"></A></pre>
+</BODY>
+</HTML>

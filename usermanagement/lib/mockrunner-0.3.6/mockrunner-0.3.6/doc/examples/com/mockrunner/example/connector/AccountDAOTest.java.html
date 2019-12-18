@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.connector.AccountDAOTest (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">AccountDAOTest.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.connector.index.html" target="packageFrame">com.mockrunner.example.connector</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.util.ArrayList;
+<A NAME="4"></A><FONT ID="Import">import</FONT> java.util.List;
+<A NAME="5"></A>
+<A NAME="6"></A><FONT ID="Import">import</FONT> com.mockrunner.connector.ConnectorTestCaseAdapter;
+<A NAME="7"></A><FONT ID="Import">import</FONT> com.mockrunner.connector.GenericFailureInteraction;
+<A NAME="8"></A><FONT ID="Import">import</FONT> com.mockrunner.connector.IndexedRecordInteraction;
+<A NAME="9"></A><FONT ID="Import">import</FONT> com.mockrunner.ejb.EJBTestModule;
+<A NAME="10"></A>
+<A NAME="11"></A><FONT ID="FormalComment">/**
+<A NAME="12"></A> * Example test for {@link AccountDAO}. The involved resource adaper
+<A NAME="13"></A> * works with indexed records, so we can use the
+<A NAME="14"></A> * {@link com.mockrunner.connector.IndexedRecordInteraction} for
+<A NAME="15"></A> * the test. We simply prepare some names and the corresponding
+<A NAME="16"></A> * ids, the simulated resource adapter should return. The
+<A NAME="17"></A> * {@link com.mockrunner.connector.IndexedRecordInteraction} creates
+<A NAME="18"></A> * suitable &lt;code&gt;IndexedRecord&lt;/code&gt; implementations for the provided
+<A NAME="19"></A> * lists. If the actual request matches the prepared list data, the
+<A NAME="20"></A> * corresponding response &lt;code&gt;IndexedRecord&lt;/code&gt; is returned.
+<A NAME="21"></A> * This example test also demonstrates how to test the failure case.
+<A NAME="22"></A> * The {@link com.mockrunner.connector.GenericFailureInteraction}
+<A NAME="23"></A> * throws an exception which causes the {@link AccountDAO} to roll back the
+<A NAME="24"></A> * transaction and to return -1.
+<A NAME="25"></A> */</FONT>
+<A NAME="26"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> AccountDAOTest <FONT ID="Extends">extends</FONT> ConnectorTestCaseAdapter
+<A NAME="27"></A>{
+<A NAME="28"></A>    <FONT ID="Private">private</FONT> EJBTestModule ejbModule;
+<A NAME="29"></A>    <FONT ID="Private">private</FONT> <A HREF="../../../../com/mockrunner/example/connector/AccountDAO.java.html">AccountDAO</A> dao;
+<A NAME="30"></A>    
+<A NAME="31"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> setUp() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="32"></A>    {
+<A NAME="33"></A>        <FONT ID="Super">super</FONT>.setUp();
+<A NAME="34"></A>        ejbModule = createEJBTestModule();
+<A NAME="35"></A>        ejbModule.bindToContext(<FONT ID="StringLiteral">"java:/ra/db/ConnectionFactory"</FONT>, getConnectorMockObjectFactory().getMockConnectionFactory());
+<A NAME="36"></A>        dao = <FONT ID="New">new</FONT> <A HREF="../../../../com/mockrunner/example/connector/AccountDAO.java.html">AccountDAO</A>();
+<A NAME="37"></A>    }
+<A NAME="38"></A>    
+<A NAME="39"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> prepareValidInteraction(String firstName, String lastName, <FONT ID="Int">int</FONT> id)
+<A NAME="40"></A>    {
+<A NAME="41"></A>        List request = <FONT ID="New">new</FONT> ArrayList();
+<A NAME="42"></A>        request.add(firstName);
+<A NAME="43"></A>        request.add(lastName);
+<A NAME="44"></A>        List response = <FONT ID="New">new</FONT> ArrayList();
+<A NAME="45"></A>        response.add(<FONT ID="New">new</FONT> Integer(id));
+<A NAME="46"></A>        IndexedRecordInteraction indexedInteraction = <FONT ID="New">new</FONT> IndexedRecordInteraction(request, response);
+<A NAME="47"></A>        getInteractionHandler().addImplementor(indexedInteraction);
+<A NAME="48"></A>    }
+<A NAME="49"></A>    
+<A NAME="50"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testCreateAccountVariousUsers()
+<A NAME="51"></A>    {
+<A NAME="52"></A>        prepareValidInteraction(<FONT ID="StringLiteral">"John"</FONT>, <FONT ID="StringLiteral">"Doe"</FONT>, <FONT ID="IntegerLiteral">500</FONT>);
+<A NAME="53"></A>        prepareValidInteraction(<FONT ID="StringLiteral">"Jane"</FONT>, <FONT ID="StringLiteral">"Doe"</FONT>, <FONT ID="IntegerLiteral">1000</FONT>);
+<A NAME="54"></A>        prepareValidInteraction(<FONT ID="StringLiteral">"Brian"</FONT>, <FONT ID="StringLiteral">"Doe"</FONT>, <FONT ID="IntegerLiteral">1500</FONT>);
+<A NAME="55"></A>        assertEquals(<FONT ID="IntegerLiteral">500</FONT>, dao.createAccount(<FONT ID="StringLiteral">"John"</FONT>, <FONT ID="StringLiteral">"Doe"</FONT>));
+<A NAME="56"></A>        assertEquals(<FONT ID="IntegerLiteral">1000</FONT>, dao.createAccount(<FONT ID="StringLiteral">"Jane"</FONT>, <FONT ID="StringLiteral">"Doe"</FONT>));
+<A NAME="57"></A>        assertEquals(<FONT ID="IntegerLiteral">1500</FONT>, dao.createAccount(<FONT ID="StringLiteral">"Brian"</FONT>, <FONT ID="StringLiteral">"Doe"</FONT>));
+<A NAME="58"></A>        assertEquals(-<FONT ID="IntegerLiteral">1</FONT>, dao.createAccount(<FONT ID="StringLiteral">"Judith"</FONT>, <FONT ID="StringLiteral">"Doe"</FONT>));
+<A NAME="59"></A>        verifyAllInteractionsClosed();
+<A NAME="60"></A>        verifyConnectionClosed();
+<A NAME="61"></A>    }
+<A NAME="62"></A>    
+<A NAME="63"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testCreateAccountSuccessful()
+<A NAME="64"></A>    {
+<A NAME="65"></A>        prepareValidInteraction(<FONT ID="StringLiteral">"John"</FONT>, <FONT ID="StringLiteral">"Doe"</FONT>, <FONT ID="IntegerLiteral">500</FONT>);
+<A NAME="66"></A>        assertEquals(<FONT ID="IntegerLiteral">500</FONT>, dao.createAccount(<FONT ID="StringLiteral">"John"</FONT>, <FONT ID="StringLiteral">"Doe"</FONT>));
+<A NAME="67"></A>        verifyLocalTransactionCommitted();
+<A NAME="68"></A>        verifyNumberCreatedIndexedRecords(<FONT ID="IntegerLiteral">1</FONT>);
+<A NAME="69"></A>        verifyAllInteractionsClosed();
+<A NAME="70"></A>        verifyConnectionClosed();
+<A NAME="71"></A>    }
+<A NAME="72"></A>    
+<A NAME="73"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testCreateAccountFailure()
+<A NAME="74"></A>    {
+<A NAME="75"></A>        getInteractionHandler().addImplementor(<FONT ID="New">new</FONT> GenericFailureInteraction());
+<A NAME="76"></A>        assertEquals(-<FONT ID="IntegerLiteral">1</FONT>, dao.createAccount(<FONT ID="StringLiteral">"John"</FONT>, <FONT ID="StringLiteral">"Doe"</FONT>));
+<A NAME="77"></A>        verifyLocalTransactionRolledBack();
+<A NAME="78"></A>        verifyNumberCreatedIndexedRecords(<FONT ID="IntegerLiteral">1</FONT>);
+<A NAME="79"></A>        verifyAllInteractionsClosed();
+<A NAME="80"></A>        verifyConnectionClosed();
+<A NAME="81"></A>    }
+<A NAME="82"></A>}
+<A NAME="83"></A></pre>
+</BODY>
+</HTML>

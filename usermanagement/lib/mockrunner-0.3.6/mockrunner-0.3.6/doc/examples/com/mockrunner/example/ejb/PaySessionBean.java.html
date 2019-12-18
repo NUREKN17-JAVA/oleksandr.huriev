@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.ejb.PaySessionBean (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">PaySessionBean.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.ejb.index.html" target="packageFrame">com.mockrunner.example.ejb</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.rmi.RemoteException;
+<A NAME="4"></A><FONT ID="Import">import</FONT> java.sql.Connection;
+<A NAME="5"></A><FONT ID="Import">import</FONT> java.sql.ResultSet;
+<A NAME="6"></A><FONT ID="Import">import</FONT> java.sql.SQLException;
+<A NAME="7"></A><FONT ID="Import">import</FONT> java.sql.Statement;
+<A NAME="8"></A>
+<A NAME="9"></A><FONT ID="Import">import</FONT> javax.ejb.CreateException;
+<A NAME="10"></A><FONT ID="Import">import</FONT> javax.ejb.EJBException;
+<A NAME="11"></A><FONT ID="Import">import</FONT> javax.ejb.SessionBean;
+<A NAME="12"></A><FONT ID="Import">import</FONT> javax.ejb.SessionContext;
+<A NAME="13"></A><FONT ID="Import">import</FONT> javax.naming.InitialContext;
+<A NAME="14"></A><FONT ID="Import">import</FONT> javax.naming.NamingException;
+<A NAME="15"></A><FONT ID="Import">import</FONT> javax.sql.DataSource;
+<A NAME="16"></A>
+<A NAME="17"></A><FONT ID="MultiLineComment">/*
+<A NAME="18"></A> * @ejb:bean name="PaySession"
+<A NAME="19"></A> *           display-name="PaySessionBean"
+<A NAME="20"></A> *           type="Stateless"
+<A NAME="21"></A> *           transaction-type="Container"
+<A NAME="22"></A> *           jndi-name="com/mockrunner/example/PaySession"
+<A NAME="23"></A> * 
+<A NAME="24"></A> * @ejb:resource-ref res-ref-name="jdbc/MySQLDB"
+<A NAME="25"></A> *                   res-type="javax.sql.DataSource"
+<A NAME="26"></A> *                   res-auth="Container"
+<A NAME="27"></A> *                   res-sharing-scope="Shareable"
+<A NAME="28"></A> * 
+<A NAME="29"></A> * @jboss:resource-manager res-man-name="jdbc/MySQLDB"
+<A NAME="30"></A> *                         res-man-jndi-name="java:/MySQLDB"
+<A NAME="31"></A> */</FONT>
+<A NAME="32"></A><FONT ID="FormalComment">/**
+<A NAME="33"></A> * This is the EJB-version of 
+<A NAME="34"></A> * {@link com.mockrunner.example.jdbc.PayAction}.
+<A NAME="35"></A> * It throws a &lt;code&gt;PaySessionException&lt;/code&gt; in case of error.
+<A NAME="36"></A> */</FONT>
+<A NAME="37"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> PaySessionBean <FONT ID="Implements">implements</FONT> SessionBean
+<A NAME="38"></A>{
+<A NAME="39"></A>    <FONT ID="Private">private</FONT> SessionContext sessionContext;
+<A NAME="40"></A>    
+<A NAME="41"></A>    <FONT ID="MultiLineComment">/*
+<A NAME="42"></A>     * @ejb:interface-method
+<A NAME="43"></A>     * @ejb:transaction type="Required"
+<A NAME="44"></A>     */</FONT>
+<A NAME="45"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> payBill(String customerId, String billId, <FONT ID="Double">double</FONT> amount) <FONT ID="Throws">throws</FONT> <A HREF="../../../../com/mockrunner/example/ejb/PaySessionException.java.html">PaySessionException</A>
+<A NAME="46"></A>    {
+<A NAME="47"></A>        Connection connection = <FONT ID="Null">null</FONT>;
+<A NAME="48"></A>        <FONT ID="Try">try</FONT>
+<A NAME="49"></A>        {
+<A NAME="50"></A>            InitialContext context = <FONT ID="New">new</FONT> InitialContext();
+<A NAME="51"></A>            DataSource dataSource = (DataSource)context.lookup(<FONT ID="StringLiteral">"java:comp/env/jdbc/MySQLDB"</FONT>);
+<A NAME="52"></A>            connection = dataSource.getConnection();
+<A NAME="53"></A>            String name = getName(connection, customerId);
+<A NAME="54"></A>            <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> == name)
+<A NAME="55"></A>            {
+<A NAME="56"></A>                sessionContext.setRollbackOnly();
+<A NAME="57"></A>                <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../com/mockrunner/example/ejb/PaySessionException.java.html">PaySessionException</A>(PaySessionException.UNKNOWN_CUSTOMER);
+<A NAME="58"></A>            }
+<A NAME="59"></A>            checkBillIntegrity(connection, customerId, billId, amount);
+<A NAME="60"></A>            markBillAsPaid(connection, customerId, billId, amount);
+<A NAME="61"></A>            System.out.println(amount + <FONT ID="StringLiteral">" paid from customer "</FONT> + name);
+<A NAME="62"></A>        }
+<A NAME="63"></A>        <FONT ID="Catch">catch</FONT>(NamingException exc)
+<A NAME="64"></A>        {
+<A NAME="65"></A>            sessionContext.setRollbackOnly();
+<A NAME="66"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> EJBException(<FONT ID="StringLiteral">"JNDI error "</FONT> + exc.getMessage());
+<A NAME="67"></A>        }
+<A NAME="68"></A>        <FONT ID="Catch">catch</FONT>(SQLException exc)
+<A NAME="69"></A>        {
+<A NAME="70"></A>            sessionContext.setRollbackOnly();
+<A NAME="71"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> EJBException(<FONT ID="StringLiteral">"Database error "</FONT> + exc.getMessage());
+<A NAME="72"></A>        }
+<A NAME="73"></A>        <FONT ID="Finally">finally</FONT>
+<A NAME="74"></A>        {
+<A NAME="75"></A>            <FONT ID="Try">try</FONT>
+<A NAME="76"></A>            {
+<A NAME="77"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != connection) connection.close();
+<A NAME="78"></A>            }
+<A NAME="79"></A>            <FONT ID="Catch">catch</FONT>(SQLException sqlExc)
+<A NAME="80"></A>            {
+<A NAME="81"></A>        
+<A NAME="82"></A>            }
+<A NAME="83"></A>        }
+<A NAME="84"></A>    }
+<A NAME="85"></A>    
+<A NAME="86"></A>    <FONT ID="Private">private</FONT> String getName(Connection connection, String customerId) <FONT ID="Throws">throws</FONT> SQLException
+<A NAME="87"></A>    {
+<A NAME="88"></A>        Statement statement = connection.createStatement();
+<A NAME="89"></A>        ResultSet result = statement.executeQuery(<FONT ID="StringLiteral">"select name from customers where id='"</FONT> + customerId + <FONT ID="StringLiteral">"'"</FONT>);  
+<A NAME="90"></A>        String name = <FONT ID="Null">null</FONT>;
+<A NAME="91"></A>        <FONT ID="If">if</FONT>(result.next())
+<A NAME="92"></A>        {
+<A NAME="93"></A>            name = result.getString(<FONT ID="StringLiteral">"name"</FONT>);
+<A NAME="94"></A>        }
+<A NAME="95"></A>        result.close();
+<A NAME="96"></A>        statement.close();
+<A NAME="97"></A>        <FONT ID="Return">return</FONT> name;
+<A NAME="98"></A>    }
+<A NAME="99"></A>    
+<A NAME="100"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> checkBillIntegrity(Connection connection, String customerId, String billId, <FONT ID="Double">double</FONT> amount) <FONT ID="Throws">throws</FONT> SQLException, <A HREF="../../../../com/mockrunner/example/ejb/PaySessionException.java.html">PaySessionException</A>
+<A NAME="101"></A>    {
+<A NAME="102"></A>        Statement statement = connection.createStatement();
+<A NAME="103"></A>        ResultSet result = statement.executeQuery(<FONT ID="StringLiteral">"select * from openbills where id='"</FONT> + billId + <FONT ID="StringLiteral">"'"</FONT>);
+<A NAME="104"></A>        <FONT ID="Try">try</FONT>
+<A NAME="105"></A>        {
+<A NAME="106"></A>            <FONT ID="If">if</FONT>(<FONT ID="False">false</FONT> == result.next())
+<A NAME="107"></A>            {
+<A NAME="108"></A>                sessionContext.setRollbackOnly();
+<A NAME="109"></A>                <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../com/mockrunner/example/ejb/PaySessionException.java.html">PaySessionException</A>(PaySessionException.UNKNOWN_BILL);
+<A NAME="110"></A>            }
+<A NAME="111"></A>            <FONT ID="If">if</FONT>(!result.getString(<FONT ID="StringLiteral">"customerid"</FONT>).equals(customerId))
+<A NAME="112"></A>            {
+<A NAME="113"></A>                sessionContext.setRollbackOnly();
+<A NAME="114"></A>                <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../com/mockrunner/example/ejb/PaySessionException.java.html">PaySessionException</A>(PaySessionException.WRONG_BILL_FOR_CUSTOMER);
+<A NAME="115"></A>            }
+<A NAME="116"></A>            <FONT ID="If">if</FONT>(result.getDouble(<FONT ID="StringLiteral">"amount"</FONT>) != amount)
+<A NAME="117"></A>            {
+<A NAME="118"></A>                sessionContext.setRollbackOnly();
+<A NAME="119"></A>                <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../com/mockrunner/example/ejb/PaySessionException.java.html">PaySessionException</A>(PaySessionException.WRONG_AMOUNT_FOR_BILL);
+<A NAME="120"></A>            }
+<A NAME="121"></A>        }
+<A NAME="122"></A>        <FONT ID="Finally">finally</FONT>
+<A NAME="123"></A>        {
+<A NAME="124"></A>            result.close();
+<A NAME="125"></A>            statement.close();    
+<A NAME="126"></A>        }
+<A NAME="127"></A>    }
+<A NAME="128"></A>    
+<A NAME="129"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> markBillAsPaid(Connection connection, String customerId, String billId, <FONT ID="Double">double</FONT> amount) <FONT ID="Throws">throws</FONT> SQLException
+<A NAME="130"></A>    {
+<A NAME="131"></A>       Statement statement = connection.createStatement();
+<A NAME="132"></A>       statement.executeUpdate(<FONT ID="StringLiteral">"delete from openbills where id='"</FONT> + billId + <FONT ID="StringLiteral">"'"</FONT>);
+<A NAME="133"></A>       statement.executeUpdate(<FONT ID="StringLiteral">"insert into paidbills values('"</FONT> + billId + <FONT ID="StringLiteral">"','"</FONT> + customerId + <FONT ID="StringLiteral">"',"</FONT> + amount +  <FONT ID="StringLiteral">")"</FONT>);
+<A NAME="134"></A>       statement.close();
+<A NAME="135"></A>    }
+<A NAME="136"></A>    
+<A NAME="137"></A>    <FONT ID="MultiLineComment">/*
+<A NAME="138"></A>     * @ejb:create-method
+<A NAME="139"></A>     */</FONT>
+<A NAME="140"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbCreate() <FONT ID="Throws">throws</FONT> CreateException
+<A NAME="141"></A>    {
+<A NAME="142"></A>    
+<A NAME="143"></A>    }
+<A NAME="144"></A>    
+<A NAME="145"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbActivate() <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="146"></A>    {
+<A NAME="147"></A>
+<A NAME="148"></A>    }
+<A NAME="149"></A>
+<A NAME="150"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbPassivate() <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="151"></A>    {
+<A NAME="152"></A>
+<A NAME="153"></A>    }
+<A NAME="154"></A>
+<A NAME="155"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbRemove() <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="156"></A>    {
+<A NAME="157"></A>
+<A NAME="158"></A>    }
+<A NAME="159"></A>
+<A NAME="160"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setSessionContext(SessionContext sessionContext) <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="161"></A>    {
+<A NAME="162"></A>        <FONT ID="This">this</FONT>.sessionContext = sessionContext;
+<A NAME="163"></A>    }
+<A NAME="164"></A>}
+<A NAME="165"></A></pre>
+</BODY>
+</HTML>

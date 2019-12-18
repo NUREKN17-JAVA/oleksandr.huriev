@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.connector.DomainObjectRecord (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">DomainObjectRecord.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.connector.index.html" target="packageFrame">com.mockrunner.example.connector</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.io.ByteArrayOutputStream;
+<A NAME="4"></A><FONT ID="Import">import</FONT> java.io.IOException;
+<A NAME="5"></A><FONT ID="Import">import</FONT> java.io.InputStream;
+<A NAME="6"></A><FONT ID="Import">import</FONT> java.io.OutputStream;
+<A NAME="7"></A>
+<A NAME="8"></A><FONT ID="Import">import</FONT> javax.resource.cci.Record;
+<A NAME="9"></A><FONT ID="Import">import</FONT> javax.resource.cci.Streamable;
+<A NAME="10"></A>
+<A NAME="11"></A><FONT ID="FormalComment">/**
+<A NAME="12"></A> * Base class for domain objects that can be directly used in 
+<A NAME="13"></A> * &lt;code&gt;Interaction.execute&lt;/code&gt; calls.
+<A NAME="14"></A> */</FONT>
+<A NAME="15"></A><FONT ID="Public">public</FONT> <FONT ID="Abstract">abstract</FONT> <FONT ID="Class">class</FONT> DomainObjectRecord <FONT ID="Implements">implements</FONT> Record, Streamable
+<A NAME="16"></A>{
+<A NAME="17"></A>    <FONT ID="Private">private</FONT> String name = <FONT ID="This">this</FONT>.getClass().getName() + <FONT ID="StringLiteral">"Record"</FONT>;
+<A NAME="18"></A>    <FONT ID="Private">private</FONT> String description = name;
+<A NAME="19"></A>    
+<A NAME="20"></A>    <FONT ID="Public">public</FONT> String getRecordName()
+<A NAME="21"></A>    {
+<A NAME="22"></A>        <FONT ID="Return">return</FONT> name;
+<A NAME="23"></A>    }
+<A NAME="24"></A>
+<A NAME="25"></A>    <FONT ID="Public">public</FONT> String getRecordShortDescription()
+<A NAME="26"></A>    {
+<A NAME="27"></A>        <FONT ID="Return">return</FONT> description;
+<A NAME="28"></A>    }
+<A NAME="29"></A>
+<A NAME="30"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setRecordName(String name)
+<A NAME="31"></A>    {
+<A NAME="32"></A>        <FONT ID="This">this</FONT>.name = name;
+<A NAME="33"></A>    }
+<A NAME="34"></A>
+<A NAME="35"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setRecordShortDescription(String description)
+<A NAME="36"></A>    {
+<A NAME="37"></A>        <FONT ID="This">this</FONT>.description = description;
+<A NAME="38"></A>    }
+<A NAME="39"></A>
+<A NAME="40"></A>    <FONT ID="Public">public</FONT> Object clone() <FONT ID="Throws">throws</FONT> CloneNotSupportedException
+<A NAME="41"></A>    {
+<A NAME="42"></A>        <FONT ID="Return">return</FONT> <FONT ID="Super">super</FONT>.clone();
+<A NAME="43"></A>    }
+<A NAME="44"></A>
+<A NAME="45"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> read(InputStream stream) <FONT ID="Throws">throws</FONT> IOException
+<A NAME="46"></A>    {
+<A NAME="47"></A>        ByteArrayOutputStream byteStream = <FONT ID="New">new</FONT> ByteArrayOutputStream();
+<A NAME="48"></A>        <FONT ID="Byte">byte</FONT>[] buffer = <FONT ID="New">new</FONT> <FONT ID="Byte">byte</FONT>[<FONT ID="IntegerLiteral">1024</FONT>];
+<A NAME="49"></A>        <FONT ID="Int">int</FONT> bytesRead;
+<A NAME="50"></A>        <FONT ID="While">while</FONT>(-<FONT ID="IntegerLiteral">1</FONT> &lt;(bytesRead = stream.read(buffer))) 
+<A NAME="51"></A>        {
+<A NAME="52"></A>            byteStream.write(buffer, <FONT ID="IntegerLiteral">0</FONT>, bytesRead);
+<A NAME="53"></A>        }
+<A NAME="54"></A>        byteStream.flush();
+<A NAME="55"></A>        unmarshal(byteStream.toByteArray());
+<A NAME="56"></A>    }
+<A NAME="57"></A>
+<A NAME="58"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> write(OutputStream stream) <FONT ID="Throws">throws</FONT> IOException
+<A NAME="59"></A>    {
+<A NAME="60"></A>        stream.write(marshal());
+<A NAME="61"></A>    }
+<A NAME="62"></A>    
+<A NAME="63"></A>    <FONT ID="Public">public</FONT> <FONT ID="Abstract">abstract</FONT> <FONT ID="Byte">byte</FONT>[] marshal();
+<A NAME="64"></A>    
+<A NAME="65"></A>    <FONT ID="Public">public</FONT> <FONT ID="Abstract">abstract</FONT> <FONT ID="Void">void</FONT> unmarshal(<FONT ID="Byte">byte</FONT>[] data);
+<A NAME="66"></A>}
+<A NAME="67"></A></pre>
+</BODY>
+</HTML>

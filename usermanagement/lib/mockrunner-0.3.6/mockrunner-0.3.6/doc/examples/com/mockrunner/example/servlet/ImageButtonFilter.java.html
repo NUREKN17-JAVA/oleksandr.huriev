@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.servlet.ImageButtonFilter (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">ImageButtonFilter.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.servlet.index.html" target="packageFrame">com.mockrunner.example.servlet</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.io.IOException;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="Import">import</FONT> javax.servlet.Filter;
+<A NAME="6"></A><FONT ID="Import">import</FONT> javax.servlet.FilterChain;
+<A NAME="7"></A><FONT ID="Import">import</FONT> javax.servlet.FilterConfig;
+<A NAME="8"></A><FONT ID="Import">import</FONT> javax.servlet.ServletException;
+<A NAME="9"></A><FONT ID="Import">import</FONT> javax.servlet.ServletRequest;
+<A NAME="10"></A><FONT ID="Import">import</FONT> javax.servlet.ServletResponse;
+<A NAME="11"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletRequest;
+<A NAME="12"></A>
+<A NAME="13"></A><FONT ID="FormalComment">/**
+<A NAME="14"></A> * This example filter replaces request parameters from
+<A NAME="15"></A> * submit images (&lt;code&gt;&amp;lt;input type="image"/&amp;gt;&lt;/code&gt;)
+<A NAME="16"></A> * with the appropriate submit button parameters
+<A NAME="17"></A> * (&lt;code&gt;&amp;lt;input type="submit"/&amp;gt;&lt;/code&gt;), i.e. if the
+<A NAME="18"></A> * image name is &lt;i&gt;image&lt;/i&gt;, the two parameters
+<A NAME="19"></A> * &lt;i&gt;image.x&lt;/i&gt; and &lt;i&gt;image.y&lt;/i&gt; will be replaced
+<A NAME="20"></A> * by one parameter &lt;i&gt;image&lt;/i&gt;. This makes it possible
+<A NAME="21"></A> * to handle submit images like normal submit buttons.
+<A NAME="22"></A> */</FONT>
+<A NAME="23"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> ImageButtonFilter <FONT ID="Implements">implements</FONT> Filter
+<A NAME="24"></A>{
+<A NAME="25"></A>   <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> doFilter(ServletRequest request, ServletResponse response, FilterChain chain) <FONT ID="Throws">throws</FONT> IOException, ServletException
+<A NAME="26"></A>   {
+<A NAME="27"></A>        <FONT ID="If">if</FONT>(request <FONT ID="InstanceOf">instanceof</FONT> HttpServletRequest)
+<A NAME="28"></A>        {
+<A NAME="29"></A>            <A HREF="../../../../com/mockrunner/example/servlet/ImageButtonRequestWrapper.java.html">ImageButtonRequestWrapper</A> wrapper = <FONT ID="New">new</FONT> <A HREF="../../../../com/mockrunner/example/servlet/ImageButtonRequestWrapper.java.html">ImageButtonRequestWrapper</A>((HttpServletRequest)request);
+<A NAME="30"></A>            chain.doFilter(wrapper, response);
+<A NAME="31"></A>        }
+<A NAME="32"></A>        <FONT ID="Else">else</FONT>
+<A NAME="33"></A>        {
+<A NAME="34"></A>            chain.doFilter(request, response);
+<A NAME="35"></A>        }
+<A NAME="36"></A>   }
+<A NAME="37"></A>
+<A NAME="38"></A>   <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> init(FilterConfig filterConfig)
+<A NAME="39"></A>   {
+<A NAME="40"></A>
+<A NAME="41"></A>   }
+<A NAME="42"></A>
+<A NAME="43"></A>   <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> destroy()
+<A NAME="44"></A>   {
+<A NAME="45"></A>
+<A NAME="46"></A>   }
+<A NAME="47"></A>}</pre>
+</BODY>
+</HTML>

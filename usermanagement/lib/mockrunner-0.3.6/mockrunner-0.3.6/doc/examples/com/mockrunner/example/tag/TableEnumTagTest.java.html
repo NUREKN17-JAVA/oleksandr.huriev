@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.tag.TableEnumTagTest (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">TableEnumTagTest.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.tag.index.html" target="packageFrame">com.mockrunner.example.tag</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.io.BufferedReader;
+<A NAME="4"></A><FONT ID="Import">import</FONT> java.util.ArrayList;
+<A NAME="5"></A><FONT ID="Import">import</FONT> java.util.HashMap;
+<A NAME="6"></A><FONT ID="Import">import</FONT> java.util.Map;
+<A NAME="7"></A>
+<A NAME="8"></A><FONT ID="Import">import</FONT> org.apache.struts.taglib.bean.WriteTag;
+<A NAME="9"></A><FONT ID="Import">import</FONT> org.jdom.Element;
+<A NAME="10"></A>
+<A NAME="11"></A><FONT ID="Import">import</FONT> com.mockrunner.tag.BasicTagTestCaseAdapter;
+<A NAME="12"></A><FONT ID="Import">import</FONT> com.mockrunner.tag.NestedTag;
+<A NAME="13"></A><FONT ID="Import">import</FONT> com.mockrunner.util.web.XmlUtil;
+<A NAME="14"></A>
+<A NAME="15"></A><FONT ID="FormalComment">/**
+<A NAME="16"></A> * Example test for the {@link TableEnumTag}.
+<A NAME="17"></A> * Demonstrates the usage of {@link com.mockrunner.tag.TagTestModule} 
+<A NAME="18"></A> * and {@link com.mockrunner.tag.BasicTagTestCaseAdapter} and
+<A NAME="19"></A> * {@link com.mockrunner.tag.NestedTag}.
+<A NAME="20"></A> * Tests the html output of {@link TableEnumTag} with static
+<A NAME="21"></A> * and dynamic body content (simulated by nesting the &lt;code&gt;WriteTag&lt;/code&gt;).
+<A NAME="22"></A> * Demonstrates the testing of output data as string as well as parsed
+<A NAME="23"></A> * HTML data (&lt;code&gt;testStaticBodyAsXML&lt;/code&gt;).
+<A NAME="24"></A> */</FONT>
+<A NAME="25"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> TableEnumTagTest <FONT ID="Extends">extends</FONT> BasicTagTestCaseAdapter
+<A NAME="26"></A>{
+<A NAME="27"></A>    <FONT ID="Private">private</FONT> NestedTag nestedTag;
+<A NAME="28"></A>    
+<A NAME="29"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> setUp() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="30"></A>    {
+<A NAME="31"></A>        <FONT ID="Super">super</FONT>.setUp();
+<A NAME="32"></A>        Map attributeMap = <FONT ID="New">new</FONT> HashMap();
+<A NAME="33"></A>        attributeMap.put(<FONT ID="StringLiteral">"label"</FONT>, <FONT ID="StringLiteral">"myLabel"</FONT>);
+<A NAME="34"></A>        nestedTag = createNestedTag(<A HREF="../../../../com/mockrunner/example/tag/TableEnumTag.java.html">TableEnumTag</A>.<FONT ID="Class">class</FONT>, attributeMap);
+<A NAME="35"></A>        storeTestListInSession();
+<A NAME="36"></A>    }
+<A NAME="37"></A>
+<A NAME="38"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> storeTestListInSession()
+<A NAME="39"></A>    {
+<A NAME="40"></A>        ArrayList list = <FONT ID="New">new</FONT> ArrayList();
+<A NAME="41"></A>        list.add(<FONT ID="StringLiteral">"Entry1"</FONT>);
+<A NAME="42"></A>        list.add(<FONT ID="StringLiteral">"Entry2"</FONT>);
+<A NAME="43"></A>        list.add(<FONT ID="StringLiteral">"Entry3"</FONT>);
+<A NAME="44"></A>        getWebMockObjectFactory().getMockSession().setAttribute(<FONT ID="StringLiteral">"currentCollection"</FONT>, list);
+<A NAME="45"></A>    }
+<A NAME="46"></A>    
+<A NAME="47"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testNoBody() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="48"></A>    {
+<A NAME="49"></A>        processTagLifecycle();
+<A NAME="50"></A>        BufferedReader reader = getOutputAsBufferedReader();
+<A NAME="51"></A>        assertEquals(<FONT ID="StringLiteral">"&lt;table&gt;"</FONT>, reader.readLine().trim());
+<A NAME="52"></A>        assertEquals(<FONT ID="StringLiteral">"&lt;/table&gt;"</FONT>, reader.readLine().trim());
+<A NAME="53"></A>    }
+<A NAME="54"></A>    
+<A NAME="55"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testStaticBody() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="56"></A>    {
+<A NAME="57"></A>        nestedTag.addTextChild(<FONT ID="StringLiteral">"myStaticValue"</FONT>);
+<A NAME="58"></A>        processTagLifecycle();
+<A NAME="59"></A>        BufferedReader reader = getOutputAsBufferedReader();
+<A NAME="60"></A>        assertEquals(<FONT ID="StringLiteral">"&lt;table&gt;"</FONT>, reader.readLine().trim());
+<A NAME="61"></A>        <FONT ID="For">for</FONT>(<FONT ID="Int">int</FONT> ii = <FONT ID="IntegerLiteral">0</FONT>; ii &lt; <FONT ID="IntegerLiteral">3</FONT>; ii++)
+<A NAME="62"></A>        {
+<A NAME="63"></A>            assertEquals(<FONT ID="StringLiteral">"&lt;tr&gt;"</FONT>, reader.readLine().trim());
+<A NAME="64"></A>            assertEquals(<FONT ID="StringLiteral">"&lt;td&gt;"</FONT>, reader.readLine().trim());
+<A NAME="65"></A>            assertEquals(<FONT ID="StringLiteral">"myLabel"</FONT>, reader.readLine().trim());
+<A NAME="66"></A>            assertEquals(<FONT ID="StringLiteral">"&lt;/td&gt;"</FONT>, reader.readLine().trim());  
+<A NAME="67"></A>            assertEquals(<FONT ID="StringLiteral">"&lt;td&gt;"</FONT>, reader.readLine().trim());
+<A NAME="68"></A>            assertEquals(<FONT ID="StringLiteral">"myStaticValue"</FONT>, reader.readLine().trim());
+<A NAME="69"></A>            assertEquals(<FONT ID="StringLiteral">"&lt;/td&gt;"</FONT>, reader.readLine().trim());
+<A NAME="70"></A>            assertEquals(<FONT ID="StringLiteral">"&lt;/tr&gt;"</FONT>, reader.readLine().trim());
+<A NAME="71"></A>        }
+<A NAME="72"></A>        assertEquals(<FONT ID="StringLiteral">"&lt;/table&gt;"</FONT>, reader.readLine().trim());
+<A NAME="73"></A>    }
+<A NAME="74"></A>    
+<A NAME="75"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testStaticBodyAsXML() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="76"></A>    {
+<A NAME="77"></A>        nestedTag.addTextChild(<FONT ID="StringLiteral">"myStaticValue"</FONT>);
+<A NAME="78"></A>        processTagLifecycle();
+<A NAME="79"></A>        Element table = XmlUtil.getBodyFragmentFromJDOMDocument(getOutputAsJDOMDocument());
+<A NAME="80"></A>        Element tr = table.getChild(<FONT ID="StringLiteral">"tr"</FONT>);
+<A NAME="81"></A>        assertEquals(<FONT ID="StringLiteral">"myLabel"</FONT>, tr.getChildTextTrim(<FONT ID="StringLiteral">"td"</FONT>));
+<A NAME="82"></A>        Element secondTd = (Element)tr.getChildren().get(<FONT ID="IntegerLiteral">1</FONT>);
+<A NAME="83"></A>        assertEquals(<FONT ID="StringLiteral">"myStaticValue"</FONT>, secondTd.getTextTrim());
+<A NAME="84"></A>    }
+<A NAME="85"></A>    
+<A NAME="86"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testDynamicBody() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="87"></A>    {
+<A NAME="88"></A>        Map attributeMap = <FONT ID="New">new</FONT> HashMap();
+<A NAME="89"></A>        attributeMap.put(<FONT ID="StringLiteral">"scope"</FONT>, <FONT ID="StringLiteral">"request"</FONT>);
+<A NAME="90"></A>        attributeMap.put(<FONT ID="StringLiteral">"name"</FONT>, <FONT ID="StringLiteral">"currentObject"</FONT>);
+<A NAME="91"></A>        nestedTag.addTagChild(WriteTag.<FONT ID="Class">class</FONT>, attributeMap);
+<A NAME="92"></A>        processTagLifecycle();
+<A NAME="93"></A>        BufferedReader reader = getOutputAsBufferedReader();
+<A NAME="94"></A>        assertEquals(<FONT ID="StringLiteral">"&lt;table&gt;"</FONT>, reader.readLine().trim());
+<A NAME="95"></A>        <FONT ID="For">for</FONT>(<FONT ID="Int">int</FONT> ii = <FONT ID="IntegerLiteral">1</FONT>; ii &lt;= <FONT ID="IntegerLiteral">3</FONT>; ii++)
+<A NAME="96"></A>        {
+<A NAME="97"></A>            assertEquals(<FONT ID="StringLiteral">"&lt;tr&gt;"</FONT>, reader.readLine().trim());
+<A NAME="98"></A>            assertEquals(<FONT ID="StringLiteral">"&lt;td&gt;"</FONT>, reader.readLine().trim());
+<A NAME="99"></A>            assertEquals(<FONT ID="StringLiteral">"myLabel"</FONT>, reader.readLine().trim());
+<A NAME="100"></A>            assertEquals(<FONT ID="StringLiteral">"&lt;/td&gt;"</FONT>, reader.readLine().trim());  
+<A NAME="101"></A>            assertEquals(<FONT ID="StringLiteral">"&lt;td&gt;"</FONT>, reader.readLine().trim());
+<A NAME="102"></A>            assertEquals(<FONT ID="StringLiteral">"Entry"</FONT> + ii, reader.readLine().trim());
+<A NAME="103"></A>            assertEquals(<FONT ID="StringLiteral">"&lt;/td&gt;"</FONT>, reader.readLine().trim());
+<A NAME="104"></A>            assertEquals(<FONT ID="StringLiteral">"&lt;/tr&gt;"</FONT>, reader.readLine().trim());
+<A NAME="105"></A>        }
+<A NAME="106"></A>        assertEquals(<FONT ID="StringLiteral">"&lt;/table&gt;"</FONT>, reader.readLine().trim());
+<A NAME="107"></A>    }
+<A NAME="108"></A>}
+<A NAME="109"></A></pre>
+</BODY>
+</HTML>

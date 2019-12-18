@@ -1,0 +1,16 @@
+com.mockrunner.base
+com.mockrunner.connector
+com.mockrunner.ejb
+com.mockrunner.jdbc
+com.mockrunner.jms
+com.mockrunner.mock.connector.cci
+com.mockrunner.mock.connector.spi
+com.mockrunner.mock.ejb
+com.mockrunner.mock.jdbc
+com.mockrunner.mock.jms
+com.mockrunner.mock.web
+com.mockrunner.servlet
+com.mockrunner.struts
+com.mockrunner.tag
+com.mockrunner.util.common
+com.mockrunner.util.web

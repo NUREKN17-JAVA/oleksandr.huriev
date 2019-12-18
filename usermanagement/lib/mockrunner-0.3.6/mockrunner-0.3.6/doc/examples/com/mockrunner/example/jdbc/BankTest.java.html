@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.jdbc.BankTest (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">BankTest.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.jdbc.index.html" target="packageFrame">com.mockrunner.example.jdbc</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.sql.SQLException;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="Import">import</FONT> com.mockrunner.jdbc.BasicJDBCTestCaseAdapter;
+<A NAME="6"></A><FONT ID="Import">import</FONT> com.mockrunner.jdbc.StatementResultSetHandler;
+<A NAME="7"></A><FONT ID="Import">import</FONT> com.mockrunner.mock.jdbc.MockResultSet;
+<A NAME="8"></A>
+<A NAME="9"></A><FONT ID="FormalComment">/**
+<A NAME="10"></A> * Example test for {@link Bank}. Demonstrates the usage of 
+<A NAME="11"></A> * {@link com.mockrunner.jdbc.JDBCTestModule} 
+<A NAME="12"></A> * and {@link com.mockrunner.jdbc.BasicJDBCTestCaseAdapter}.
+<A NAME="13"></A> * Please note that the framework does not execute any SQL statements.
+<A NAME="14"></A> * You have to specify the &lt;code&gt;MockResultSet&lt;/code&gt; of the &lt;i&gt;select&lt;/i&gt;
+<A NAME="15"></A> * statement. Since there is only one &lt;i&gt;select&lt;/i&gt; in this test, the
+<A NAME="16"></A> * &lt;code&gt;MockResultSet&lt;/code&gt; is set as the global one.
+<A NAME="17"></A> * The Java API is used to add one row to the &lt;code&gt;MockResultSet&lt;/code&gt;.
+<A NAME="18"></A> * It's also possible to read the test tables from text files.
+<A NAME="19"></A> * This test covers a valid transaction test 
+<A NAME="20"></A> * (there's enough money on the source account) and the failure case.
+<A NAME="21"></A> * You do not have to specify the exact SQL statements,
+<A NAME="22"></A> * &lt;i&gt;select balance&lt;/i&gt; is ok for &lt;i&gt;select balance from account where id=1&lt;/i&gt;.
+<A NAME="23"></A> * You can specify the search parameters of SQL statements with
+<A NAME="24"></A> * {@link com.mockrunner.jdbc.JDBCTestModule#setExactMatch} and
+<A NAME="25"></A> * {@link com.mockrunner.jdbc.JDBCTestModule#setCaseSensitive}.
+<A NAME="26"></A> * The default is &lt;code&gt;false&lt;/code&gt; for both.
+<A NAME="27"></A> */</FONT>
+<A NAME="28"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> BankTest <FONT ID="Extends">extends</FONT> BasicJDBCTestCaseAdapter
+<A NAME="29"></A>{
+<A NAME="30"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> prepareEmptyResultSet()
+<A NAME="31"></A>    {
+<A NAME="32"></A>        StatementResultSetHandler statementHandler = getJDBCMockObjectFactory().getMockConnection().getStatementResultSetHandler();
+<A NAME="33"></A>        MockResultSet result = statementHandler.createResultSet();
+<A NAME="34"></A>        statementHandler.prepareGlobalResultSet(result);
+<A NAME="35"></A>    }
+<A NAME="36"></A>    
+<A NAME="37"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> prepareResultSet()
+<A NAME="38"></A>    {
+<A NAME="39"></A>        StatementResultSetHandler statementHandler = getJDBCMockObjectFactory().getMockConnection().getStatementResultSetHandler();
+<A NAME="40"></A>        MockResultSet result = statementHandler.createResultSet();
+<A NAME="41"></A>        result.addRow(<FONT ID="New">new</FONT> Integer[] {<FONT ID="New">new</FONT> Integer(<FONT ID="IntegerLiteral">10000</FONT>)});
+<A NAME="42"></A>        statementHandler.prepareGlobalResultSet(result);
+<A NAME="43"></A>    }
+<A NAME="44"></A>    
+<A NAME="45"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testWrongId() <FONT ID="Throws">throws</FONT> SQLException
+<A NAME="46"></A>    {
+<A NAME="47"></A>        prepareEmptyResultSet();
+<A NAME="48"></A>        <A HREF="../../../../com/mockrunner/example/jdbc/Bank.java.html">Bank</A> bank = <FONT ID="New">new</FONT> <A HREF="../../../../com/mockrunner/example/jdbc/Bank.java.html">Bank</A>();
+<A NAME="49"></A>        bank.connect();
+<A NAME="50"></A>        bank.transfer(<FONT ID="IntegerLiteral">1</FONT>, <FONT ID="IntegerLiteral">2</FONT>, <FONT ID="IntegerLiteral">5000</FONT>);
+<A NAME="51"></A>        bank.disconnect();
+<A NAME="52"></A>        verifySQLStatementExecuted(<FONT ID="StringLiteral">"select balance"</FONT>);
+<A NAME="53"></A>        verifySQLStatementNotExecuted(<FONT ID="StringLiteral">"update account"</FONT>);
+<A NAME="54"></A>        verifyNotCommitted();
+<A NAME="55"></A>        verifyRolledBack();
+<A NAME="56"></A>        verifyAllResultSetsClosed();
+<A NAME="57"></A>        verifyAllStatementsClosed();
+<A NAME="58"></A>        verifyConnectionClosed();
+<A NAME="59"></A>    }
+<A NAME="60"></A>    
+<A NAME="61"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testTransferOk() <FONT ID="Throws">throws</FONT> SQLException
+<A NAME="62"></A>    {
+<A NAME="63"></A>        prepareResultSet();
+<A NAME="64"></A>        <A HREF="../../../../com/mockrunner/example/jdbc/Bank.java.html">Bank</A> bank = <FONT ID="New">new</FONT> <A HREF="../../../../com/mockrunner/example/jdbc/Bank.java.html">Bank</A>();
+<A NAME="65"></A>        bank.connect();
+<A NAME="66"></A>        bank.transfer(<FONT ID="IntegerLiteral">1</FONT>, <FONT ID="IntegerLiteral">2</FONT>, <FONT ID="IntegerLiteral">5000</FONT>);
+<A NAME="67"></A>        bank.disconnect();
+<A NAME="68"></A>        verifySQLStatementExecuted(<FONT ID="StringLiteral">"select balance"</FONT>);
+<A NAME="69"></A>        verifySQLStatementExecuted(<FONT ID="StringLiteral">"update account"</FONT>);
+<A NAME="70"></A>        verifySQLStatementParameter(<FONT ID="StringLiteral">"update account"</FONT>, <FONT ID="IntegerLiteral">0</FONT>, <FONT ID="IntegerLiteral">1</FONT>, <FONT ID="New">new</FONT> Integer(-<FONT ID="IntegerLiteral">5000</FONT>));
+<A NAME="71"></A>        verifySQLStatementParameter(<FONT ID="StringLiteral">"update account"</FONT>, <FONT ID="IntegerLiteral">0</FONT>, <FONT ID="IntegerLiteral">2</FONT>, <FONT ID="New">new</FONT> Integer(<FONT ID="IntegerLiteral">1</FONT>));
+<A NAME="72"></A>        verifySQLStatementParameter(<FONT ID="StringLiteral">"update account"</FONT>, <FONT ID="IntegerLiteral">1</FONT>, <FONT ID="IntegerLiteral">1</FONT>, <FONT ID="New">new</FONT> Integer(<FONT ID="IntegerLiteral">5000</FONT>));
+<A NAME="73"></A>        verifySQLStatementParameter(<FONT ID="StringLiteral">"update account"</FONT>, <FONT ID="IntegerLiteral">1</FONT>, <FONT ID="IntegerLiteral">2</FONT>, <FONT ID="New">new</FONT> Integer(<FONT ID="IntegerLiteral">2</FONT>));
+<A NAME="74"></A>        verifyCommitted();
+<A NAME="75"></A>        verifyNotRolledBack();
+<A NAME="76"></A>        verifyAllResultSetsClosed();
+<A NAME="77"></A>        verifyAllStatementsClosed();
+<A NAME="78"></A>        verifyConnectionClosed(); 
+<A NAME="79"></A>    }
+<A NAME="80"></A>    
+<A NAME="81"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testTransferFailure() <FONT ID="Throws">throws</FONT> SQLException
+<A NAME="82"></A>    {
+<A NAME="83"></A>        prepareResultSet();
+<A NAME="84"></A>        <A HREF="../../../../com/mockrunner/example/jdbc/Bank.java.html">Bank</A> bank = <FONT ID="New">new</FONT> <A HREF="../../../../com/mockrunner/example/jdbc/Bank.java.html">Bank</A>();
+<A NAME="85"></A>        bank.connect();
+<A NAME="86"></A>        bank.transfer(<FONT ID="IntegerLiteral">1</FONT>, <FONT ID="IntegerLiteral">2</FONT>, <FONT ID="IntegerLiteral">20000</FONT>);
+<A NAME="87"></A>        bank.disconnect();
+<A NAME="88"></A>        verifySQLStatementExecuted(<FONT ID="StringLiteral">"select balance"</FONT>);
+<A NAME="89"></A>        verifySQLStatementNotExecuted(<FONT ID="StringLiteral">"update account"</FONT>);
+<A NAME="90"></A>        verifyNotCommitted();
+<A NAME="91"></A>        verifyRolledBack();
+<A NAME="92"></A>        verifyAllResultSetsClosed();
+<A NAME="93"></A>        verifyAllStatementsClosed();
+<A NAME="94"></A>        verifyConnectionClosed();
+<A NAME="95"></A>    }
+<A NAME="96"></A>}
+<A NAME="97"></A></pre>
+</BODY>
+</HTML>

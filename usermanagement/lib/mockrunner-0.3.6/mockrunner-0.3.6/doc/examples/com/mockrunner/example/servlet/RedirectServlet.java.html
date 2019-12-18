@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.servlet.RedirectServlet (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">RedirectServlet.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.servlet.index.html" target="packageFrame">com.mockrunner.example.servlet</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.io.IOException;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="Import">import</FONT> javax.servlet.ServletException;
+<A NAME="6"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServlet;
+<A NAME="7"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletRequest;
+<A NAME="8"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletResponse;
+<A NAME="9"></A>
+<A NAME="10"></A><FONT ID="FormalComment">/**
+<A NAME="11"></A> * This example servlet creates an html page thats
+<A NAME="12"></A> * redirects to a specified URL. You can specify
+<A NAME="13"></A> * the URl with the request parameter &lt;i&gt;redirecturl&lt;/i&gt;.
+<A NAME="14"></A> * Check out {@link RedirectServletTest}
+<A NAME="15"></A> * to see how to test this simple servlet.
+<A NAME="16"></A> */</FONT>
+<A NAME="17"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> RedirectServlet <FONT ID="Extends">extends</FONT> HttpServlet
+<A NAME="18"></A>{
+<A NAME="19"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> doGet(HttpServletRequest request, HttpServletResponse response) <FONT ID="Throws">throws</FONT> ServletException, IOException
+<A NAME="20"></A>    {
+<A NAME="21"></A>        doPost(request, response);
+<A NAME="22"></A>    }
+<A NAME="23"></A>
+<A NAME="24"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> doPost(HttpServletRequest request, HttpServletResponse response) <FONT ID="Throws">throws</FONT> ServletException, IOException
+<A NAME="25"></A>    {
+<A NAME="26"></A>        String redirectUrl = request.getParameter(<FONT ID="StringLiteral">"redirecturl"</FONT>);
+<A NAME="27"></A>        StringBuffer output = <FONT ID="New">new</FONT> StringBuffer();
+<A NAME="28"></A>        output.append(<FONT ID="StringLiteral">"&lt;html&gt;\n"</FONT>);
+<A NAME="29"></A>        output.append(<FONT ID="StringLiteral">"&lt;head&gt;\n"</FONT>);
+<A NAME="30"></A>        output.append(<FONT ID="StringLiteral">"&lt;meta http-equiv=\"refresh\" content=\""</FONT>);
+<A NAME="31"></A>        output.append(<FONT ID="StringLiteral">"0;URL="</FONT> + redirectUrl + <FONT ID="StringLiteral">"\"&gt;\n"</FONT>);
+<A NAME="32"></A>        output.append(<FONT ID="StringLiteral">"&lt;/head&gt;\n"</FONT>);
+<A NAME="33"></A>        output.append(<FONT ID="StringLiteral">"&lt;body&gt;\n"</FONT>);
+<A NAME="34"></A>        output.append(<FONT ID="StringLiteral">"&lt;h3&gt;"</FONT>);
+<A NAME="35"></A>        output.append(<FONT ID="StringLiteral">"You will be redirected to "</FONT>);
+<A NAME="36"></A>        output.append(<FONT ID="StringLiteral">"&lt;a href=\""</FONT> + redirectUrl + <FONT ID="StringLiteral">"\"&gt;"</FONT>);
+<A NAME="37"></A>        output.append(redirectUrl + <FONT ID="StringLiteral">"&lt;/a&gt;"</FONT>);
+<A NAME="38"></A>        output.append(<FONT ID="StringLiteral">"&lt;/h3&gt;\n"</FONT>);
+<A NAME="39"></A>        output.append(<FONT ID="StringLiteral">"&lt;/body&gt;\n"</FONT>);
+<A NAME="40"></A>        output.append(<FONT ID="StringLiteral">"&lt;/html&gt;\n"</FONT>);
+<A NAME="41"></A>        response.getWriter().write(output.toString());
+<A NAME="42"></A>    }
+<A NAME="43"></A>}
+<A NAME="44"></A></pre>
+</BODY>
+</HTML>

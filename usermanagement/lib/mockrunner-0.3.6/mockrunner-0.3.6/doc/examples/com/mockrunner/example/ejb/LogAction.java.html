@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.ejb.LogAction (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">LogAction.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.ejb.index.html" target="packageFrame">com.mockrunner.example.ejb</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> javax.naming.InitialContext;
+<A NAME="4"></A><FONT ID="Import">import</FONT> javax.rmi.PortableRemoteObject;
+<A NAME="5"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletRequest;
+<A NAME="6"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletResponse;
+<A NAME="7"></A>
+<A NAME="8"></A><FONT ID="Import">import</FONT> org.apache.struts.action.Action;
+<A NAME="9"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionForm;
+<A NAME="10"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionForward;
+<A NAME="11"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionMapping;
+<A NAME="12"></A>
+<A NAME="13"></A><FONT ID="Import">import</FONT> <A HREF="../../../../com/mockrunner/example/ejb/interfaces/LogSession.java.html">com.mockrunner.example.ejb.interfaces.LogSession</A>;
+<A NAME="14"></A><FONT ID="Import">import</FONT> <A HREF="../../../../com/mockrunner/example/ejb/interfaces/LogSessionHome.java.html">com.mockrunner.example.ejb.interfaces.LogSessionHome</A>;
+<A NAME="15"></A>
+<A NAME="16"></A><FONT ID="FormalComment">/**
+<A NAME="17"></A> * This example action takes a message parameter from the request
+<A NAME="18"></A> * and uses the {@link LogSessionBean} to log the message.
+<A NAME="19"></A> * See {@link LogActionTest} for an example test of this action.
+<A NAME="20"></A> */</FONT>
+<A NAME="21"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> LogAction <FONT ID="Extends">extends</FONT> Action
+<A NAME="22"></A>{
+<A NAME="23"></A>    <FONT ID="Public">public</FONT> ActionForward execute(ActionMapping mapping,
+<A NAME="24"></A>                                 ActionForm form,
+<A NAME="25"></A>                                 HttpServletRequest request,
+<A NAME="26"></A>                                 HttpServletResponse response) <FONT ID="Throws">throws</FONT> Exception
+<A NAME="27"></A>    {
+<A NAME="28"></A>        String message = request.getParameter(<FONT ID="StringLiteral">"message"</FONT>);
+<A NAME="29"></A>        <FONT ID="Try">try</FONT> 
+<A NAME="30"></A>        {
+<A NAME="31"></A>            <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != message)
+<A NAME="32"></A>            {
+<A NAME="33"></A>                InitialContext initialContext = <FONT ID="New">new</FONT> InitialContext();
+<A NAME="34"></A>                Object home = initialContext.lookup(<FONT ID="StringLiteral">"com/mockrunner/example/LogSession"</FONT>);
+<A NAME="35"></A>                <A HREF="../../../../com/mockrunner/example/ejb/interfaces/LogSessionHome.java.html">LogSessionHome</A> logHome = (<A HREF="../../../../com/mockrunner/example/ejb/interfaces/LogSessionHome.java.html">LogSessionHome</A>)PortableRemoteObject.narrow(home, <A HREF="../../../../com/mockrunner/example/ejb/interfaces/LogSessionHome.java.html">LogSessionHome</A>.<FONT ID="Class">class</FONT>);
+<A NAME="36"></A>                <A HREF="../../../../com/mockrunner/example/ejb/interfaces/LogSession.java.html">LogSession</A> log = logHome.create();
+<A NAME="37"></A>                log.logMessage(message);
+<A NAME="38"></A>                log.remove();
+<A NAME="39"></A>            }
+<A NAME="40"></A>        } 
+<A NAME="41"></A>        <FONT ID="Catch">catch</FONT>(Exception exc)
+<A NAME="42"></A>        {
+<A NAME="43"></A>            exc.printStackTrace();
+<A NAME="44"></A>        }
+<A NAME="45"></A>        <FONT ID="Return">return</FONT> mapping.findForward(<FONT ID="StringLiteral">"success"</FONT>);
+<A NAME="46"></A>    }
+<A NAME="47"></A>}
+<A NAME="48"></A></pre>
+</BODY>
+</HTML>

@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.struts.LogoutAction (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">LogoutAction.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.struts.index.html" target="packageFrame">com.mockrunner.example.struts</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletRequest;
+<A NAME="4"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletResponse;
+<A NAME="5"></A>
+<A NAME="6"></A><FONT ID="Import">import</FONT> org.apache.struts.action.Action;
+<A NAME="7"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionForm;
+<A NAME="8"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionForward;
+<A NAME="9"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionMapping;
+<A NAME="10"></A>
+<A NAME="11"></A><FONT ID="FormalComment">/**
+<A NAME="12"></A> * This example action does the same as 
+<A NAME="13"></A> * {@link com.mockrunner.example.servlet.LogoutServlet}.
+<A NAME="14"></A> * It is used to demonstrate the testing of actions with
+<A NAME="15"></A> * specified filters since {@link com.mockrunner.struts.ActionTestModule}
+<A NAME="16"></A> * does not provide any filter methods. Please note that usually it's not
+<A NAME="17"></A> * necessary to test actions in conjunction with filters. You can
+<A NAME="18"></A> * add the filtered values directly to the request.
+<A NAME="19"></A> * This action uses the custom action mapping {@link LogoutActionMapping}
+<A NAME="20"></A> * to get the request parameter name.
+<A NAME="21"></A> */</FONT>
+<A NAME="22"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> LogoutAction <FONT ID="Extends">extends</FONT> Action
+<A NAME="23"></A>{
+<A NAME="24"></A>    <FONT ID="Public">public</FONT> ActionForward execute(ActionMapping mapping,
+<A NAME="25"></A>                                 ActionForm form,
+<A NAME="26"></A>                                 HttpServletRequest request,
+<A NAME="27"></A>                                 HttpServletResponse response) <FONT ID="Throws">throws</FONT> Exception
+<A NAME="28"></A>    {
+<A NAME="29"></A>        <A HREF="../../../../com/mockrunner/example/struts/LogoutActionMapping.java.html">LogoutActionMapping</A> logoutMapping = (<A HREF="../../../../com/mockrunner/example/struts/LogoutActionMapping.java.html">LogoutActionMapping</A>)mapping;
+<A NAME="30"></A>        String logout = request.getParameter(logoutMapping.getRequestParameterName());
+<A NAME="31"></A>        <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != logout)
+<A NAME="32"></A>        {
+<A NAME="33"></A>            request.getSession().invalidate();
+<A NAME="34"></A>            request.getRequestDispatcher(<FONT ID="StringLiteral">"/html/goodbye.html"</FONT>).forward(request, response);
+<A NAME="35"></A>        }
+<A NAME="36"></A>        <FONT ID="Return">return</FONT> mapping.findForward(<FONT ID="StringLiteral">"success"</FONT>);
+<A NAME="37"></A>    }
+<A NAME="38"></A>}
+<A NAME="39"></A></pre>
+</BODY>
+</HTML>

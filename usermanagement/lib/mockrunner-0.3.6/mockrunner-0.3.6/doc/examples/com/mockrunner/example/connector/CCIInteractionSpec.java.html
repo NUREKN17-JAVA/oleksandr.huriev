@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.connector.CCIInteractionSpec (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">CCIInteractionSpec.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.connector.index.html" target="packageFrame">com.mockrunner.example.connector</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> javax.resource.cci.InteractionSpec;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="FormalComment">/**
+<A NAME="6"></A> * &lt;code&gt;InteractionSpec&lt;/code&gt; which can be used to call a 
+<A NAME="7"></A> * database stored procedure through CCI.
+<A NAME="8"></A> */</FONT>
+<A NAME="9"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> CCIInteractionSpec <FONT ID="Implements">implements</FONT> InteractionSpec
+<A NAME="10"></A>{
+<A NAME="11"></A>    <FONT ID="Private">private</FONT> String functionName;
+<A NAME="12"></A>    <FONT ID="Private">private</FONT> String schema;
+<A NAME="13"></A>    <FONT ID="Private">private</FONT> String catalog;
+<A NAME="14"></A>    
+<A NAME="15"></A>    <FONT ID="Public">public</FONT> String getCatalog()
+<A NAME="16"></A>    {
+<A NAME="17"></A>        <FONT ID="Return">return</FONT> catalog;
+<A NAME="18"></A>    }
+<A NAME="19"></A>    
+<A NAME="20"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setCatalog(String catalog)
+<A NAME="21"></A>    {
+<A NAME="22"></A>        <FONT ID="This">this</FONT>.catalog = catalog;
+<A NAME="23"></A>    }
+<A NAME="24"></A>    
+<A NAME="25"></A>    <FONT ID="Public">public</FONT> String getFunctionName()
+<A NAME="26"></A>    {
+<A NAME="27"></A>        <FONT ID="Return">return</FONT> functionName;
+<A NAME="28"></A>    }
+<A NAME="29"></A>    
+<A NAME="30"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setFunctionName(String functionName)
+<A NAME="31"></A>    {
+<A NAME="32"></A>        <FONT ID="This">this</FONT>.functionName = functionName;
+<A NAME="33"></A>    }
+<A NAME="34"></A>    
+<A NAME="35"></A>    <FONT ID="Public">public</FONT> String getSchema()
+<A NAME="36"></A>    {
+<A NAME="37"></A>        <FONT ID="Return">return</FONT> schema;
+<A NAME="38"></A>    }
+<A NAME="39"></A>    
+<A NAME="40"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setSchema(String schema)
+<A NAME="41"></A>    {
+<A NAME="42"></A>        <FONT ID="This">this</FONT>.schema = schema;
+<A NAME="43"></A>    }
+<A NAME="44"></A>}
+<A NAME="45"></A></pre>
+</BODY>
+</HTML>

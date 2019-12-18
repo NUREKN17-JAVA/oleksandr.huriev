@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.ejb.UserLoginSessionTest (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">UserLoginSessionTest.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.ejb.index.html" target="packageFrame">com.mockrunner.example.ejb</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> org.mockejb.TransactionPolicy;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="Import">import</FONT> com.mockrunner.ejb.EJBTestCaseAdapter;
+<A NAME="6"></A><FONT ID="Import">import</FONT> <A HREF="../../../../com/mockrunner/example/ejb/interfaces/UserLoginSession.java.html">com.mockrunner.example.ejb.interfaces.UserLoginSession</A>;
+<A NAME="7"></A><FONT ID="Import">import</FONT> com.mockrunner.jdbc.PreparedStatementResultSetHandler;
+<A NAME="8"></A><FONT ID="Import">import</FONT> com.mockrunner.mock.jdbc.MockResultSet;
+<A NAME="9"></A>
+<A NAME="10"></A><FONT ID="FormalComment">/**
+<A NAME="11"></A> * Example test for {@link UserLoginSessionBean} and {@link UserEntityBean}. 
+<A NAME="12"></A> * This example demonstrated how to combine the testing of BMP entity beans
+<A NAME="13"></A> * with the JDBC test framework. We prepare the primary key the database should
+<A NAME="14"></A> * return and MockEJB handles create and finder calls. No interceptors
+<A NAME="15"></A> * are involved here.
+<A NAME="16"></A> * In the first test, we prepare a test user and try to login.
+<A NAME="17"></A> * In the second test, we create a user and simulate the SQLException,
+<A NAME="18"></A> * the real database would throw because of the duplicate primary key.
+<A NAME="19"></A> */</FONT>
+<A NAME="20"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> UserLoginSessionTest <FONT ID="Extends">extends</FONT> EJBTestCaseAdapter
+<A NAME="21"></A>{
+<A NAME="22"></A>    <FONT ID="Private">private</FONT> <A HREF="../../../../com/mockrunner/example/ejb/interfaces/UserLoginSession.java.html">UserLoginSession</A> bean;
+<A NAME="23"></A>    <FONT ID="Private">private</FONT> PreparedStatementResultSetHandler handler;
+<A NAME="24"></A>    
+<A NAME="25"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> setUp() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="26"></A>    {
+<A NAME="27"></A>        <FONT ID="Super">super</FONT>.setUp();
+<A NAME="28"></A>        setInterfacePackage(<FONT ID="StringLiteral">"com.mockrunner.example.ejb.interfaces"</FONT>);
+<A NAME="29"></A>        deploySessionBean(<FONT ID="StringLiteral">"com/mockrunner/example/UserLoginSession"</FONT>, <A HREF="../../../../com/mockrunner/example/ejb/UserLoginSessionBean.java.html">UserLoginSessionBean</A>.<FONT ID="Class">class</FONT>, TransactionPolicy.REQUIRED);
+<A NAME="30"></A>        bean = (<A HREF="../../../../com/mockrunner/example/ejb/interfaces/UserLoginSession.java.html">UserLoginSession</A>)createBean(<FONT ID="StringLiteral">"com/mockrunner/example/UserLoginSession"</FONT>);
+<A NAME="31"></A>        deployEntityBean(<FONT ID="StringLiteral">"java:comp/env/ejb/UserEntity"</FONT>, <A HREF="../../../../com/mockrunner/example/ejb/UserEntityBean.java.html">UserEntityBean</A>.<FONT ID="Class">class</FONT>, TransactionPolicy.REQUIRED);  
+<A NAME="32"></A>        bindToContext(<FONT ID="StringLiteral">"java:comp/env/jdbc/MySQLDB"</FONT>, getJDBCMockObjectFactory().getMockDataSource());
+<A NAME="33"></A>        handler = getJDBCMockObjectFactory().getMockConnection().getPreparedStatementResultSetHandler();
+<A NAME="34"></A>    }
+<A NAME="35"></A>    
+<A NAME="36"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> prepareFindByPrimaryKeyResult()
+<A NAME="37"></A>    {
+<A NAME="38"></A>        MockResultSet resultSet = handler.createResultSet();
+<A NAME="39"></A>        resultSet.addRow(<FONT ID="New">new</FONT> Object[] {<FONT ID="StringLiteral">"TestUser"</FONT>});
+<A NAME="40"></A>        handler.prepareResultSet(<FONT ID="StringLiteral">"select username from usertable"</FONT>, resultSet);
+<A NAME="41"></A>        createEntityBean(<FONT ID="StringLiteral">"java:comp/env/ejb/UserEntity"</FONT>, <FONT ID="New">new</FONT> Object[] {<FONT ID="StringLiteral">"TestUser"</FONT>, <FONT ID="StringLiteral">"CorrectPassword"</FONT>}, <FONT ID="StringLiteral">"TestUser"</FONT>);
+<A NAME="42"></A>    }
+<A NAME="43"></A>    
+<A NAME="44"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> prepareSQLExceptionForCreate()
+<A NAME="45"></A>    {
+<A NAME="46"></A>        handler.prepareThrowsSQLException(<FONT ID="StringLiteral">"insert into usertable"</FONT>);
+<A NAME="47"></A>    }
+<A NAME="48"></A>    
+<A NAME="49"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testLoginUser() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="50"></A>    {
+<A NAME="51"></A>        prepareFindByPrimaryKeyResult();
+<A NAME="52"></A>        assertFalse(bean.loginUser(<FONT ID="StringLiteral">"TestUser"</FONT>, <FONT ID="StringLiteral">"WrongPassword"</FONT>));
+<A NAME="53"></A>        assertTrue(bean.loginUser(<FONT ID="StringLiteral">"TestUser"</FONT>, <FONT ID="StringLiteral">"CorrectPassword"</FONT>));
+<A NAME="54"></A>        assertFalse(bean.loginUser(<FONT ID="StringLiteral">"UnknownUser"</FONT>, <FONT ID="StringLiteral">"APassword"</FONT>));
+<A NAME="55"></A>    }
+<A NAME="56"></A>    
+<A NAME="57"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testCreateUser() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="58"></A>    {
+<A NAME="59"></A>        assertTrue(bean.createUser(<FONT ID="StringLiteral">"TestUser"</FONT>, <FONT ID="StringLiteral">"APassword"</FONT>));
+<A NAME="60"></A>        prepareSQLExceptionForCreate();
+<A NAME="61"></A>        assertFalse(bean.createUser(<FONT ID="StringLiteral">"TestUser"</FONT>, <FONT ID="StringLiteral">"APassword"</FONT>));
+<A NAME="62"></A>    }
+<A NAME="63"></A>}
+<A NAME="64"></A></pre>
+</BODY>
+</HTML>

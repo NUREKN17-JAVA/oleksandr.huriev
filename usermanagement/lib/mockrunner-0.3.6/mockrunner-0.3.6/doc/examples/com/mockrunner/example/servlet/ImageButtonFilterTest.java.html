@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.servlet.ImageButtonFilterTest (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">ImageButtonFilterTest.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.servlet.index.html" target="packageFrame">com.mockrunner.example.servlet</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletRequest;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="Import">import</FONT> com.mockrunner.servlet.BasicServletTestCaseAdapter;
+<A NAME="6"></A>
+<A NAME="7"></A><FONT ID="FormalComment">/**
+<A NAME="8"></A> * Example test for the {@link ImageButtonFilter}.
+<A NAME="9"></A> * Demonstrates the usage of the filter test features in
+<A NAME="10"></A> * {@link com.mockrunner.servlet.ServletTestModule} 
+<A NAME="11"></A> * and {@link com.mockrunner.servlet.BasicServletTestCaseAdapter}.
+<A NAME="12"></A> */</FONT>
+<A NAME="13"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> ImageButtonFilterTest <FONT ID="Extends">extends</FONT> BasicServletTestCaseAdapter
+<A NAME="14"></A>{
+<A NAME="15"></A>    <FONT ID="Private">private</FONT> <A HREF="../../../../com/mockrunner/example/servlet/ImageButtonFilter.java.html">ImageButtonFilter</A> filter;
+<A NAME="16"></A>    
+<A NAME="17"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> setUp() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="18"></A>    {
+<A NAME="19"></A>        <FONT ID="Super">super</FONT>.setUp();
+<A NAME="20"></A>        filter = (<A HREF="../../../../com/mockrunner/example/servlet/ImageButtonFilter.java.html">ImageButtonFilter</A>)createFilter(<A HREF="../../../../com/mockrunner/example/servlet/ImageButtonFilter.java.html">ImageButtonFilter</A>.<FONT ID="Class">class</FONT>);
+<A NAME="21"></A>    }
+<A NAME="22"></A>
+<A NAME="23"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testImageButtonParameter()
+<A NAME="24"></A>    {
+<A NAME="25"></A>        addRequestParameter(<FONT ID="StringLiteral">"param"</FONT>, <FONT ID="StringLiteral">"value"</FONT>);
+<A NAME="26"></A>        addRequestParameter(<FONT ID="StringLiteral">"image.x"</FONT>, <FONT ID="StringLiteral">"123"</FONT>);
+<A NAME="27"></A>        addRequestParameter(<FONT ID="StringLiteral">"image.y"</FONT>, <FONT ID="StringLiteral">"456"</FONT>);
+<A NAME="28"></A>        doFilter();
+<A NAME="29"></A>        HttpServletRequest filteredRequest = (HttpServletRequest)getFilteredRequest();
+<A NAME="30"></A>        assertEquals(<FONT ID="StringLiteral">"value"</FONT>, filteredRequest.getParameter(<FONT ID="StringLiteral">"param"</FONT>));
+<A NAME="31"></A>        assertEquals(<FONT ID="StringLiteral">"123"</FONT>, filteredRequest.getParameter(<FONT ID="StringLiteral">"image"</FONT>));
+<A NAME="32"></A>        assertNull(filteredRequest.getParameter(<FONT ID="StringLiteral">"image.x"</FONT>));
+<A NAME="33"></A>        assertNull(filteredRequest.getParameter(<FONT ID="StringLiteral">"image.y"</FONT>));
+<A NAME="34"></A>    }
+<A NAME="35"></A>}
+<A NAME="36"></A></pre>
+</BODY>
+</HTML>

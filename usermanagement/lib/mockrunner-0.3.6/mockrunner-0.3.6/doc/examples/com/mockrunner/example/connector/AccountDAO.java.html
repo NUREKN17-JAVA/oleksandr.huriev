@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.connector.AccountDAO (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">AccountDAO.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.connector.index.html" target="packageFrame">com.mockrunner.example.connector</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.util.Iterator;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="Import">import</FONT> javax.naming.InitialContext;
+<A NAME="6"></A><FONT ID="Import">import</FONT> javax.resource.ResourceException;
+<A NAME="7"></A><FONT ID="Import">import</FONT> javax.resource.cci.Connection;
+<A NAME="8"></A><FONT ID="Import">import</FONT> javax.resource.cci.ConnectionFactory;
+<A NAME="9"></A><FONT ID="Import">import</FONT> javax.resource.cci.IndexedRecord;
+<A NAME="10"></A><FONT ID="Import">import</FONT> javax.resource.cci.Interaction;
+<A NAME="11"></A><FONT ID="Import">import</FONT> javax.resource.cci.LocalTransaction;
+<A NAME="12"></A><FONT ID="Import">import</FONT> javax.resource.cci.RecordFactory;
+<A NAME="13"></A>
+<A NAME="14"></A><FONT ID="FormalComment">/**
+<A NAME="15"></A> * A DAO that calls a database stored procedure over an resource adapter
+<A NAME="16"></A> * using local transactions. The stored procedure takes the name of a
+<A NAME="17"></A> * person and creates an account for this person returning the account id.
+<A NAME="18"></A> * The stored procedure may be defined like this:
+<A NAME="19"></A> * &lt;br&gt;
+<A NAME="20"></A> * &lt;code&gt;PROCEDURE CRTACCT(IN firstname VARCHAR, IN lastname VARCHAR, OUT id INTEGER)&lt;/code&gt;
+<A NAME="21"></A> */</FONT>
+<A NAME="22"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> AccountDAO
+<A NAME="23"></A>{
+<A NAME="24"></A>    <FONT ID="Public">public</FONT> <FONT ID="Int">int</FONT> createAccount(String firstName, String lastName)
+<A NAME="25"></A>    {
+<A NAME="26"></A>        Connection connection = <FONT ID="Null">null</FONT>;
+<A NAME="27"></A>        LocalTransaction transaction = <FONT ID="Null">null</FONT>;
+<A NAME="28"></A>        <FONT ID="Try">try</FONT>
+<A NAME="29"></A>        {
+<A NAME="30"></A>            InitialContext context = <FONT ID="New">new</FONT> InitialContext();
+<A NAME="31"></A>            ConnectionFactory connectionFactory = (ConnectionFactory)context.lookup(<FONT ID="StringLiteral">"java:/ra/db/ConnectionFactory"</FONT>);
+<A NAME="32"></A>            connection = connectionFactory.getConnection();
+<A NAME="33"></A>            Interaction interaction = connection.createInteraction();
+<A NAME="34"></A>            <A HREF="../../../../com/mockrunner/example/connector/CCIInteractionSpec.java.html">CCIInteractionSpec</A> spec = <FONT ID="New">new</FONT> <A HREF="../../../../com/mockrunner/example/connector/CCIInteractionSpec.java.html">CCIInteractionSpec</A>();
+<A NAME="35"></A>            spec.setFunctionName(<FONT ID="StringLiteral">"CRTACCT"</FONT>);
+<A NAME="36"></A>            spec.setSchema(<FONT ID="StringLiteral">"testschema"</FONT>);
+<A NAME="37"></A>            spec.setCatalog(<FONT ID="Null">null</FONT>);
+<A NAME="38"></A>            RecordFactory recordFactory = connectionFactory.getRecordFactory();
+<A NAME="39"></A>            IndexedRecord inputRecord = recordFactory.createIndexedRecord(<FONT ID="StringLiteral">"Input"</FONT>);
+<A NAME="40"></A>            inputRecord.add(firstName);
+<A NAME="41"></A>            inputRecord.add(lastName);
+<A NAME="42"></A>            transaction = connection.getLocalTransaction();
+<A NAME="43"></A>            transaction.begin();
+<A NAME="44"></A>            IndexedRecord outputRecord = (IndexedRecord)interaction.execute(spec, inputRecord);
+<A NAME="45"></A>            transaction.commit();
+<A NAME="46"></A>            <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != outputRecord)
+<A NAME="47"></A>            {
+<A NAME="48"></A>                Iterator iterator = outputRecord.iterator();
+<A NAME="49"></A>                <FONT ID="If">if</FONT>(iterator.hasNext())
+<A NAME="50"></A>                {
+<A NAME="51"></A>                    Integer value = (Integer)iterator.next();
+<A NAME="52"></A>                    <FONT ID="Return">return</FONT> value.intValue();
+<A NAME="53"></A>                }
+<A NAME="54"></A>            }
+<A NAME="55"></A>        }
+<A NAME="56"></A>        <FONT ID="Catch">catch</FONT>(Exception exc)
+<A NAME="57"></A>        {
+<A NAME="58"></A>            handleException(exc, transaction);
+<A NAME="59"></A>        }
+<A NAME="60"></A>        <FONT ID="Finally">finally</FONT>
+<A NAME="61"></A>        {
+<A NAME="62"></A>            <FONT ID="Try">try</FONT>
+<A NAME="63"></A>            {
+<A NAME="64"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != connection) connection.close();
+<A NAME="65"></A>            } 
+<A NAME="66"></A>            <FONT ID="Catch">catch</FONT>(ResourceException exc)
+<A NAME="67"></A>            {
+<A NAME="68"></A>                exc.printStackTrace();
+<A NAME="69"></A>            }
+<A NAME="70"></A>        }
+<A NAME="71"></A>        <FONT ID="Return">return</FONT> -<FONT ID="IntegerLiteral">1</FONT>;
+<A NAME="72"></A>    }
+<A NAME="73"></A>
+<A NAME="74"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> handleException(Exception exc, LocalTransaction transaction)
+<A NAME="75"></A>    {
+<A NAME="76"></A>        <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != transaction)
+<A NAME="77"></A>        {
+<A NAME="78"></A>            <FONT ID="Try">try</FONT>
+<A NAME="79"></A>            {
+<A NAME="80"></A>                transaction.rollback();
+<A NAME="81"></A>            } 
+<A NAME="82"></A>            <FONT ID="Catch">catch</FONT>(ResourceException txExc)
+<A NAME="83"></A>            {
+<A NAME="84"></A>                txExc.printStackTrace();
+<A NAME="85"></A>            }
+<A NAME="86"></A>        }
+<A NAME="87"></A>    }
+<A NAME="88"></A>}
+<A NAME="89"></A></pre>
+</BODY>
+</HTML>

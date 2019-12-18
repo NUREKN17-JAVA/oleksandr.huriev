@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.struts.AuthenticationAction (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">AuthenticationAction.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.struts.index.html" target="packageFrame">com.mockrunner.example.struts</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> javax.servlet.ServletContext;
+<A NAME="4"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletRequest;
+<A NAME="5"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletResponse;
+<A NAME="6"></A>
+<A NAME="7"></A><FONT ID="Import">import</FONT> org.apache.struts.action.Action;
+<A NAME="8"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionErrors;
+<A NAME="9"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionForm;
+<A NAME="10"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionForward;
+<A NAME="11"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionMapping;
+<A NAME="12"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionMessage;
+<A NAME="13"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionMessages;
+<A NAME="14"></A>
+<A NAME="15"></A><FONT ID="FormalComment">/**
+<A NAME="16"></A> * This example action simulates a simple authentication system
+<A NAME="17"></A> * and generates the approriate &lt;code&gt;ActionErrors&lt;/code&gt; and
+<A NAME="18"></A> * &lt;code&gt;ActionMessages&lt;/code&gt;. This action will be tested with
+<A NAME="19"></A> * {@link AuthenticationActionTest} in order 
+<A NAME="20"></A> * to demonstrate the usage of {@link com.mockrunner.struts.ActionTestModule}.
+<A NAME="21"></A> */</FONT>
+<A NAME="22"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> AuthenticationAction <FONT ID="Extends">extends</FONT> Action
+<A NAME="23"></A>{
+<A NAME="24"></A>    <FONT ID="Public">public</FONT> ActionForward execute(ActionMapping mapping,
+<A NAME="25"></A>                                 ActionForm form,
+<A NAME="26"></A>                                 HttpServletRequest request,
+<A NAME="27"></A>                                 HttpServletResponse response) <FONT ID="Throws">throws</FONT> Exception
+<A NAME="28"></A>    {
+<A NAME="29"></A>        <A HREF="../../../../com/mockrunner/example/struts/AuthenticationForm.java.html">AuthenticationForm</A> authForm = (<A HREF="../../../../com/mockrunner/example/struts/AuthenticationForm.java.html">AuthenticationForm</A>) form;
+<A NAME="30"></A>        String username = authForm.getUsername();
+<A NAME="31"></A>        String password = authForm.getPassword();
+<A NAME="32"></A>        <FONT ID="Boolean">boolean</FONT> loginOk = getAuthenticationStrategy(request).authenticate(username, password);
+<A NAME="33"></A>        <FONT ID="If">if</FONT>(loginOk) 
+<A NAME="34"></A>        {
+<A NAME="35"></A>            addOkMessage(request);
+<A NAME="36"></A>            <FONT ID="Return">return</FONT> mapping.findForward(<FONT ID="StringLiteral">"success"</FONT>);
+<A NAME="37"></A>        }   
+<A NAME="38"></A>        addLoginErrors(request, username);
+<A NAME="39"></A>        <FONT ID="Return">return</FONT> mapping.findForward(<FONT ID="StringLiteral">"failure"</FONT>);
+<A NAME="40"></A>    }
+<A NAME="41"></A>
+<A NAME="42"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> addLoginErrors(HttpServletRequest request, String username)
+<A NAME="43"></A>    {
+<A NAME="44"></A>        ActionMessages errors = <FONT ID="New">new</FONT> ActionMessages();
+<A NAME="45"></A>        <FONT ID="If">if</FONT>(!getAuthenticationStrategy(request).wasLastUserKnown())
+<A NAME="46"></A>        {
+<A NAME="47"></A>            ActionMessage error = <FONT ID="New">new</FONT> ActionMessage(<FONT ID="StringLiteral">"auth.username.unknown"</FONT>, username);
+<A NAME="48"></A>            errors.add(ActionMessages.GLOBAL_MESSAGE, error);
+<A NAME="49"></A>        }
+<A NAME="50"></A>        <FONT ID="Else">else</FONT> <FONT ID="If">if</FONT>(!getAuthenticationStrategy(request).wasLastPasswordOk())
+<A NAME="51"></A>        {
+<A NAME="52"></A>            ActionMessage error = <FONT ID="New">new</FONT> ActionMessage(<FONT ID="StringLiteral">"auth.password.wrong"</FONT>);
+<A NAME="53"></A>            errors.add(ActionErrors.GLOBAL_MESSAGE, error);
+<A NAME="54"></A>        }
+<A NAME="55"></A>        <FONT ID="Else">else</FONT>
+<A NAME="56"></A>        {
+<A NAME="57"></A>            ActionMessage error = <FONT ID="New">new</FONT> ActionMessage(<FONT ID="StringLiteral">"auth.general.error"</FONT>);
+<A NAME="58"></A>            errors.add(ActionErrors.GLOBAL_MESSAGE, error);
+<A NAME="59"></A>        }
+<A NAME="60"></A>        saveErrors(request, errors);
+<A NAME="61"></A>    }
+<A NAME="62"></A>    
+<A NAME="63"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> addOkMessage(HttpServletRequest request)
+<A NAME="64"></A>    {
+<A NAME="65"></A>        ActionMessages messages = <FONT ID="New">new</FONT> ActionMessages();
+<A NAME="66"></A>        messages.add(ActionMessages.GLOBAL_MESSAGE, <FONT ID="New">new</FONT> ActionMessage(<FONT ID="StringLiteral">"auth.login.successful"</FONT>));
+<A NAME="67"></A>        saveMessages(request, messages);
+<A NAME="68"></A>    }
+<A NAME="69"></A>
+<A NAME="70"></A>    <FONT ID="Private">private</FONT> <A HREF="../../../../com/mockrunner/example/struts/AuthenticationStrategy.java.html">AuthenticationStrategy</A> getAuthenticationStrategy(HttpServletRequest request)
+<A NAME="71"></A>    {
+<A NAME="72"></A>        ServletContext context = request.getSession().getServletContext();
+<A NAME="73"></A>        <FONT ID="Return">return</FONT> (<A HREF="../../../../com/mockrunner/example/struts/AuthenticationStrategy.java.html">AuthenticationStrategy</A>)context.getAttribute(<A HREF="../../../../com/mockrunner/example/struts/AuthenticationStrategy.java.html">AuthenticationStrategy</A>.<FONT ID="Class">class</FONT>.getName());
+<A NAME="74"></A>    }
+<A NAME="75"></A>}
+<A NAME="76"></A></pre>
+</BODY>
+</HTML>

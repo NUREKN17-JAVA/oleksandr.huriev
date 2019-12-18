@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.connector.PersonSearchDAOTest (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">PersonSearchDAOTest.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.connector.index.html" target="packageFrame">com.mockrunner.example.connector</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.io.FileInputStream;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="Import">import</FONT> com.mockrunner.connector.ConnectorTestCaseAdapter;
+<A NAME="6"></A><FONT ID="Import">import</FONT> com.mockrunner.connector.StreamableRecordByteArrayInteraction;
+<A NAME="7"></A><FONT ID="Import">import</FONT> com.mockrunner.ejb.EJBTestModule;
+<A NAME="8"></A>
+<A NAME="9"></A><FONT ID="FormalComment">/**
+<A NAME="10"></A> * Example test for {@link PersonSearchDAO}. The two files
+<A NAME="11"></A> * &lt;i&gt;personin.bin&lt;/i&gt; and &lt;i&gt;personout.bin&lt;/i&gt; are snapshots
+<A NAME="12"></A> * from a real mainframe communication. Once created, the snapshot
+<A NAME="13"></A> * files can be used to simulate mainframe access in tests.
+<A NAME="14"></A> * The &lt;i&gt;personin.bin&lt;/i&gt; file represents an empty person with an id of 
+<A NAME="15"></A> * &lt;i&gt;1&lt;/i&gt;, which is the request. The &lt;i&gt;personout.bin&lt;/i&gt; contains the 
+<A NAME="16"></A> * user data for the person with id &lt;i&gt;1&lt;/i&gt;. If we search for a user with id 
+<A NAME="17"></A> * &lt;i&gt;1&lt;/i&gt;, the framework recognizes that the actual request matches the expected
+<A NAME="18"></A> * request and returns the actual response (the &lt;i&gt;personout.bin&lt;/i&gt; data).
+<A NAME="19"></A> * If we pass &lt;i&gt;2&lt;/i&gt; as the id, no response is found and &lt;code&gt;findPersonById&lt;/code&gt;
+<A NAME="20"></A> * returns an empty person. This example uses the
+<A NAME="21"></A> * {@link com.mockrunner.connector.StreamableRecordByteArrayInteraction} which
+<A NAME="22"></A> * works with byte data. {@link com.mockrunner.connector.StreamableRecordByteArrayInteraction}
+<A NAME="23"></A> * can always be used when the involved &lt;code&gt;Record&lt;/code&gt; classes implement
+<A NAME="24"></A> * &lt;code&gt;Streamable&lt;/code&gt;.
+<A NAME="25"></A> */</FONT>
+<A NAME="26"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> PersonSearchDAOTest <FONT ID="Extends">extends</FONT> ConnectorTestCaseAdapter
+<A NAME="27"></A>{
+<A NAME="28"></A>    <FONT ID="Private">private</FONT> EJBTestModule ejbModule;
+<A NAME="29"></A>    <FONT ID="Private">private</FONT> <A HREF="../../../../com/mockrunner/example/connector/PersonSearchDAO.java.html">PersonSearchDAO</A> dao;
+<A NAME="30"></A>    
+<A NAME="31"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> setUp() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="32"></A>    {
+<A NAME="33"></A>        <FONT ID="Super">super</FONT>.setUp();
+<A NAME="34"></A>        ejbModule = createEJBTestModule();
+<A NAME="35"></A>        ejbModule.bindToContext(<FONT ID="StringLiteral">"java:/ra/cics/ConnectionFactory"</FONT>, getConnectorMockObjectFactory().getMockConnectionFactory());
+<A NAME="36"></A>        dao = <FONT ID="New">new</FONT> <A HREF="../../../../com/mockrunner/example/connector/PersonSearchDAO.java.html">PersonSearchDAO</A>();
+<A NAME="37"></A>    }
+<A NAME="38"></A>    
+<A NAME="39"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> prepareInteraction() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="40"></A>    {
+<A NAME="41"></A>        StreamableRecordByteArrayInteraction interaction = <FONT ID="New">new</FONT> StreamableRecordByteArrayInteraction();
+<A NAME="42"></A>        FileInputStream request = <FONT ID="New">new</FONT> FileInputStream(<FONT ID="StringLiteral">"src/com/mockrunner/example/connector/personin.bin"</FONT>);
+<A NAME="43"></A>        FileInputStream response = <FONT ID="New">new</FONT> FileInputStream(<FONT ID="StringLiteral">"src/com/mockrunner/example/connector/personout.bin"</FONT>);
+<A NAME="44"></A>        interaction.setExpectedRequest(request);
+<A NAME="45"></A>        interaction.setResponse(response);
+<A NAME="46"></A>        getInteractionHandler().addImplementor(interaction);
+<A NAME="47"></A>        request.close();
+<A NAME="48"></A>        response.close();
+<A NAME="49"></A>    }
+<A NAME="50"></A>
+<A NAME="51"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testFindPersonByIdFound() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="52"></A>    {
+<A NAME="53"></A>        prepareInteraction();
+<A NAME="54"></A>        <A HREF="../../../../com/mockrunner/example/connector/Person.java.html">Person</A> response = dao.findPersonById(<FONT ID="StringLiteral">"1"</FONT>);
+<A NAME="55"></A>        assertEquals(<FONT ID="StringLiteral">"1"</FONT>, response.getId());
+<A NAME="56"></A>        assertEquals(<FONT ID="StringLiteral">"Jane"</FONT>, response.getFirstName());
+<A NAME="57"></A>        assertEquals(<FONT ID="StringLiteral">"Doe"</FONT>, response.getLastName());
+<A NAME="58"></A>        assertEquals(<FONT ID="IntegerLiteral">30</FONT>, response.getAge());
+<A NAME="59"></A>        verifyConnectionClosed();
+<A NAME="60"></A>        verifyAllInteractionsClosed();
+<A NAME="61"></A>    }
+<A NAME="62"></A>    
+<A NAME="63"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testFindPersonByIdNotFound() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="64"></A>    {
+<A NAME="65"></A>        prepareInteraction();
+<A NAME="66"></A>        <A HREF="../../../../com/mockrunner/example/connector/Person.java.html">Person</A> response = dao.findPersonById(<FONT ID="StringLiteral">"2"</FONT>);
+<A NAME="67"></A>        assertNull(response.getId());
+<A NAME="68"></A>        verifyConnectionClosed();
+<A NAME="69"></A>        verifyAllInteractionsClosed();
+<A NAME="70"></A>    }
+<A NAME="71"></A>}
+<A NAME="72"></A></pre>
+</BODY>
+</HTML>

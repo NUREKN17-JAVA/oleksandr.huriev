@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.jdbc.PayActionTest (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">PayActionTest.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.jdbc.index.html" target="packageFrame">com.mockrunner.example.jdbc</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> com.mockrunner.jdbc.JDBCTestCaseAdapter;
+<A NAME="4"></A><FONT ID="Import">import</FONT> com.mockrunner.jdbc.StatementResultSetHandler;
+<A NAME="5"></A><FONT ID="Import">import</FONT> com.mockrunner.mock.jdbc.MockResultSet;
+<A NAME="6"></A><FONT ID="Import">import</FONT> com.mockrunner.struts.ActionTestModule;
+<A NAME="7"></A>
+<A NAME="8"></A><FONT ID="FormalComment">/**
+<A NAME="9"></A> * Example test for {@link PayAction}. Demonstrates the usage of 
+<A NAME="10"></A> * {@link com.mockrunner.jdbc.JDBCTestModule} 
+<A NAME="11"></A> * and {@link com.mockrunner.jdbc.JDBCTestCaseAdapter}.
+<A NAME="12"></A> * This is also a good example how to combine the Struts and
+<A NAME="13"></A> * the JDBC testframework.
+<A NAME="14"></A> */</FONT>
+<A NAME="15"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> PayActionTest <FONT ID="Extends">extends</FONT> JDBCTestCaseAdapter
+<A NAME="16"></A>{
+<A NAME="17"></A>    <FONT ID="Private">private</FONT> ActionTestModule actionModule;
+<A NAME="18"></A>    <FONT ID="Private">private</FONT> StatementResultSetHandler statementHandler;
+<A NAME="19"></A>    
+<A NAME="20"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> setUp() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="21"></A>    {
+<A NAME="22"></A>        <FONT ID="Super">super</FONT>.setUp();
+<A NAME="23"></A>        actionModule = createActionTestModule();
+<A NAME="24"></A>        statementHandler = getJDBCMockObjectFactory().getMockConnection().getStatementResultSetHandler();
+<A NAME="25"></A>    }
+<A NAME="26"></A>    
+<A NAME="27"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> createValidCustomerResult()
+<A NAME="28"></A>    {
+<A NAME="29"></A>        MockResultSet result = statementHandler.createResultSet();
+<A NAME="30"></A>        result.addColumn(<FONT ID="StringLiteral">"name"</FONT>, <FONT ID="New">new</FONT> String[] {<FONT ID="StringLiteral">"MyName"</FONT>});
+<A NAME="31"></A>        statementHandler.prepareResultSet(<FONT ID="StringLiteral">"select name"</FONT>, result);
+<A NAME="32"></A>    }
+<A NAME="33"></A>    
+<A NAME="34"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> createValidBillResult()
+<A NAME="35"></A>    {
+<A NAME="36"></A>        MockResultSet result = statementHandler.createResultSet();
+<A NAME="37"></A>        result.addColumn(<FONT ID="StringLiteral">"id"</FONT>, <FONT ID="New">new</FONT> String[] {<FONT ID="StringLiteral">"1"</FONT>});
+<A NAME="38"></A>        result.addColumn(<FONT ID="StringLiteral">"customerid"</FONT>, <FONT ID="New">new</FONT> String[] {<FONT ID="StringLiteral">"1"</FONT>});
+<A NAME="39"></A>        result.addColumn(<FONT ID="StringLiteral">"amount"</FONT>, <FONT ID="New">new</FONT> Double[] {<FONT ID="New">new</FONT> Double(<FONT ID="IntegerLiteral">100</FONT>)});
+<A NAME="40"></A>        statementHandler.prepareResultSet(<FONT ID="StringLiteral">"select * from openbills"</FONT>, result);
+<A NAME="41"></A>    }
+<A NAME="42"></A>    
+<A NAME="43"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testUnknownCustomer()
+<A NAME="44"></A>    {
+<A NAME="45"></A>        MockResultSet result = statementHandler.createResultSet();
+<A NAME="46"></A>        result.addColumn(<FONT ID="StringLiteral">"name"</FONT>);
+<A NAME="47"></A>        statementHandler.prepareResultSet(<FONT ID="StringLiteral">"select name"</FONT>, result);
+<A NAME="48"></A>        actionModule.addRequestParameter(<FONT ID="StringLiteral">"customerId"</FONT>, <FONT ID="StringLiteral">"1"</FONT>);
+<A NAME="49"></A>        actionModule.actionPerform(<A HREF="../../../../com/mockrunner/example/jdbc/PayAction.java.html">PayAction</A>.<FONT ID="Class">class</FONT>, <A HREF="../../../../com/mockrunner/example/jdbc/PayForm.java.html">PayForm</A>.<FONT ID="Class">class</FONT>);
+<A NAME="50"></A>        actionModule.verifyActionErrorPresent(<FONT ID="StringLiteral">"unknown.customer.error"</FONT>);
+<A NAME="51"></A>        verifyRolledBack();
+<A NAME="52"></A>        verifyNotCommitted();
+<A NAME="53"></A>        verifySQLStatementExecuted(<FONT ID="StringLiteral">"select name"</FONT>);
+<A NAME="54"></A>        verifySQLStatementNotExecuted(<FONT ID="StringLiteral">"delete from openbills"</FONT>);
+<A NAME="55"></A>        verifySQLStatementNotExecuted(<FONT ID="StringLiteral">"insert into paidbills"</FONT>);
+<A NAME="56"></A>        verifyAllResultSetsClosed();
+<A NAME="57"></A>        verifyAllStatementsClosed();
+<A NAME="58"></A>        verifyConnectionClosed();
+<A NAME="59"></A>    }
+<A NAME="60"></A>    
+<A NAME="61"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testUnknownBill()
+<A NAME="62"></A>    {
+<A NAME="63"></A>        createValidCustomerResult();
+<A NAME="64"></A>        MockResultSet result = statementHandler.createResultSet();
+<A NAME="65"></A>        result.addColumn(<FONT ID="StringLiteral">"id"</FONT>);
+<A NAME="66"></A>        result.addColumn(<FONT ID="StringLiteral">"customerid"</FONT>);
+<A NAME="67"></A>        result.addColumn(<FONT ID="StringLiteral">"amount"</FONT>);
+<A NAME="68"></A>        statementHandler.prepareResultSet(<FONT ID="StringLiteral">"select * from openbills"</FONT>, result);
+<A NAME="69"></A>        actionModule.addRequestParameter(<FONT ID="StringLiteral">"customerId"</FONT>, <FONT ID="StringLiteral">"1"</FONT>);
+<A NAME="70"></A>        actionModule.addRequestParameter(<FONT ID="StringLiteral">"billId"</FONT>, <FONT ID="StringLiteral">"1"</FONT>);
+<A NAME="71"></A>        actionModule.actionPerform(<A HREF="../../../../com/mockrunner/example/jdbc/PayAction.java.html">PayAction</A>.<FONT ID="Class">class</FONT>, <A HREF="../../../../com/mockrunner/example/jdbc/PayForm.java.html">PayForm</A>.<FONT ID="Class">class</FONT>);
+<A NAME="72"></A>        actionModule.verifyActionErrorPresent(<FONT ID="StringLiteral">"unknown.bill.error"</FONT>);
+<A NAME="73"></A>        verifyRolledBack();
+<A NAME="74"></A>        verifyNotCommitted();
+<A NAME="75"></A>        verifySQLStatementExecuted(<FONT ID="StringLiteral">"select * from openbills"</FONT>);
+<A NAME="76"></A>        verifySQLStatementNotExecuted(<FONT ID="StringLiteral">"delete from openbills"</FONT>);
+<A NAME="77"></A>        verifySQLStatementNotExecuted(<FONT ID="StringLiteral">"insert into paidbills"</FONT>);
+<A NAME="78"></A>        verifyAllResultSetsClosed();
+<A NAME="79"></A>        verifyAllStatementsClosed();
+<A NAME="80"></A>        verifyConnectionClosed();
+<A NAME="81"></A>    }
+<A NAME="82"></A>    
+<A NAME="83"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testCustomerIdMismatch()
+<A NAME="84"></A>    {
+<A NAME="85"></A>        createValidCustomerResult();
+<A NAME="86"></A>        createValidBillResult();
+<A NAME="87"></A>        actionModule.addRequestParameter(<FONT ID="StringLiteral">"customerId"</FONT>, <FONT ID="StringLiteral">"2"</FONT>);
+<A NAME="88"></A>        actionModule.addRequestParameter(<FONT ID="StringLiteral">"billId"</FONT>, <FONT ID="StringLiteral">"1"</FONT>);
+<A NAME="89"></A>        actionModule.actionPerform(<A HREF="../../../../com/mockrunner/example/jdbc/PayAction.java.html">PayAction</A>.<FONT ID="Class">class</FONT>, <A HREF="../../../../com/mockrunner/example/jdbc/PayForm.java.html">PayForm</A>.<FONT ID="Class">class</FONT>);
+<A NAME="90"></A>        actionModule.verifyActionErrorPresent(<FONT ID="StringLiteral">"wrong.bill.for.customer"</FONT>);
+<A NAME="91"></A>        verifyRolledBack();
+<A NAME="92"></A>        verifyNotCommitted();
+<A NAME="93"></A>        verifySQLStatementExecuted(<FONT ID="StringLiteral">"select * from openbills"</FONT>);
+<A NAME="94"></A>        verifySQLStatementNotExecuted(<FONT ID="StringLiteral">"delete from openbills"</FONT>);
+<A NAME="95"></A>        verifySQLStatementNotExecuted(<FONT ID="StringLiteral">"insert into paidbills"</FONT>);
+<A NAME="96"></A>        verifyAllResultSetsClosed();
+<A NAME="97"></A>        verifyAllStatementsClosed();
+<A NAME="98"></A>        verifyConnectionClosed();
+<A NAME="99"></A>    }
+<A NAME="100"></A>    
+<A NAME="101"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testAmountMismatch()
+<A NAME="102"></A>    {
+<A NAME="103"></A>        createValidCustomerResult();
+<A NAME="104"></A>        createValidBillResult();
+<A NAME="105"></A>        actionModule.addRequestParameter(<FONT ID="StringLiteral">"customerId"</FONT>, <FONT ID="StringLiteral">"1"</FONT>);
+<A NAME="106"></A>        actionModule.addRequestParameter(<FONT ID="StringLiteral">"billId"</FONT>, <FONT ID="StringLiteral">"1"</FONT>);
+<A NAME="107"></A>        actionModule.addRequestParameter(<FONT ID="StringLiteral">"amount"</FONT>, <FONT ID="StringLiteral">"200"</FONT>);
+<A NAME="108"></A>        actionModule.actionPerform(<A HREF="../../../../com/mockrunner/example/jdbc/PayAction.java.html">PayAction</A>.<FONT ID="Class">class</FONT>, <A HREF="../../../../com/mockrunner/example/jdbc/PayForm.java.html">PayForm</A>.<FONT ID="Class">class</FONT>);
+<A NAME="109"></A>        actionModule.verifyActionErrorPresent(<FONT ID="StringLiteral">"wrong.amount.for.bill"</FONT>);
+<A NAME="110"></A>        verifyRolledBack();
+<A NAME="111"></A>        verifyNotCommitted();
+<A NAME="112"></A>        verifySQLStatementExecuted(<FONT ID="StringLiteral">"select * from openbills"</FONT>);
+<A NAME="113"></A>        verifySQLStatementNotExecuted(<FONT ID="StringLiteral">"delete from openbills"</FONT>);
+<A NAME="114"></A>        verifySQLStatementNotExecuted(<FONT ID="StringLiteral">"insert into paidbills"</FONT>);
+<A NAME="115"></A>        verifyAllResultSetsClosed();
+<A NAME="116"></A>        verifyAllStatementsClosed();
+<A NAME="117"></A>        verifyConnectionClosed();
+<A NAME="118"></A>    }
+<A NAME="119"></A>    
+<A NAME="120"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testValidTransaction()
+<A NAME="121"></A>    {
+<A NAME="122"></A>        createValidCustomerResult();
+<A NAME="123"></A>        createValidBillResult();
+<A NAME="124"></A>        actionModule.addRequestParameter(<FONT ID="StringLiteral">"customerId"</FONT>, <FONT ID="StringLiteral">"1"</FONT>);
+<A NAME="125"></A>        actionModule.addRequestParameter(<FONT ID="StringLiteral">"billId"</FONT>, <FONT ID="StringLiteral">"1"</FONT>);
+<A NAME="126"></A>        actionModule.addRequestParameter(<FONT ID="StringLiteral">"amount"</FONT>, <FONT ID="StringLiteral">"100"</FONT>);
+<A NAME="127"></A>        actionModule.actionPerform(<A HREF="../../../../com/mockrunner/example/jdbc/PayAction.java.html">PayAction</A>.<FONT ID="Class">class</FONT>, <A HREF="../../../../com/mockrunner/example/jdbc/PayForm.java.html">PayForm</A>.<FONT ID="Class">class</FONT>);
+<A NAME="128"></A>        actionModule.verifyNoActionErrors();
+<A NAME="129"></A>        verifyCommitted();
+<A NAME="130"></A>        verifyNotRolledBack();
+<A NAME="131"></A>        verifySQLStatementExecuted(<FONT ID="StringLiteral">"delete from openbills where id='1'"</FONT>);
+<A NAME="132"></A>        verifySQLStatementExecuted(<FONT ID="StringLiteral">"insert into paidbills values('1','1',100.0)"</FONT>);
+<A NAME="133"></A>        verifyAllResultSetsClosed();
+<A NAME="134"></A>        verifyAllStatementsClosed();
+<A NAME="135"></A>        verifyConnectionClosed();
+<A NAME="136"></A>    }
+<A NAME="137"></A>}
+<A NAME="138"></A></pre>
+</BODY>
+</HTML>

@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.connector.PersonSearchDAO (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">PersonSearchDAO.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.connector.index.html" target="packageFrame">com.mockrunner.example.connector</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> javax.naming.InitialContext;
+<A NAME="4"></A><FONT ID="Import">import</FONT> javax.naming.NamingException;
+<A NAME="5"></A><FONT ID="Import">import</FONT> javax.resource.ResourceException;
+<A NAME="6"></A><FONT ID="Import">import</FONT> javax.resource.cci.Connection;
+<A NAME="7"></A><FONT ID="Import">import</FONT> javax.resource.cci.ConnectionFactory;
+<A NAME="8"></A><FONT ID="Import">import</FONT> javax.resource.cci.Interaction;
+<A NAME="9"></A><FONT ID="Import">import</FONT> javax.resource.cci.InteractionSpec;
+<A NAME="10"></A>
+<A NAME="11"></A><FONT ID="FormalComment">/**
+<A NAME="12"></A> * A DAO that communicates with the CICS backend to find a person
+<A NAME="13"></A> * by id.
+<A NAME="14"></A> * Please note that the inner class &lt;code&gt;ECIInteractionSpec&lt;/code&gt; is
+<A NAME="15"></A> * only necessary because we cannot ship the suitable IBM classes
+<A NAME="16"></A> * along with this simple example. In reality, the class
+<A NAME="17"></A> * &lt;code&gt;com.ibm.connector2.cics.ECIInteractionSpec&lt;/code&gt;
+<A NAME="18"></A> * should be used.
+<A NAME="19"></A> */</FONT>
+<A NAME="20"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> PersonSearchDAO
+<A NAME="21"></A>{
+<A NAME="22"></A>    <FONT ID="Private">private</FONT> ConnectionFactory connectionFactory;
+<A NAME="23"></A>
+<A NAME="24"></A>    <FONT ID="Public">public</FONT> PersonSearchDAO()
+<A NAME="25"></A>    {
+<A NAME="26"></A>        <FONT ID="Try">try</FONT>
+<A NAME="27"></A>        {
+<A NAME="28"></A>            InitialContext context = <FONT ID="New">new</FONT> InitialContext();
+<A NAME="29"></A>            connectionFactory = (ConnectionFactory)context.lookup(<FONT ID="StringLiteral">"java:/ra/cics/ConnectionFactory"</FONT>);
+<A NAME="30"></A>        } 
+<A NAME="31"></A>        <FONT ID="Catch">catch</FONT>(NamingException exc)
+<A NAME="32"></A>        {
+<A NAME="33"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> RuntimeException(<FONT ID="StringLiteral">"Failed to create ConnectionFactory "</FONT> + exc.getMessage());
+<A NAME="34"></A>        }
+<A NAME="35"></A>    }
+<A NAME="36"></A>
+<A NAME="37"></A>    <FONT ID="Public">public</FONT> <A HREF="../../../../com/mockrunner/example/connector/Person.java.html">Person</A> findPersonById(String id)
+<A NAME="38"></A>    {
+<A NAME="39"></A>        Connection connection = <FONT ID="Null">null</FONT>;
+<A NAME="40"></A>        <A HREF="../../../../com/mockrunner/example/connector/Person.java.html">Person</A> request = <FONT ID="New">new</FONT> <A HREF="../../../../com/mockrunner/example/connector/Person.java.html">Person</A>();
+<A NAME="41"></A>        request.setId(id);
+<A NAME="42"></A>        <A HREF="../../../../com/mockrunner/example/connector/Person.java.html">Person</A> response = <FONT ID="New">new</FONT> <A HREF="../../../../com/mockrunner/example/connector/Person.java.html">Person</A>();
+<A NAME="43"></A>        <FONT ID="Try">try</FONT>
+<A NAME="44"></A>        {
+<A NAME="45"></A>            connection = connectionFactory.getConnection();
+<A NAME="46"></A>            Interaction interaction = connection.createInteraction();
+<A NAME="47"></A>            ECIInteractionSpec interactionSpec = <FONT ID="New">new</FONT> ECIInteractionSpec();
+<A NAME="48"></A>            interactionSpec.setFunctionName(<FONT ID="StringLiteral">"PER3AC"</FONT>);
+<A NAME="49"></A>            interactionSpec.setInteractionVerb(ECIInteractionSpec.SYNC_SEND_RECEIVE);
+<A NAME="50"></A>            interactionSpec.setCommareaLength(<FONT ID="IntegerLiteral">32</FONT>);
+<A NAME="51"></A>            interaction.execute(interactionSpec, request, response);
+<A NAME="52"></A>        } 
+<A NAME="53"></A>        <FONT ID="Catch">catch</FONT>(ResourceException exc)
+<A NAME="54"></A>        {
+<A NAME="55"></A>            exc.printStackTrace();
+<A NAME="56"></A>        }
+<A NAME="57"></A>        <FONT ID="Finally">finally</FONT>
+<A NAME="58"></A>        {
+<A NAME="59"></A>            <FONT ID="Try">try</FONT>
+<A NAME="60"></A>            {
+<A NAME="61"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != connection) connection.close();
+<A NAME="62"></A>            } 
+<A NAME="63"></A>            <FONT ID="Catch">catch</FONT>(ResourceException exc)
+<A NAME="64"></A>            {
+<A NAME="65"></A>                exc.printStackTrace();
+<A NAME="66"></A>            }
+<A NAME="67"></A>        }
+<A NAME="68"></A>        <FONT ID="Return">return</FONT> response;
+<A NAME="69"></A>    }
+<A NAME="70"></A>    
+<A NAME="71"></A>    <FONT ID="MultiLineComment">/*
+<A NAME="72"></A>     * Replacement for com.ibm.connector2.cics.ECIInteractionSpec.
+<A NAME="73"></A>     * Only exists for the sake of this simple demonstration.
+<A NAME="74"></A>     */</FONT>
+<A NAME="75"></A>    <FONT ID="Private">private</FONT> <FONT ID="Class">class</FONT> ECIInteractionSpec <FONT ID="Implements">implements</FONT> InteractionSpec
+<A NAME="76"></A>    {
+<A NAME="77"></A>        <FONT ID="Private">private</FONT> String functionName;
+<A NAME="78"></A>        <FONT ID="Private">private</FONT> <FONT ID="Int">int</FONT> commareaLength;
+<A NAME="79"></A>        <FONT ID="Private">private</FONT> <FONT ID="Int">int</FONT> interactionVerb;
+<A NAME="80"></A>        
+<A NAME="81"></A>        <FONT ID="Public">public</FONT> <FONT ID="Int">int</FONT> getCommareaLength()
+<A NAME="82"></A>        {
+<A NAME="83"></A>            <FONT ID="Return">return</FONT> commareaLength;
+<A NAME="84"></A>        }
+<A NAME="85"></A>        
+<A NAME="86"></A>        <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setCommareaLength(<FONT ID="Int">int</FONT> commareaLength)
+<A NAME="87"></A>        {
+<A NAME="88"></A>            <FONT ID="This">this</FONT>.commareaLength = commareaLength;
+<A NAME="89"></A>        }
+<A NAME="90"></A>        
+<A NAME="91"></A>        <FONT ID="Public">public</FONT> String getFunctionName()
+<A NAME="92"></A>        {
+<A NAME="93"></A>            <FONT ID="Return">return</FONT> functionName;
+<A NAME="94"></A>        }
+<A NAME="95"></A>        
+<A NAME="96"></A>        <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setFunctionName(String functionName)
+<A NAME="97"></A>        {
+<A NAME="98"></A>            <FONT ID="This">this</FONT>.functionName = functionName;
+<A NAME="99"></A>        }
+<A NAME="100"></A>        
+<A NAME="101"></A>        <FONT ID="Public">public</FONT> <FONT ID="Int">int</FONT> getInteractionVerb()
+<A NAME="102"></A>        {
+<A NAME="103"></A>            <FONT ID="Return">return</FONT> interactionVerb;
+<A NAME="104"></A>        }
+<A NAME="105"></A>        
+<A NAME="106"></A>        <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setInteractionVerb(<FONT ID="Int">int</FONT> interactionVerb)
+<A NAME="107"></A>        {
+<A NAME="108"></A>            <FONT ID="This">this</FONT>.interactionVerb = interactionVerb;
+<A NAME="109"></A>        }
+<A NAME="110"></A>    }
+<A NAME="111"></A>}
+<A NAME="112"></A></pre>
+</BODY>
+</HTML>

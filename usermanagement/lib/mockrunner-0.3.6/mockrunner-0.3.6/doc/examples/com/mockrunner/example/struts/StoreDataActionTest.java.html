@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.struts.StoreDataActionTest (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">StoreDataActionTest.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.struts.index.html" target="packageFrame">com.mockrunner.example.struts</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> com.mockrunner.mock.web.ActionMockObjectFactory;
+<A NAME="4"></A><FONT ID="Import">import</FONT> com.mockrunner.struts.ActionTestModule;
+<A NAME="5"></A><FONT ID="Import">import</FONT> com.mockrunner.struts.BasicActionTestCaseAdapter;
+<A NAME="6"></A>
+<A NAME="7"></A><FONT ID="FormalComment">/**
+<A NAME="8"></A> * Example test for {@link StoreDataAction}. 
+<A NAME="9"></A> * Demonstrates multithread testing. The use of an inner thread 
+<A NAME="10"></A> * class and  a single test method is a standard pattern that can 
+<A NAME="11"></A> * be used in any multithreading test for Servlets and actions.
+<A NAME="12"></A> * Please note that each thread has to call the action with
+<A NAME="13"></A> * different sessions and requests but with one 
+<A NAME="14"></A> * &lt;code&gt;ServletContext&lt;/code&gt; in order to simulate the real
+<A NAME="15"></A> * container behaviour. See the constructor of the thread how
+<A NAME="16"></A> * to deal with the test module and factory.
+<A NAME="17"></A> * Remove the &lt;code&gt;synchronized&lt;/code&gt; keyword in
+<A NAME="18"></A> * {@link StoreDataAction} and the test
+<A NAME="19"></A> * will fail.
+<A NAME="20"></A> * {@link com.mockrunner.base.MultiThreadTestSuite} is meant to
+<A NAME="21"></A> * make multithread testing much easier, but it is not working
+<A NAME="22"></A> * properly yet, so we do not use it here.
+<A NAME="23"></A> */</FONT>
+<A NAME="24"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> StoreDataActionTest <FONT ID="Extends">extends</FONT> BasicActionTestCaseAdapter
+<A NAME="25"></A>{ 
+<A NAME="26"></A>    <FONT ID="Private">private</FONT> <FONT ID="Volatile">volatile</FONT> <FONT ID="Int">int</FONT> numberSuccess;
+<A NAME="27"></A>    
+<A NAME="28"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> setUp() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="29"></A>    {
+<A NAME="30"></A>        <FONT ID="Super">super</FONT>.setUp();
+<A NAME="31"></A>        numberSuccess = <FONT ID="IntegerLiteral">0</FONT>;
+<A NAME="32"></A>    }
+<A NAME="33"></A>    
+<A NAME="34"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testStoreDataAction() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="35"></A>    {
+<A NAME="36"></A>        StoreTestThread thread1 = <FONT ID="New">new</FONT> StoreTestThread(<FONT ID="StringLiteral">"thread1"</FONT>);
+<A NAME="37"></A>        StoreTestThread thread2 = <FONT ID="New">new</FONT> StoreTestThread(<FONT ID="StringLiteral">"thread2"</FONT>);
+<A NAME="38"></A>        StoreTestThread thread3 = <FONT ID="New">new</FONT> StoreTestThread(<FONT ID="StringLiteral">"thread3"</FONT>);
+<A NAME="39"></A>        StoreTestThread thread4 = <FONT ID="New">new</FONT> StoreTestThread(<FONT ID="StringLiteral">"thread4"</FONT>);
+<A NAME="40"></A>        StoreTestThread thread5 = <FONT ID="New">new</FONT> StoreTestThread(<FONT ID="StringLiteral">"thread5"</FONT>);
+<A NAME="41"></A>        thread1.start();
+<A NAME="42"></A>        thread2.start();
+<A NAME="43"></A>        thread3.start();
+<A NAME="44"></A>        thread4.start();
+<A NAME="45"></A>        thread5.start();
+<A NAME="46"></A>        thread1.join();
+<A NAME="47"></A>        thread2.join();
+<A NAME="48"></A>        thread3.join();
+<A NAME="49"></A>        thread4.join();
+<A NAME="50"></A>        thread5.join();
+<A NAME="51"></A>        assertTrue(numberSuccess == <FONT ID="IntegerLiteral">1</FONT>);  
+<A NAME="52"></A>    }
+<A NAME="53"></A>
+<A NAME="54"></A>    <FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> StoreTestThread <FONT ID="Extends">extends</FONT> Thread
+<A NAME="55"></A>    {
+<A NAME="56"></A>        <FONT ID="Private">private</FONT> ActionMockObjectFactory mockFactory;
+<A NAME="57"></A>        <FONT ID="Private">private</FONT> ActionTestModule module;
+<A NAME="58"></A>        
+<A NAME="59"></A>        <FONT ID="Public">public</FONT> StoreTestThread(String name)
+<A NAME="60"></A>        {
+<A NAME="61"></A>            <FONT ID="Super">super</FONT>(name);
+<A NAME="62"></A>            mockFactory = createActionMockObjectFactory(getActionMockObjectFactory());
+<A NAME="63"></A>            module = createActionTestModule(mockFactory);
+<A NAME="64"></A>        }
+<A NAME="65"></A>
+<A NAME="66"></A>        <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> run()
+<A NAME="67"></A>        {
+<A NAME="68"></A>            module.addRequestParameter(<FONT ID="StringLiteral">"id"</FONT>, <FONT ID="StringLiteral">"id"</FONT>);
+<A NAME="69"></A>            module.addRequestParameter(<FONT ID="StringLiteral">"data"</FONT>, getName());
+<A NAME="70"></A>            module.actionPerform(<A HREF="../../../../com/mockrunner/example/struts/StoreDataAction.java.html">StoreDataAction</A>.<FONT ID="Class">class</FONT>);
+<A NAME="71"></A>            <FONT ID="If">if</FONT>(module.getActionForward().getPath().equals(<FONT ID="StringLiteral">"success"</FONT>))
+<A NAME="72"></A>            {
+<A NAME="73"></A>                numberSuccess++;
+<A NAME="74"></A>            }
+<A NAME="75"></A>        }
+<A NAME="76"></A>    }
+<A NAME="77"></A>}
+<A NAME="78"></A></pre>
+</BODY>
+</HTML>

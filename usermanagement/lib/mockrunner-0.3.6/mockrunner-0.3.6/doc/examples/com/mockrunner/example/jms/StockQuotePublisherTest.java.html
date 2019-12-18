@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.jms.StockQuotePublisherTest (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">StockQuotePublisherTest.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.jms.index.html" target="packageFrame">com.mockrunner.example.jms</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.util.HashMap;
+<A NAME="4"></A><FONT ID="Import">import</FONT> java.util.List;
+<A NAME="5"></A><FONT ID="Import">import</FONT> java.util.Map;
+<A NAME="6"></A>
+<A NAME="7"></A><FONT ID="Import">import</FONT> javax.jms.MapMessage;
+<A NAME="8"></A><FONT ID="Import">import</FONT> javax.jms.TextMessage;
+<A NAME="9"></A>
+<A NAME="10"></A><FONT ID="Import">import</FONT> com.mockrunner.ejb.EJBTestModule;
+<A NAME="11"></A><FONT ID="Import">import</FONT> com.mockrunner.jms.JMSTestCaseAdapter;
+<A NAME="12"></A><FONT ID="Import">import</FONT> com.mockrunner.mock.jms.MockTopic;
+<A NAME="13"></A>
+<A NAME="14"></A><FONT ID="FormalComment">/**
+<A NAME="15"></A> * Example test for {@link StockQuotePublisher}. Demonstrates
+<A NAME="16"></A> * the usage of {@link com.mockrunner.jms.JMSTestModule}.
+<A NAME="17"></A> */</FONT>
+<A NAME="18"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> StockQuotePublisherTest <FONT ID="Extends">extends</FONT> JMSTestCaseAdapter
+<A NAME="19"></A>{
+<A NAME="20"></A>    <FONT ID="Private">private</FONT> EJBTestModule ejbModule;
+<A NAME="21"></A>    <FONT ID="Private">private</FONT> MockTopic topic;
+<A NAME="22"></A>    <FONT ID="Private">private</FONT> <A HREF="../../../../com/mockrunner/example/jms/StockQuotePublisher.java.html">StockQuotePublisher</A> sender;
+<A NAME="23"></A>    
+<A NAME="24"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> setUp() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="25"></A>    {
+<A NAME="26"></A>        <FONT ID="Super">super</FONT>.setUp();
+<A NAME="27"></A>        ejbModule = createEJBTestModule();
+<A NAME="28"></A>        ejbModule.bindToContext(<FONT ID="StringLiteral">"java:/ConnectionFactory"</FONT>, getJMSMockObjectFactory().getMockTopicConnectionFactory());
+<A NAME="29"></A>        topic = getDestinationManager().createTopic(<FONT ID="StringLiteral">"testTopic"</FONT>);
+<A NAME="30"></A>        ejbModule.bindToContext(<FONT ID="StringLiteral">"topic/quoteTopic"</FONT>, topic);
+<A NAME="31"></A>        sender = <FONT ID="New">new</FONT> <A HREF="../../../../com/mockrunner/example/jms/StockQuotePublisher.java.html">StockQuotePublisher</A>();
+<A NAME="32"></A>    }
+<A NAME="33"></A>    
+<A NAME="34"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> prepareTestRates(Map nasdaqRates, Map dowRates)
+<A NAME="35"></A>    {
+<A NAME="36"></A>        nasdaqRates.put(<FONT ID="StringLiteral">"NasdaqCompany1"</FONT>, <FONT ID="StringLiteral">"10.3"</FONT>);
+<A NAME="37"></A>        nasdaqRates.put(<FONT ID="StringLiteral">"NasdaqCompany2"</FONT>, <FONT ID="StringLiteral">"30.1"</FONT>);
+<A NAME="38"></A>        dowRates.put(<FONT ID="StringLiteral">"DowJonesCompany1"</FONT>, <FONT ID="StringLiteral">"11.5"</FONT>);
+<A NAME="39"></A>    }
+<A NAME="40"></A>
+<A NAME="41"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testClosedAndCommitted()
+<A NAME="42"></A>    {
+<A NAME="43"></A>        sender.send();
+<A NAME="44"></A>        verifyNumberTopicSessions(<FONT ID="IntegerLiteral">1</FONT>);
+<A NAME="45"></A>        verifyNumberTopicPublishers(<FONT ID="IntegerLiteral">0</FONT>, <FONT ID="StringLiteral">"testTopic"</FONT>, <FONT ID="IntegerLiteral">1</FONT>);
+<A NAME="46"></A>        verifyAllTopicSessionsClosed();
+<A NAME="47"></A>        verifyAllTopicPublishersClosed(<FONT ID="IntegerLiteral">0</FONT>);
+<A NAME="48"></A>        verifyTopicConnectionClosed();
+<A NAME="49"></A>        verifyAllTopicSessionsCommitted();
+<A NAME="50"></A>        verifyNumberOfReceivedTopicMessages(<FONT ID="StringLiteral">"testTopic"</FONT>, <FONT ID="IntegerLiteral">3</FONT>);
+<A NAME="51"></A>    }
+<A NAME="52"></A>    
+<A NAME="53"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testVerifyReceivedMessages() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="54"></A>    {
+<A NAME="55"></A>        Map nasdaqRates = <FONT ID="New">new</FONT> HashMap();
+<A NAME="56"></A>        Map dowRates = <FONT ID="New">new</FONT> HashMap();
+<A NAME="57"></A>        prepareTestRates(nasdaqRates, dowRates);
+<A NAME="58"></A>        sender.setQuotes(nasdaqRates, dowRates);
+<A NAME="59"></A>        sender.send();
+<A NAME="60"></A>        List receivedMessages = getReceivedMessageListFromTopic(<FONT ID="StringLiteral">"testTopic"</FONT>);
+<A NAME="61"></A>        TextMessage timeMessage = (TextMessage)receivedMessages.get(<FONT ID="IntegerLiteral">0</FONT>);
+<A NAME="62"></A>        MapMessage nasdaqMessage = (MapMessage)receivedMessages.get(<FONT ID="IntegerLiteral">1</FONT>);
+<A NAME="63"></A>        MapMessage dowMessage = (MapMessage)receivedMessages.get(<FONT ID="IntegerLiteral">2</FONT>);
+<A NAME="64"></A>        assertEquals(timeMessage.getText(), nasdaqMessage.getJMSCorrelationID());
+<A NAME="65"></A>        assertEquals(timeMessage.getText(), dowMessage.getJMSCorrelationID());
+<A NAME="66"></A>        assertEquals(<FONT ID="StringLiteral">"10.3"</FONT>, nasdaqMessage.getString(<FONT ID="StringLiteral">"NasdaqCompany1"</FONT>));
+<A NAME="67"></A>        assertEquals(<FONT ID="StringLiteral">"30.1"</FONT>, nasdaqMessage.getString(<FONT ID="StringLiteral">"NasdaqCompany2"</FONT>));
+<A NAME="68"></A>        assertEquals(<FONT ID="StringLiteral">"11.5"</FONT>, dowMessage.getString(<FONT ID="StringLiteral">"DowJonesCompany1"</FONT>));
+<A NAME="69"></A>    }
+<A NAME="70"></A>}
+<A NAME="71"></A></pre>
+</BODY>
+</HTML>

@@ -1,0 +1,330 @@
+<HTML>
+<BODY BGCOLOR="white">
+<PRE>
+<FONT color="green">001</FONT>    package com.mockrunner.util.common;<a name="line.1"></a>
+<FONT color="green">002</FONT>    <a name="line.2"></a>
+<FONT color="green">003</FONT>    import java.util.ArrayList;<a name="line.3"></a>
+<FONT color="green">004</FONT>    import java.util.List;<a name="line.4"></a>
+<FONT color="green">005</FONT>    <a name="line.5"></a>
+<FONT color="green">006</FONT>    import org.apache.commons.logging.Log;<a name="line.6"></a>
+<FONT color="green">007</FONT>    import org.apache.commons.logging.LogFactory;<a name="line.7"></a>
+<FONT color="green">008</FONT>    import org.apache.oro.text.regex.MalformedPatternException;<a name="line.8"></a>
+<FONT color="green">009</FONT>    import org.apache.oro.text.regex.Pattern;<a name="line.9"></a>
+<FONT color="green">010</FONT>    import org.apache.oro.text.regex.Perl5Compiler;<a name="line.10"></a>
+<FONT color="green">011</FONT>    import org.apache.oro.text.regex.Perl5Matcher;<a name="line.11"></a>
+<FONT color="green">012</FONT>    <a name="line.12"></a>
+<FONT color="green">013</FONT>    import com.mockrunner.base.NestedApplicationException;<a name="line.13"></a>
+<FONT color="green">014</FONT>    <a name="line.14"></a>
+<FONT color="green">015</FONT>    /**<a name="line.15"></a>
+<FONT color="green">016</FONT>     * Simple util class for &lt;code&gt;String&lt;/code&gt; related methods.<a name="line.16"></a>
+<FONT color="green">017</FONT>     */<a name="line.17"></a>
+<FONT color="green">018</FONT>    public class StringUtil<a name="line.18"></a>
+<FONT color="green">019</FONT>    {<a name="line.19"></a>
+<FONT color="green">020</FONT>        private final static Log log = LogFactory.getLog(StringUtil.class);<a name="line.20"></a>
+<FONT color="green">021</FONT>        <a name="line.21"></a>
+<FONT color="green">022</FONT>        /**<a name="line.22"></a>
+<FONT color="green">023</FONT>         * Replaces all occurrences of &lt;code&gt;match&lt;/code&gt; in<a name="line.23"></a>
+<FONT color="green">024</FONT>         * &lt;code&gt;source&lt;/code&gt; with &lt;code&gt;replacement&lt;/code&gt;.<a name="line.24"></a>
+<FONT color="green">025</FONT>         * @param source the source string<a name="line.25"></a>
+<FONT color="green">026</FONT>         * @param match the string that is searched<a name="line.26"></a>
+<FONT color="green">027</FONT>         * @param replacement the replacement string<a name="line.27"></a>
+<FONT color="green">028</FONT>         * @return the modified string<a name="line.28"></a>
+<FONT color="green">029</FONT>         * @throws IllegalArgumentException if any argument is &lt;code&gt;null&lt;/code&gt; or<a name="line.29"></a>
+<FONT color="green">030</FONT>         *         if &lt;code&gt;match&lt;/code&gt; is the empty string<a name="line.30"></a>
+<FONT color="green">031</FONT>         */<a name="line.31"></a>
+<FONT color="green">032</FONT>        public static String replaceAll(String source, String match, String replacement)<a name="line.32"></a>
+<FONT color="green">033</FONT>        {<a name="line.33"></a>
+<FONT color="green">034</FONT>            if(null == source || null == match || null == replacement)<a name="line.34"></a>
+<FONT color="green">035</FONT>            {<a name="line.35"></a>
+<FONT color="green">036</FONT>                throw new IllegalArgumentException("null strings not allowed");<a name="line.36"></a>
+<FONT color="green">037</FONT>            }<a name="line.37"></a>
+<FONT color="green">038</FONT>            if(match.length() &lt;= 0)<a name="line.38"></a>
+<FONT color="green">039</FONT>            {<a name="line.39"></a>
+<FONT color="green">040</FONT>                throw new IllegalArgumentException("match must not be empty");<a name="line.40"></a>
+<FONT color="green">041</FONT>            }<a name="line.41"></a>
+<FONT color="green">042</FONT>            StringBuffer buffer = new StringBuffer(source.length() + 10);<a name="line.42"></a>
+<FONT color="green">043</FONT>            int index = 0;<a name="line.43"></a>
+<FONT color="green">044</FONT>            int newIndex = 0;<a name="line.44"></a>
+<FONT color="green">045</FONT>            while((newIndex = source.indexOf(match, index)) &gt;= 0)<a name="line.45"></a>
+<FONT color="green">046</FONT>            {<a name="line.46"></a>
+<FONT color="green">047</FONT>                buffer.append(source.substring(index, newIndex));<a name="line.47"></a>
+<FONT color="green">048</FONT>                buffer.append(replacement);<a name="line.48"></a>
+<FONT color="green">049</FONT>                index = newIndex + match.length();<a name="line.49"></a>
+<FONT color="green">050</FONT>            }<a name="line.50"></a>
+<FONT color="green">051</FONT>            buffer.append(source.substring(index));<a name="line.51"></a>
+<FONT color="green">052</FONT>            return buffer.toString();<a name="line.52"></a>
+<FONT color="green">053</FONT>        }<a name="line.53"></a>
+<FONT color="green">054</FONT>        <a name="line.54"></a>
+<FONT color="green">055</FONT>        /**<a name="line.55"></a>
+<FONT color="green">056</FONT>         * Compares two strings and returns the last<a name="line.56"></a>
+<FONT color="green">057</FONT>         * index where the two string are equal. If<a name="line.57"></a>
+<FONT color="green">058</FONT>         * the first characters of the two string do<a name="line.58"></a>
+<FONT color="green">059</FONT>         * not match or if at least one of the two strings<a name="line.59"></a>
+<FONT color="green">060</FONT>         * is empty, -1 is returned.<a name="line.60"></a>
+<FONT color="green">061</FONT>         * @param string1 the first string<a name="line.61"></a>
+<FONT color="green">062</FONT>         * @param string2 the second string<a name="line.62"></a>
+<FONT color="green">063</FONT>         * @return the last index where the strings are equal<a name="line.63"></a>
+<FONT color="green">064</FONT>         */<a name="line.64"></a>
+<FONT color="green">065</FONT>        public static int compare(String string1, String string2)<a name="line.65"></a>
+<FONT color="green">066</FONT>        {<a name="line.66"></a>
+<FONT color="green">067</FONT>            int endIndex = Math.min(string1.length(), string2.length());<a name="line.67"></a>
+<FONT color="green">068</FONT>            for(int ii = 0; ii &lt; endIndex; ii++)<a name="line.68"></a>
+<FONT color="green">069</FONT>            {<a name="line.69"></a>
+<FONT color="green">070</FONT>                if(string1.charAt(ii) != string2.charAt(ii)) return ii - 1;<a name="line.70"></a>
+<FONT color="green">071</FONT>            }<a name="line.71"></a>
+<FONT color="green">072</FONT>            return endIndex - 1;<a name="line.72"></a>
+<FONT color="green">073</FONT>        }<a name="line.73"></a>
+<FONT color="green">074</FONT>        <a name="line.74"></a>
+<FONT color="green">075</FONT>        /**<a name="line.75"></a>
+<FONT color="green">076</FONT>         * Converts the character at the specified index to<a name="line.76"></a>
+<FONT color="green">077</FONT>         * lowercase and returns the resulting string.<a name="line.77"></a>
+<FONT color="green">078</FONT>         * @param string the string to convert<a name="line.78"></a>
+<FONT color="green">079</FONT>         * @param index the index where the character is set to lowercase<a name="line.79"></a>
+<FONT color="green">080</FONT>         * @return the converted string<a name="line.80"></a>
+<FONT color="green">081</FONT>         * @throws IndexOutOfBoundsException if the index is out of<a name="line.81"></a>
+<FONT color="green">082</FONT>         *         range<a name="line.82"></a>
+<FONT color="green">083</FONT>         */<a name="line.83"></a>
+<FONT color="green">084</FONT>        public static String lowerCase(String string, int index)<a name="line.84"></a>
+<FONT color="green">085</FONT>        {<a name="line.85"></a>
+<FONT color="green">086</FONT>            return lowerCase(string, index, -1);<a name="line.86"></a>
+<FONT color="green">087</FONT>        }<a name="line.87"></a>
+<FONT color="green">088</FONT>        <a name="line.88"></a>
+<FONT color="green">089</FONT>        /**<a name="line.89"></a>
+<FONT color="green">090</FONT>         * Converts the character in the specified index range to<a name="line.90"></a>
+<FONT color="green">091</FONT>         * lowercase and returns the resulting string.<a name="line.91"></a>
+<FONT color="green">092</FONT>         * If the provided endIndex is smaller or equal to startIndex,<a name="line.92"></a>
+<FONT color="green">093</FONT>         * the endIndex is set to startIndex + 1.<a name="line.93"></a>
+<FONT color="green">094</FONT>         * @param string the string to convert<a name="line.94"></a>
+<FONT color="green">095</FONT>         * @param startIndex the index to start, inclusive<a name="line.95"></a>
+<FONT color="green">096</FONT>         * @param endIndex the index to end, exclusive<a name="line.96"></a>
+<FONT color="green">097</FONT>         * @return the converted string<a name="line.97"></a>
+<FONT color="green">098</FONT>         * @throws IndexOutOfBoundsException if the index is out of<a name="line.98"></a>
+<FONT color="green">099</FONT>         *         range<a name="line.99"></a>
+<FONT color="green">100</FONT>         */<a name="line.100"></a>
+<FONT color="green">101</FONT>        public static String lowerCase(String string, int startIndex, int endIndex)<a name="line.101"></a>
+<FONT color="green">102</FONT>        {<a name="line.102"></a>
+<FONT color="green">103</FONT>            StringBuffer buffer = new StringBuffer(string);<a name="line.103"></a>
+<FONT color="green">104</FONT>            if(endIndex &lt;= startIndex) endIndex = startIndex + 1;<a name="line.104"></a>
+<FONT color="green">105</FONT>            for(int ii = startIndex; ii &lt; endIndex; ii++)<a name="line.105"></a>
+<FONT color="green">106</FONT>            {<a name="line.106"></a>
+<FONT color="green">107</FONT>                char character = buffer.charAt(ii);<a name="line.107"></a>
+<FONT color="green">108</FONT>                buffer.setCharAt(ii, Character.toLowerCase(character));<a name="line.108"></a>
+<FONT color="green">109</FONT>            }<a name="line.109"></a>
+<FONT color="green">110</FONT>            return buffer.toString();<a name="line.110"></a>
+<FONT color="green">111</FONT>        }<a name="line.111"></a>
+<FONT color="green">112</FONT>        <a name="line.112"></a>
+<FONT color="green">113</FONT>        /**<a name="line.113"></a>
+<FONT color="green">114</FONT>         * Appends the entries in the specified &lt;code&gt;List&lt;/code&gt; as strings<a name="line.114"></a>
+<FONT color="green">115</FONT>         * with a terminating &lt;i&gt;"\n"&lt;/i&gt; after each row.<a name="line.115"></a>
+<FONT color="green">116</FONT>         * @param buffer the buffer<a name="line.116"></a>
+<FONT color="green">117</FONT>         * @param data the &lt;code&gt;List&lt;/code&gt; with the data<a name="line.117"></a>
+<FONT color="green">118</FONT>         */<a name="line.118"></a>
+<FONT color="green">119</FONT>        public static void appendObjectsAsString(StringBuffer buffer, List data)<a name="line.119"></a>
+<FONT color="green">120</FONT>        {<a name="line.120"></a>
+<FONT color="green">121</FONT>            for(int ii = 0; ii &lt; data.size(); ii++)<a name="line.121"></a>
+<FONT color="green">122</FONT>            {<a name="line.122"></a>
+<FONT color="green">123</FONT>                buffer.append(data.get(ii));<a name="line.123"></a>
+<FONT color="green">124</FONT>                buffer.append("\n");<a name="line.124"></a>
+<FONT color="green">125</FONT>            }<a name="line.125"></a>
+<FONT color="green">126</FONT>        }<a name="line.126"></a>
+<FONT color="green">127</FONT>        <a name="line.127"></a>
+<FONT color="green">128</FONT>        /**<a name="line.128"></a>
+<FONT color="green">129</FONT>         * Appends &lt;i&gt;number&lt;/i&gt; tabs (\t) to the buffer.<a name="line.129"></a>
+<FONT color="green">130</FONT>         * @param buffer the buffer<a name="line.130"></a>
+<FONT color="green">131</FONT>         * @param number the number of tabs to append<a name="line.131"></a>
+<FONT color="green">132</FONT>         */<a name="line.132"></a>
+<FONT color="green">133</FONT>        public static void appendTabs(StringBuffer buffer, int number)<a name="line.133"></a>
+<FONT color="green">134</FONT>        {<a name="line.134"></a>
+<FONT color="green">135</FONT>            for(int ii = 0; ii &lt; number; ii++)<a name="line.135"></a>
+<FONT color="green">136</FONT>            {<a name="line.136"></a>
+<FONT color="green">137</FONT>                buffer.append("\t");<a name="line.137"></a>
+<FONT color="green">138</FONT>            }<a name="line.138"></a>
+<FONT color="green">139</FONT>        }<a name="line.139"></a>
+<FONT color="green">140</FONT>        <a name="line.140"></a>
+<FONT color="green">141</FONT>        /**<a name="line.141"></a>
+<FONT color="green">142</FONT>         * Splits a string into tokens. Similar to &lt;code&gt;StringTokenizer&lt;/code&gt;<a name="line.142"></a>
+<FONT color="green">143</FONT>         * except that empty tokens are recognized and added as &lt;code&gt;null&lt;/code&gt;.<a name="line.143"></a>
+<FONT color="green">144</FONT>         * With a delimiter of &lt;i&gt;";"&lt;/i&gt; the string<a name="line.144"></a>
+<FONT color="green">145</FONT>         * &lt;i&gt;"a;;b;c;;"&lt;/i&gt; will split into<a name="line.145"></a>
+<FONT color="green">146</FONT>         * &lt;i&gt;["a"] [null] ["b"] ["c"] [null]&lt;/i&gt;.<a name="line.146"></a>
+<FONT color="green">147</FONT>         * @param string the String<a name="line.147"></a>
+<FONT color="green">148</FONT>         * @param delim the delimiter<a name="line.148"></a>
+<FONT color="green">149</FONT>         * @param doTrim should each token be trimmed<a name="line.149"></a>
+<FONT color="green">150</FONT>         * @return the array of tokens<a name="line.150"></a>
+<FONT color="green">151</FONT>         */<a name="line.151"></a>
+<FONT color="green">152</FONT>        public static String[] split(String string, String delim, boolean doTrim)<a name="line.152"></a>
+<FONT color="green">153</FONT>        {<a name="line.153"></a>
+<FONT color="green">154</FONT>            int pos = 0, begin = 0;<a name="line.154"></a>
+<FONT color="green">155</FONT>            ArrayList resultList = new ArrayList();<a name="line.155"></a>
+<FONT color="green">156</FONT>            while((-1 != (pos = string.indexOf(delim, begin))) &amp;&amp; (begin &lt; string.length()))<a name="line.156"></a>
+<FONT color="green">157</FONT>            {<a name="line.157"></a>
+<FONT color="green">158</FONT>                String token = string.substring(begin, pos);<a name="line.158"></a>
+<FONT color="green">159</FONT>                if(doTrim) token = token.trim();<a name="line.159"></a>
+<FONT color="green">160</FONT>                if(token.length() == 0) token = null;<a name="line.160"></a>
+<FONT color="green">161</FONT>                resultList.add(token);<a name="line.161"></a>
+<FONT color="green">162</FONT>                begin = pos + delim.length();<a name="line.162"></a>
+<FONT color="green">163</FONT>            }<a name="line.163"></a>
+<FONT color="green">164</FONT>            if(begin &lt; string.length())<a name="line.164"></a>
+<FONT color="green">165</FONT>            {<a name="line.165"></a>
+<FONT color="green">166</FONT>                String token = string.substring(begin);<a name="line.166"></a>
+<FONT color="green">167</FONT>                if(doTrim) token = token.trim();<a name="line.167"></a>
+<FONT color="green">168</FONT>                if(token.length() == 0) token = null;<a name="line.168"></a>
+<FONT color="green">169</FONT>                resultList.add(token);<a name="line.169"></a>
+<FONT color="green">170</FONT>            }  <a name="line.170"></a>
+<FONT color="green">171</FONT>            return (String[])resultList.toArray(new String[resultList.size()]);<a name="line.171"></a>
+<FONT color="green">172</FONT>        }<a name="line.172"></a>
+<FONT color="green">173</FONT>        <a name="line.173"></a>
+<FONT color="green">174</FONT>        /**<a name="line.174"></a>
+<FONT color="green">175</FONT>         * Returns how many times &lt;code&gt;string&lt;/code&gt; contains<a name="line.175"></a>
+<FONT color="green">176</FONT>         * &lt;code&gt;other&lt;/coder&gt;.<a name="line.176"></a>
+<FONT color="green">177</FONT>         * @param string the string to search<a name="line.177"></a>
+<FONT color="green">178</FONT>         * @param other the string that is searched<a name="line.178"></a>
+<FONT color="green">179</FONT>         * @return the number of occurences<a name="line.179"></a>
+<FONT color="green">180</FONT>         */<a name="line.180"></a>
+<FONT color="green">181</FONT>        public static int countMatches(String string, String other) <a name="line.181"></a>
+<FONT color="green">182</FONT>        {<a name="line.182"></a>
+<FONT color="green">183</FONT>            if(null == string) return 0;<a name="line.183"></a>
+<FONT color="green">184</FONT>            if(null == other) return 0;<a name="line.184"></a>
+<FONT color="green">185</FONT>            if(0 &gt;= string.length()) return 0;<a name="line.185"></a>
+<FONT color="green">186</FONT>            if(0 &gt;= other.length()) return 0;<a name="line.186"></a>
+<FONT color="green">187</FONT>            int count = 0;<a name="line.187"></a>
+<FONT color="green">188</FONT>            int index = 0;<a name="line.188"></a>
+<FONT color="green">189</FONT>            while((index &lt;= string.length() - other.length()) &amp;&amp; (-1 != (index = string.indexOf(other, index))))<a name="line.189"></a>
+<FONT color="green">190</FONT>            {<a name="line.190"></a>
+<FONT color="green">191</FONT>                count++;<a name="line.191"></a>
+<FONT color="green">192</FONT>                index += other.length();<a name="line.192"></a>
+<FONT color="green">193</FONT>            }<a name="line.193"></a>
+<FONT color="green">194</FONT>            return count;<a name="line.194"></a>
+<FONT color="green">195</FONT>        }<a name="line.195"></a>
+<FONT color="green">196</FONT>    <a name="line.196"></a>
+<FONT color="green">197</FONT>        <a name="line.197"></a>
+<FONT color="green">198</FONT>        /**<a name="line.198"></a>
+<FONT color="green">199</FONT>         * Returns if the specified strings are equal, ignoring<a name="line.199"></a>
+<FONT color="green">200</FONT>         * case, if &lt;code&gt;caseSensitive&lt;/code&gt; is &lt;code&gt;false&lt;/code&gt;.<a name="line.200"></a>
+<FONT color="green">201</FONT>         * @param source the source String<a name="line.201"></a>
+<FONT color="green">202</FONT>         * @param target the target String<a name="line.202"></a>
+<FONT color="green">203</FONT>         * @param caseSensitive is the comparison case sensitive<a name="line.203"></a>
+<FONT color="green">204</FONT>         * @return &lt;code&gt;true&lt;/code&gt; if the strings matches<a name="line.204"></a>
+<FONT color="green">205</FONT>         *         &lt;code&gt;false&lt;/code&gt; otherwise<a name="line.205"></a>
+<FONT color="green">206</FONT>         */<a name="line.206"></a>
+<FONT color="green">207</FONT>        public static boolean matchesExact(String source, String target, boolean caseSensitive)<a name="line.207"></a>
+<FONT color="green">208</FONT>        {<a name="line.208"></a>
+<FONT color="green">209</FONT>            if(!caseSensitive)<a name="line.209"></a>
+<FONT color="green">210</FONT>            {<a name="line.210"></a>
+<FONT color="green">211</FONT>                source = source.toLowerCase();<a name="line.211"></a>
+<FONT color="green">212</FONT>                target = target.toLowerCase();<a name="line.212"></a>
+<FONT color="green">213</FONT>            }<a name="line.213"></a>
+<FONT color="green">214</FONT>            return (source.equals(target));<a name="line.214"></a>
+<FONT color="green">215</FONT>        }<a name="line.215"></a>
+<FONT color="green">216</FONT>        <a name="line.216"></a>
+<FONT color="green">217</FONT>        /**<a name="line.217"></a>
+<FONT color="green">218</FONT>         * Returns if &lt;code&gt;source&lt;/code&gt; contains &lt;code&gt;target&lt;/code&gt;, <a name="line.218"></a>
+<FONT color="green">219</FONT>         * ignoring case, if &lt;code&gt;caseSensitive&lt;/code&gt; is &lt;code&gt;false&lt;/code&gt;.<a name="line.219"></a>
+<FONT color="green">220</FONT>         * @param source the source String<a name="line.220"></a>
+<FONT color="green">221</FONT>         * @param target the target String<a name="line.221"></a>
+<FONT color="green">222</FONT>         * @param caseSensitive is the comparison case sensitive<a name="line.222"></a>
+<FONT color="green">223</FONT>         * @return &lt;code&gt;true&lt;/code&gt; if the strings matches<a name="line.223"></a>
+<FONT color="green">224</FONT>         *         &lt;code&gt;false&lt;/code&gt; otherwise<a name="line.224"></a>
+<FONT color="green">225</FONT>         */<a name="line.225"></a>
+<FONT color="green">226</FONT>        public static boolean matchesContains(String source, String target, boolean caseSensitive)<a name="line.226"></a>
+<FONT color="green">227</FONT>        {<a name="line.227"></a>
+<FONT color="green">228</FONT>            if(!caseSensitive)<a name="line.228"></a>
+<FONT color="green">229</FONT>            {<a name="line.229"></a>
+<FONT color="green">230</FONT>                source = source.toLowerCase();<a name="line.230"></a>
+<FONT color="green">231</FONT>                target = target.toLowerCase();<a name="line.231"></a>
+<FONT color="green">232</FONT>            }<a name="line.232"></a>
+<FONT color="green">233</FONT>            return (-1 != source.indexOf(target));<a name="line.233"></a>
+<FONT color="green">234</FONT>        }<a name="line.234"></a>
+<FONT color="green">235</FONT>        <a name="line.235"></a>
+<FONT color="green">236</FONT>        /**<a name="line.236"></a>
+<FONT color="green">237</FONT>         * Returns if the regular expression &lt;code&gt;target&lt;/code&gt; matches <a name="line.237"></a>
+<FONT color="green">238</FONT>         * &lt;code&gt;source&lt;/code&gt;, ignoring case, if &lt;code&gt;caseSensitive&lt;/code&gt; <a name="line.238"></a>
+<FONT color="green">239</FONT>         * is &lt;code&gt;false&lt;/code&gt;.<a name="line.239"></a>
+<FONT color="green">240</FONT>         * @param source the source String<a name="line.240"></a>
+<FONT color="green">241</FONT>         * @param target the target String<a name="line.241"></a>
+<FONT color="green">242</FONT>         * @param caseSensitive is the comparison case sensitive<a name="line.242"></a>
+<FONT color="green">243</FONT>         * @return &lt;code&gt;true&lt;/code&gt; if the strings matches<a name="line.243"></a>
+<FONT color="green">244</FONT>         *         &lt;code&gt;false&lt;/code&gt; otherwise<a name="line.244"></a>
+<FONT color="green">245</FONT>         */<a name="line.245"></a>
+<FONT color="green">246</FONT>        public static boolean matchesPerl5(String source, String target, boolean caseSensitive)<a name="line.246"></a>
+<FONT color="green">247</FONT>        {<a name="line.247"></a>
+<FONT color="green">248</FONT>            int mask = Perl5Compiler.CASE_INSENSITIVE_MASK;<a name="line.248"></a>
+<FONT color="green">249</FONT>            if(caseSensitive)<a name="line.249"></a>
+<FONT color="green">250</FONT>            {<a name="line.250"></a>
+<FONT color="green">251</FONT>                mask = Perl5Compiler.DEFAULT_MASK;<a name="line.251"></a>
+<FONT color="green">252</FONT>            }<a name="line.252"></a>
+<FONT color="green">253</FONT>            try<a name="line.253"></a>
+<FONT color="green">254</FONT>            {<a name="line.254"></a>
+<FONT color="green">255</FONT>                Pattern pattern = new Perl5Compiler().compile(target, mask);<a name="line.255"></a>
+<FONT color="green">256</FONT>                return (new Perl5Matcher().matches(source, pattern));<a name="line.256"></a>
+<FONT color="green">257</FONT>            } <a name="line.257"></a>
+<FONT color="green">258</FONT>            catch(MalformedPatternException exc)<a name="line.258"></a>
+<FONT color="green">259</FONT>            {<a name="line.259"></a>
+<FONT color="green">260</FONT>                log.error("Malformed pattern", exc);<a name="line.260"></a>
+<FONT color="green">261</FONT>                throw new NestedApplicationException(exc);<a name="line.261"></a>
+<FONT color="green">262</FONT>            }<a name="line.262"></a>
+<FONT color="green">263</FONT>        }<a name="line.263"></a>
+<FONT color="green">264</FONT>    }<a name="line.264"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+</BODY>
+</HTML>

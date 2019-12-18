@@ -1,0 +1,162 @@
+<HTML>
+<BODY BGCOLOR="white">
+<PRE>
+<FONT color="green">001</FONT>    package com.mockrunner.util.common;<a name="line.1"></a>
+<FONT color="green">002</FONT>    <a name="line.2"></a>
+<FONT color="green">003</FONT>    import java.lang.reflect.Method;<a name="line.3"></a>
+<FONT color="green">004</FONT>    import java.util.ArrayList;<a name="line.4"></a>
+<FONT color="green">005</FONT>    import java.util.Arrays;<a name="line.5"></a>
+<FONT color="green">006</FONT>    import java.util.List;<a name="line.6"></a>
+<FONT color="green">007</FONT>    <a name="line.7"></a>
+<FONT color="green">008</FONT>    import com.mockrunner.base.NestedApplicationException;<a name="line.8"></a>
+<FONT color="green">009</FONT>    <a name="line.9"></a>
+<FONT color="green">010</FONT>    public class MethodUtil<a name="line.10"></a>
+<FONT color="green">011</FONT>    {<a name="line.11"></a>
+<FONT color="green">012</FONT>        /**<a name="line.12"></a>
+<FONT color="green">013</FONT>         * Invokes the method with the specified name on the specified object<a name="line.13"></a>
+<FONT color="green">014</FONT>         * and throws a {@link com.mockrunner.base.NestedApplicationException},<a name="line.14"></a>
+<FONT color="green">015</FONT>         * if the invocation fails. The method must be public and must not<a name="line.15"></a>
+<FONT color="green">016</FONT>         * have any parameters.<a name="line.16"></a>
+<FONT color="green">017</FONT>         * @param object the object the method is invoked from<a name="line.17"></a>
+<FONT color="green">018</FONT>         * @param methodName the name of the method<a name="line.18"></a>
+<FONT color="green">019</FONT>         * @return the result of the method invocation<a name="line.19"></a>
+<FONT color="green">020</FONT>         */<a name="line.20"></a>
+<FONT color="green">021</FONT>        public static Object invoke(Object object, String methodName)<a name="line.21"></a>
+<FONT color="green">022</FONT>        {<a name="line.22"></a>
+<FONT color="green">023</FONT>            try<a name="line.23"></a>
+<FONT color="green">024</FONT>            {<a name="line.24"></a>
+<FONT color="green">025</FONT>                Method method = object.getClass().getMethod(methodName, null);<a name="line.25"></a>
+<FONT color="green">026</FONT>                return method.invoke(object, null);<a name="line.26"></a>
+<FONT color="green">027</FONT>            } <a name="line.27"></a>
+<FONT color="green">028</FONT>            catch(Exception exc)<a name="line.28"></a>
+<FONT color="green">029</FONT>            {<a name="line.29"></a>
+<FONT color="green">030</FONT>                throw new NestedApplicationException(exc);<a name="line.30"></a>
+<FONT color="green">031</FONT>            }<a name="line.31"></a>
+<FONT color="green">032</FONT>        }<a name="line.32"></a>
+<FONT color="green">033</FONT>        <a name="line.33"></a>
+<FONT color="green">034</FONT>        /**<a name="line.34"></a>
+<FONT color="green">035</FONT>         * Invokes the method with the specified name on the specified object<a name="line.35"></a>
+<FONT color="green">036</FONT>         * and throws a {@link com.mockrunner.base.NestedApplicationException},<a name="line.36"></a>
+<FONT color="green">037</FONT>         * if the invocation fails. The method must be public and must have<a name="line.37"></a>
+<FONT color="green">038</FONT>         * exactly one paremeter of the type specified by the given<a name="line.38"></a>
+<FONT color="green">039</FONT>         * &lt;code&gt;parameter&lt;/code&gt;.<a name="line.39"></a>
+<FONT color="green">040</FONT>         * @param object the object the method is invoked from<a name="line.40"></a>
+<FONT color="green">041</FONT>         * @param methodName the name of the method<a name="line.41"></a>
+<FONT color="green">042</FONT>         * @param parameter the parameter, must not be &lt;code&gt;null&lt;/code&gt;<a name="line.42"></a>
+<FONT color="green">043</FONT>         * @return the result of the method invocation<a name="line.43"></a>
+<FONT color="green">044</FONT>         */<a name="line.44"></a>
+<FONT color="green">045</FONT>        public static Object invoke(Object object, String methodName, Object parameter)<a name="line.45"></a>
+<FONT color="green">046</FONT>        {<a name="line.46"></a>
+<FONT color="green">047</FONT>            try<a name="line.47"></a>
+<FONT color="green">048</FONT>            {<a name="line.48"></a>
+<FONT color="green">049</FONT>                Method method = object.getClass().getMethod(methodName, new Class[] {parameter.getClass()});<a name="line.49"></a>
+<FONT color="green">050</FONT>                return method.invoke(object, new Object[] {parameter});<a name="line.50"></a>
+<FONT color="green">051</FONT>            } <a name="line.51"></a>
+<FONT color="green">052</FONT>            catch(Exception exc)<a name="line.52"></a>
+<FONT color="green">053</FONT>            {<a name="line.53"></a>
+<FONT color="green">054</FONT>                throw new NestedApplicationException(exc);<a name="line.54"></a>
+<FONT color="green">055</FONT>            }<a name="line.55"></a>
+<FONT color="green">056</FONT>        }<a name="line.56"></a>
+<FONT color="green">057</FONT>        <a name="line.57"></a>
+<FONT color="green">058</FONT>        /**<a name="line.58"></a>
+<FONT color="green">059</FONT>         * Returns if the two specified methods are equal as<a name="line.59"></a>
+<FONT color="green">060</FONT>         * defined by &lt;code&gt;Method.equals()&lt;/code&gt; except that<a name="line.60"></a>
+<FONT color="green">061</FONT>         * the methods can be defined by different classes.<a name="line.61"></a>
+<FONT color="green">062</FONT>         * @param method1 the first method to compare<a name="line.62"></a>
+<FONT color="green">063</FONT>         * @param method2 the second method to compare<a name="line.63"></a>
+<FONT color="green">064</FONT>         * @return &lt;code&gt;true&lt;/code&gt; if the methods are equals, &lt;code&gt;false&lt;/code&gt;<a name="line.64"></a>
+<FONT color="green">065</FONT>         *         otherwise<a name="line.65"></a>
+<FONT color="green">066</FONT>         * @throws NullPointerException if one of the methods is &lt;code&gt;null&lt;/code&gt;<a name="line.66"></a>
+<FONT color="green">067</FONT>         */<a name="line.67"></a>
+<FONT color="green">068</FONT>        public static boolean areMethodsEqual(Method method1, Method method2)<a name="line.68"></a>
+<FONT color="green">069</FONT>        {<a name="line.69"></a>
+<FONT color="green">070</FONT>            if(method1.equals(method2)) return true;<a name="line.70"></a>
+<FONT color="green">071</FONT>            if(!method2.getName().equals(method1.getName())) return false;<a name="line.71"></a>
+<FONT color="green">072</FONT>            if(!method1.getReturnType().equals(method2.getReturnType())) return false;<a name="line.72"></a>
+<FONT color="green">073</FONT>            return Arrays.equals(method1.getParameterTypes(), method2.getParameterTypes());<a name="line.73"></a>
+<FONT color="green">074</FONT>        }<a name="line.74"></a>
+<FONT color="green">075</FONT>        <a name="line.75"></a>
+<FONT color="green">076</FONT>        /**<a name="line.76"></a>
+<FONT color="green">077</FONT>         * Returns the declared methods of the specified class whose names are matching<a name="line.77"></a>
+<FONT color="green">078</FONT>         * the specified regular expression.<a name="line.78"></a>
+<FONT color="green">079</FONT>         * @param theClass the class whose methods are examined<a name="line.79"></a>
+<FONT color="green">080</FONT>         * @param expr the regular expression<a name="line.80"></a>
+<FONT color="green">081</FONT>         * @return the matching methods<a name="line.81"></a>
+<FONT color="green">082</FONT>         */<a name="line.82"></a>
+<FONT color="green">083</FONT>        public static Method[] getMatchingDeclaredMethods(Class theClass, String expr)<a name="line.83"></a>
+<FONT color="green">084</FONT>        {<a name="line.84"></a>
+<FONT color="green">085</FONT>            Method[] methods = theClass.getDeclaredMethods();<a name="line.85"></a>
+<FONT color="green">086</FONT>            List resultList = new ArrayList();<a name="line.86"></a>
+<FONT color="green">087</FONT>            for(int ii = 0; ii &lt; methods.length; ii++)<a name="line.87"></a>
+<FONT color="green">088</FONT>            {<a name="line.88"></a>
+<FONT color="green">089</FONT>                if(StringUtil.matchesPerl5(methods[ii].getName(), expr, true))<a name="line.89"></a>
+<FONT color="green">090</FONT>                {<a name="line.90"></a>
+<FONT color="green">091</FONT>                    resultList.add(methods[ii]);<a name="line.91"></a>
+<FONT color="green">092</FONT>                }<a name="line.92"></a>
+<FONT color="green">093</FONT>            }<a name="line.93"></a>
+<FONT color="green">094</FONT>            return (Method[])resultList.toArray(new Method[resultList.size()]);<a name="line.94"></a>
+<FONT color="green">095</FONT>        }<a name="line.95"></a>
+<FONT color="green">096</FONT>    }<a name="line.96"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+</BODY>
+</HTML>

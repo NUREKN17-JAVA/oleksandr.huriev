@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.servlet.ImageButtonRequestWrapper (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">ImageButtonRequestWrapper.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.servlet.index.html" target="packageFrame">com.mockrunner.example.servlet</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.util.Collections;
+<A NAME="4"></A><FONT ID="Import">import</FONT> java.util.Enumeration;
+<A NAME="5"></A><FONT ID="Import">import</FONT> java.util.HashMap;
+<A NAME="6"></A><FONT ID="Import">import</FONT> java.util.Iterator;
+<A NAME="7"></A><FONT ID="Import">import</FONT> java.util.Map;
+<A NAME="8"></A><FONT ID="Import">import</FONT> java.util.Vector;
+<A NAME="9"></A>
+<A NAME="10"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletRequest;
+<A NAME="11"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletRequestWrapper;
+<A NAME="12"></A>
+<A NAME="13"></A><FONT ID="FormalComment">/**
+<A NAME="14"></A> * The request wrapper for {@link ImageButtonFilter}.
+<A NAME="15"></A> * Replaces request parameters.
+<A NAME="16"></A> */</FONT>
+<A NAME="17"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> ImageButtonRequestWrapper <FONT ID="Extends">extends</FONT> HttpServletRequestWrapper
+<A NAME="18"></A>{
+<A NAME="19"></A>    <FONT ID="Public">public</FONT> ImageButtonRequestWrapper(HttpServletRequest request)
+<A NAME="20"></A>    {
+<A NAME="21"></A>        <FONT ID="Super">super</FONT>(request);
+<A NAME="22"></A>    }
+<A NAME="23"></A>    
+<A NAME="24"></A>    <FONT ID="Public">public</FONT> String getParameter(String key)
+<A NAME="25"></A>    {
+<A NAME="26"></A>        String[] parameters = getParameterValues(key);
+<A NAME="27"></A>        <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != parameters &amp;&amp; parameters.length &gt; <FONT ID="IntegerLiteral">0</FONT>) <FONT ID="Return">return</FONT> parameters[<FONT ID="IntegerLiteral">0</FONT>];
+<A NAME="28"></A>        <FONT ID="Return">return</FONT> <FONT ID="Null">null</FONT>;
+<A NAME="29"></A>    }
+<A NAME="30"></A>
+<A NAME="31"></A>    <FONT ID="Public">public</FONT> Enumeration getParameterNames()
+<A NAME="32"></A>    {
+<A NAME="33"></A>        <FONT ID="Return">return</FONT> <FONT ID="New">new</FONT> Vector(getParameterMap().keySet()).elements();
+<A NAME="34"></A>    }
+<A NAME="35"></A>
+<A NAME="36"></A>    <FONT ID="Public">public</FONT> String[] getParameterValues(String key)
+<A NAME="37"></A>    {
+<A NAME="38"></A>        <FONT ID="Return">return</FONT> (String[])getParameterMap().get(key);
+<A NAME="39"></A>    }
+<A NAME="40"></A>
+<A NAME="41"></A>    <FONT ID="Public">public</FONT> Map getParameterMap()
+<A NAME="42"></A>    {
+<A NAME="43"></A>        Map parameterMap = <FONT ID="Super">super</FONT>.getParameterMap();
+<A NAME="44"></A>        Map newMap = <FONT ID="New">new</FONT> HashMap();
+<A NAME="45"></A>        
+<A NAME="46"></A>        <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != parameterMap)
+<A NAME="47"></A>        {
+<A NAME="48"></A>            Iterator keys = parameterMap.keySet().iterator();
+<A NAME="49"></A>            <FONT ID="While">while</FONT>(keys.hasNext())
+<A NAME="50"></A>            {
+<A NAME="51"></A>                String key = (String)keys.next();
+<A NAME="52"></A>                Object value = parameterMap.get(key);
+<A NAME="53"></A>                <FONT ID="If">if</FONT>(!key.endsWith(<FONT ID="StringLiteral">".y"</FONT>))
+<A NAME="54"></A>                {
+<A NAME="55"></A>                    <FONT ID="If">if</FONT>(key.endsWith(<FONT ID="StringLiteral">".x"</FONT>))
+<A NAME="56"></A>                    {
+<A NAME="57"></A>                        key = key.substring(<FONT ID="IntegerLiteral">0</FONT>, key.length() -<FONT ID="IntegerLiteral">2</FONT>);
+<A NAME="58"></A>                    }
+<A NAME="59"></A>                    newMap.put(key, value);
+<A NAME="60"></A>                }
+<A NAME="61"></A>            }
+<A NAME="62"></A>        }
+<A NAME="63"></A>        <FONT ID="Return">return</FONT> Collections.unmodifiableMap(newMap);
+<A NAME="64"></A>    }
+<A NAME="65"></A>}</pre>
+</BODY>
+</HTML>

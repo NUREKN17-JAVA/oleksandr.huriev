@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.jdbc.BookstoreTest (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">BookstoreTest.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.jdbc.index.html" target="packageFrame">com.mockrunner.example.jdbc</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.util.ArrayList;
+<A NAME="4"></A><FONT ID="Import">import</FONT> java.util.List;
+<A NAME="5"></A>
+<A NAME="6"></A><FONT ID="Import">import</FONT> com.mockrunner.jdbc.BasicJDBCTestCaseAdapter;
+<A NAME="7"></A><FONT ID="Import">import</FONT> com.mockrunner.jdbc.FileResultSetFactory;
+<A NAME="8"></A><FONT ID="Import">import</FONT> com.mockrunner.mock.jdbc.MockResultSet;
+<A NAME="9"></A>
+<A NAME="10"></A><FONT ID="FormalComment">/**
+<A NAME="11"></A> * Example test for {@link Bookstore}. Demonstrates the usage of 
+<A NAME="12"></A> * {@link com.mockrunner.jdbc.JDBCTestModule} 
+<A NAME="13"></A> * and {@link com.mockrunner.jdbc.BasicJDBCTestCaseAdapter}.
+<A NAME="14"></A> * This is an example for the handling of {@link com.mockrunner.mock.jdbc.MockResultSet}.
+<A NAME="15"></A> * The data that the JDBC code should receive when executing the &lt;i&gt;select&lt;/i&gt;
+<A NAME="16"></A> * statement is specified in the file &lt;i&gt;bookstore.txt&lt;/i&gt;. Please note that we
+<A NAME="17"></A> * do not pass a filled &lt;code&gt;List&lt;/code&gt; to the order method in the
+<A NAME="18"></A> * succesful order test, because the choice if a table row should
+<A NAME="19"></A> * be in the result is done by SQL. The framework does not execute any
+<A NAME="20"></A> * SQL. In the second test, we check the correct SQL string.
+<A NAME="21"></A> * In the third test, we specify that the statement should raise an
+<A NAME="22"></A> * SQL exception (to simulate a database error) and verify, that
+<A NAME="23"></A> * the transaction is rolled back.
+<A NAME="24"></A> * 
+<A NAME="25"></A> * This example uses regular expressions. Per default, regular expressions
+<A NAME="26"></A> * are disabled, i.e. the preparation of result sets and verification of
+<A NAME="27"></A> * executed SQL statements is based on simple string comparison.
+<A NAME="28"></A> * With&lt;br&gt;&lt;br&gt;
+<A NAME="29"></A> * &lt;code&gt;setUseRegularExpressions(true);&lt;/code&gt;
+<A NAME="30"></A> * &lt;br&gt;&lt;br&gt;and&lt;br&gt;&lt;br&gt;
+<A NAME="31"></A> * &lt;code&gt;getStatementResultSetHandler().setUseRegularExpressions(true);&lt;/code&gt;
+<A NAME="32"></A> * &lt;br&gt;
+<A NAME="33"></A> * you enable regular expressions for the preparation of result sets and 
+<A NAME="34"></A> * verification of executed SQL statements (note that for prepared and
+<A NAME="35"></A> * callable statements you would have to enable it seperately).
+<A NAME="36"></A> * E.g. &lt;code&gt;prepareResultSet("select.*isbn,.*quantity.*", result)&lt;/code&gt;
+<A NAME="37"></A> * means that only the words &lt;i&gt;select&lt;/i&gt;, &lt;i&gt;isbn,&lt;/i&gt;, and &lt;i&gt;quantity&lt;/i&gt;
+<A NAME="38"></A> * must appear in the specified order, all other characters are irrelevant.
+<A NAME="39"></A> * Besides that simple example, you can use any Perl5 compatible expression.
+<A NAME="40"></A> */</FONT>
+<A NAME="41"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> BookstoreTest <FONT ID="Extends">extends</FONT> BasicJDBCTestCaseAdapter
+<A NAME="42"></A>{
+<A NAME="43"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> setUp() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="44"></A>    {
+<A NAME="45"></A>        <FONT ID="Super">super</FONT>.setUp();
+<A NAME="46"></A>        setUseRegularExpressions(<FONT ID="True">true</FONT>);
+<A NAME="47"></A>        getStatementResultSetHandler().setUseRegularExpressions(<FONT ID="True">true</FONT>);
+<A NAME="48"></A>    }
+<A NAME="49"></A>    
+<A NAME="50"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testSuccessfulOrder() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="51"></A>    {
+<A NAME="52"></A>        FileResultSetFactory factory = <FONT ID="New">new</FONT> FileResultSetFactory(<FONT ID="StringLiteral">"src/com/mockrunner/example/jdbc/bookstore.txt"</FONT>);
+<A NAME="53"></A>        factory.setFirstLineContainsColumnNames(<FONT ID="True">true</FONT>);
+<A NAME="54"></A>        MockResultSet result = getStatementResultSetHandler().createResultSet(<FONT ID="StringLiteral">"bookresult"</FONT>, factory);    
+<A NAME="55"></A>        <FONT ID="SingleLineComment">//System.out.println(result.toString());
+<A NAME="56"></A></FONT>        getStatementResultSetHandler().prepareResultSet(<FONT ID="StringLiteral">"select.*isbn,.*quantity.*"</FONT>, result);
+<A NAME="57"></A>        List resultList = Bookstore.order(getJDBCMockObjectFactory().getMockConnection(), <FONT ID="New">new</FONT> ArrayList());
+<A NAME="58"></A>        assertEquals(<FONT ID="IntegerLiteral">4</FONT>, resultList.size());
+<A NAME="59"></A>        assertTrue(resultList.contains(<FONT ID="StringLiteral">"1234567890"</FONT>));
+<A NAME="60"></A>        assertTrue(resultList.contains(<FONT ID="StringLiteral">"1111111111"</FONT>));
+<A NAME="61"></A>        assertTrue(resultList.contains(<FONT ID="StringLiteral">"1212121212"</FONT>));
+<A NAME="62"></A>        assertTrue(resultList.contains(<FONT ID="StringLiteral">"3333333333"</FONT>));
+<A NAME="63"></A>        verifyResultSetRow(<FONT ID="StringLiteral">"bookresult"</FONT>, <FONT ID="IntegerLiteral">1</FONT>, <FONT ID="New">new</FONT> String[] {<FONT ID="StringLiteral">"1234567890"</FONT>, <FONT ID="StringLiteral">"0"</FONT>});
+<A NAME="64"></A>        verifyResultSetRow(<FONT ID="StringLiteral">"bookresult"</FONT>, <FONT ID="IntegerLiteral">2</FONT>, <FONT ID="New">new</FONT> String[] {<FONT ID="StringLiteral">"1111111111"</FONT>, <FONT ID="StringLiteral">"4"</FONT>});
+<A NAME="65"></A>        verifyResultSetRow(<FONT ID="StringLiteral">"bookresult"</FONT>, <FONT ID="IntegerLiteral">3</FONT>, <FONT ID="New">new</FONT> String[] {<FONT ID="StringLiteral">"0987654321"</FONT>, <FONT ID="StringLiteral">"0"</FONT>});
+<A NAME="66"></A>        verifyResultSetRow(<FONT ID="StringLiteral">"bookresult"</FONT>, <FONT ID="IntegerLiteral">4</FONT>, <FONT ID="New">new</FONT> String[] {<FONT ID="StringLiteral">"1212121212"</FONT>, <FONT ID="StringLiteral">"2"</FONT>});
+<A NAME="67"></A>        verifyResultSetRow(<FONT ID="StringLiteral">"bookresult"</FONT>, <FONT ID="IntegerLiteral">5</FONT>, <FONT ID="New">new</FONT> String[] {<FONT ID="StringLiteral">"3333333333"</FONT>, <FONT ID="StringLiteral">"0"</FONT>});
+<A NAME="68"></A>        verifyCommitted();
+<A NAME="69"></A>        verifyAllResultSetsClosed();
+<A NAME="70"></A>        verifyAllStatementsClosed();
+<A NAME="71"></A>    }
+<A NAME="72"></A>    
+<A NAME="73"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testCorrectSQL() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="74"></A>    {
+<A NAME="75"></A>        MockResultSet result = getStatementResultSetHandler().createResultSet();    
+<A NAME="76"></A>        getStatementResultSetHandler().prepareResultSet(<FONT ID="StringLiteral">"select.*isbn,.*quantity.*"</FONT>, result);
+<A NAME="77"></A>        List orderList = <FONT ID="New">new</FONT> ArrayList();
+<A NAME="78"></A>        orderList.add(<FONT ID="StringLiteral">"1234567890"</FONT>);
+<A NAME="79"></A>        orderList.add(<FONT ID="StringLiteral">"1111111111"</FONT>);
+<A NAME="80"></A>        Bookstore.order(getJDBCMockObjectFactory().getMockConnection(), orderList);
+<A NAME="81"></A>        verifySQLStatementExecuted(<FONT ID="StringLiteral">"select.*isbn,.*quantity.*\\(isbn='1234567890'.*or.*isbn='1111111111'\\)"</FONT>);
+<A NAME="82"></A>    }
+<A NAME="83"></A>    
+<A NAME="84"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testException() <FONT ID="Throws">throws</FONT> Exception    
+<A NAME="85"></A>    {
+<A NAME="86"></A>        getStatementResultSetHandler().prepareThrowsSQLException(<FONT ID="StringLiteral">"select.*isbn,.*quantity.*"</FONT>);
+<A NAME="87"></A>        Bookstore.order(getJDBCMockObjectFactory().getMockConnection(), <FONT ID="New">new</FONT> ArrayList());
+<A NAME="88"></A>        verifyRolledBack();
+<A NAME="89"></A>        verifyAllResultSetsClosed();
+<A NAME="90"></A>        verifyAllStatementsClosed();
+<A NAME="91"></A>    }
+<A NAME="92"></A>}
+<A NAME="93"></A></pre>
+</BODY>
+</HTML>

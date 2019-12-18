@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.jdbc.Bank (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">Bank.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.jdbc.index.html" target="packageFrame">com.mockrunner.example.jdbc</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.sql.Connection;
+<A NAME="4"></A><FONT ID="Import">import</FONT> java.sql.DriverManager;
+<A NAME="5"></A><FONT ID="Import">import</FONT> java.sql.PreparedStatement;
+<A NAME="6"></A><FONT ID="Import">import</FONT> java.sql.ResultSet;
+<A NAME="7"></A><FONT ID="Import">import</FONT> java.sql.SQLException;
+<A NAME="8"></A><FONT ID="Import">import</FONT> java.sql.Statement;
+<A NAME="9"></A>
+<A NAME="10"></A><FONT ID="FormalComment">/**
+<A NAME="11"></A> * This example class simulates a bank. It can be used to
+<A NAME="12"></A> * transfer an amount of money from one account to another.
+<A NAME="13"></A> * It uses a table with the name &lt;i&gt;account&lt;/i&gt;. The first column
+<A NAME="14"></A> * is the account &lt;i&gt;id&lt;/i&gt;, the second stores the current &lt;i&gt;balance&lt;/i&gt;.
+<A NAME="15"></A> * The SQL to create the table is
+<A NAME="16"></A> * 
+<A NAME="17"></A> * &lt;code&gt;create table account(id int not null primary key,balance int not null)&lt;/code&gt;.
+<A NAME="18"></A> */</FONT>
+<A NAME="19"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> Bank
+<A NAME="20"></A>{
+<A NAME="21"></A>    <FONT ID="Private">private</FONT> Connection connection;
+<A NAME="22"></A>    
+<A NAME="23"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> connect() <FONT ID="Throws">throws</FONT> SQLException
+<A NAME="24"></A>    {
+<A NAME="25"></A>        disconnect();
+<A NAME="26"></A>        connection = DriverManager.getConnection(<FONT ID="StringLiteral">"jdbc:mysql://localhost:3306/test"</FONT>);
+<A NAME="27"></A>        connection.setAutoCommit(<FONT ID="False">false</FONT>);
+<A NAME="28"></A>    }
+<A NAME="29"></A>    
+<A NAME="30"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> disconnect() <FONT ID="Throws">throws</FONT> SQLException
+<A NAME="31"></A>    {
+<A NAME="32"></A>        <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != connection)
+<A NAME="33"></A>        {
+<A NAME="34"></A>            connection.close();
+<A NAME="35"></A>            connection = <FONT ID="Null">null</FONT>;
+<A NAME="36"></A>        }        
+<A NAME="37"></A>    }
+<A NAME="38"></A>    
+<A NAME="39"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> transfer(<FONT ID="Int">int</FONT> sourceId, <FONT ID="Int">int</FONT> targetId, <FONT ID="Int">int</FONT> amount) <FONT ID="Throws">throws</FONT> SQLException
+<A NAME="40"></A>    {  
+<A NAME="41"></A>        PreparedStatement preparedStatement = <FONT ID="Null">null</FONT>;
+<A NAME="42"></A>        <FONT ID="Try">try</FONT>
+<A NAME="43"></A>        {
+<A NAME="44"></A>            <FONT ID="If">if</FONT>(!isValid(sourceId, amount)) <FONT ID="Return">return</FONT>;
+<A NAME="45"></A>            preparedStatement = connection.prepareStatement(<FONT ID="StringLiteral">"update account set balance=balance+? where id=?"</FONT>);
+<A NAME="46"></A>            preparedStatement.setInt(<FONT ID="IntegerLiteral">1</FONT>, -amount);
+<A NAME="47"></A>            preparedStatement.setInt(<FONT ID="IntegerLiteral">2</FONT>, sourceId);
+<A NAME="48"></A>            preparedStatement.executeUpdate();
+<A NAME="49"></A>            preparedStatement.setInt(<FONT ID="IntegerLiteral">1</FONT>, amount);
+<A NAME="50"></A>            preparedStatement.setInt(<FONT ID="IntegerLiteral">2</FONT>, targetId);
+<A NAME="51"></A>            preparedStatement.executeUpdate();
+<A NAME="52"></A>            connection.commit();
+<A NAME="53"></A>        }
+<A NAME="54"></A>        <FONT ID="Catch">catch</FONT>(SQLException exc)
+<A NAME="55"></A>        {
+<A NAME="56"></A>            connection.rollback();
+<A NAME="57"></A>        }
+<A NAME="58"></A>        <FONT ID="Finally">finally</FONT>
+<A NAME="59"></A>        {
+<A NAME="60"></A>            <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != preparedStatement) preparedStatement.close();
+<A NAME="61"></A>        }
+<A NAME="62"></A>    }
+<A NAME="63"></A>    
+<A NAME="64"></A>    <FONT ID="Private">private</FONT> <FONT ID="Boolean">boolean</FONT> isValid(<FONT ID="Int">int</FONT> sourceId, <FONT ID="Int">int</FONT> amount) <FONT ID="Throws">throws</FONT> SQLException
+<A NAME="65"></A>    {
+<A NAME="66"></A>        Statement statement = <FONT ID="Null">null</FONT>;
+<A NAME="67"></A>        ResultSet result = <FONT ID="Null">null</FONT>;
+<A NAME="68"></A>        <FONT ID="Try">try</FONT>
+<A NAME="69"></A>        {
+<A NAME="70"></A>            statement = connection.createStatement();
+<A NAME="71"></A>            result = statement.executeQuery(<FONT ID="StringLiteral">"select balance from account where id="</FONT> + sourceId);
+<A NAME="72"></A>            <FONT ID="If">if</FONT>(!result.next())
+<A NAME="73"></A>            {
+<A NAME="74"></A>                connection.rollback();
+<A NAME="75"></A>                <FONT ID="Return">return</FONT> <FONT ID="False">false</FONT>;
+<A NAME="76"></A>            }
+<A NAME="77"></A>            <FONT ID="Int">int</FONT> balance = result.getInt(<FONT ID="IntegerLiteral">1</FONT>);
+<A NAME="78"></A>            <FONT ID="If">if</FONT>(balance &lt; amount)
+<A NAME="79"></A>            {
+<A NAME="80"></A>                connection.rollback();
+<A NAME="81"></A>                <FONT ID="Return">return</FONT> <FONT ID="False">false</FONT>;
+<A NAME="82"></A>            }
+<A NAME="83"></A>            <FONT ID="Return">return</FONT> <FONT ID="True">true</FONT>;
+<A NAME="84"></A>        }
+<A NAME="85"></A>        <FONT ID="Catch">catch</FONT>(SQLException exc)
+<A NAME="86"></A>        {
+<A NAME="87"></A>            connection.rollback();
+<A NAME="88"></A>            <FONT ID="Return">return</FONT> <FONT ID="False">false</FONT>;
+<A NAME="89"></A>        }
+<A NAME="90"></A>        <FONT ID="Finally">finally</FONT>
+<A NAME="91"></A>        {
+<A NAME="92"></A>            <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != result) result.close();
+<A NAME="93"></A>            <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != statement) statement.close();
+<A NAME="94"></A>        }
+<A NAME="95"></A>    }
+<A NAME="96"></A>}
+<A NAME="97"></A></pre>
+</BODY>
+</HTML>

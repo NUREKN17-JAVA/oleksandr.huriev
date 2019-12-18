@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.struts.StoreDataAction (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">StoreDataAction.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.struts.index.html" target="packageFrame">com.mockrunner.example.struts</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> javax.servlet.ServletContext;
+<A NAME="4"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletRequest;
+<A NAME="5"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletResponse;
+<A NAME="6"></A>
+<A NAME="7"></A><FONT ID="Import">import</FONT> org.apache.struts.action.Action;
+<A NAME="8"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionForm;
+<A NAME="9"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionForward;
+<A NAME="10"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionMapping;
+<A NAME="11"></A>
+<A NAME="12"></A><FONT ID="FormalComment">/**
+<A NAME="13"></A> * This example action demonstrates the access to a data repository
+<A NAME="14"></A> * stored in the &lt;code&gt;ServletContext&lt;/code&gt;. Since the repository
+<A NAME="15"></A> * is not thread safe we have to synchronize the access. Used to
+<A NAME="16"></A> * demonstrate how to do multithread testing. Check out
+<A NAME="17"></A> * {@link StoreDataActionTest}.
+<A NAME="18"></A> */</FONT>
+<A NAME="19"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> StoreDataAction <FONT ID="Extends">extends</FONT> Action
+<A NAME="20"></A>{
+<A NAME="21"></A>    <FONT ID="Public">public</FONT> ActionForward execute(ActionMapping mapping,
+<A NAME="22"></A>                                 ActionForm form,
+<A NAME="23"></A>                                 HttpServletRequest request,
+<A NAME="24"></A>                                 HttpServletResponse response) <FONT ID="Throws">throws</FONT> Exception
+<A NAME="25"></A>    {
+<A NAME="26"></A>        ServletContext context = request.getSession().getServletContext();
+<A NAME="27"></A>        <FONT ID="Synchronized">synchronized</FONT>(context)
+<A NAME="28"></A>        {
+<A NAME="29"></A>            String id = request.getParameter(<FONT ID="StringLiteral">"id"</FONT>);
+<A NAME="30"></A>            String data = request.getParameter(<FONT ID="StringLiteral">"data"</FONT>);
+<A NAME="31"></A>            <A HREF="../../../../com/mockrunner/example/struts/MemoryBasedRepository.java.html">MemoryBasedRepository</A> repository = MemoryBasedRepository.instance(context);
+<A NAME="32"></A>            <FONT ID="If">if</FONT>(repository.get(id) != <FONT ID="Null">null</FONT>) <FONT ID="Return">return</FONT> mapping.findForward(<FONT ID="StringLiteral">"failure"</FONT>);
+<A NAME="33"></A>            System.out.println(<FONT ID="StringLiteral">"Thread "</FONT> + Thread.currentThread().getName() + <FONT ID="StringLiteral">" wins the race"</FONT>);
+<A NAME="34"></A>            repository.set(id, data);
+<A NAME="35"></A>            <FONT ID="Return">return</FONT> mapping.findForward(<FONT ID="StringLiteral">"success"</FONT>);
+<A NAME="36"></A>        }
+<A NAME="37"></A>    }
+<A NAME="38"></A>}
+<A NAME="39"></A></pre>
+</BODY>
+</HTML>

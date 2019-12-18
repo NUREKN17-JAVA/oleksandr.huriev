@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.ejb.LogSessionBean (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">LogSessionBean.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.ejb.index.html" target="packageFrame">com.mockrunner.example.ejb</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> java.rmi.RemoteException;
+<A NAME="4"></A><FONT ID="Import">import</FONT> java.sql.Connection;
+<A NAME="5"></A><FONT ID="Import">import</FONT> java.sql.PreparedStatement;
+<A NAME="6"></A><FONT ID="Import">import</FONT> java.sql.SQLException;
+<A NAME="7"></A><FONT ID="Import">import</FONT> java.sql.Statement;
+<A NAME="8"></A><FONT ID="Import">import</FONT> java.sql.Timestamp;
+<A NAME="9"></A>
+<A NAME="10"></A><FONT ID="Import">import</FONT> javax.ejb.CreateException;
+<A NAME="11"></A><FONT ID="Import">import</FONT> javax.ejb.EJBException;
+<A NAME="12"></A><FONT ID="Import">import</FONT> javax.ejb.SessionBean;
+<A NAME="13"></A><FONT ID="Import">import</FONT> javax.ejb.SessionContext;
+<A NAME="14"></A><FONT ID="Import">import</FONT> javax.naming.InitialContext;
+<A NAME="15"></A><FONT ID="Import">import</FONT> javax.sql.DataSource;
+<A NAME="16"></A>
+<A NAME="17"></A><FONT ID="MultiLineComment">/*
+<A NAME="18"></A> * @ejb:bean name="LogSession"
+<A NAME="19"></A> *           display-name="LogSessionBean"
+<A NAME="20"></A> *           type="Stateless"
+<A NAME="21"></A> *           transaction-type="Container"
+<A NAME="22"></A> *           jndi-name="com/mockrunner/example/LogSession"
+<A NAME="23"></A> * 
+<A NAME="24"></A> * @ejb:resource-ref res-ref-name="jdbc/MySQLDB"
+<A NAME="25"></A> *                   res-type="javax.sql.DataSource"
+<A NAME="26"></A> *                   res-auth="Container"
+<A NAME="27"></A> *                   res-sharing-scope="Shareable"
+<A NAME="28"></A> * 
+<A NAME="29"></A> * @jboss:resource-manager res-man-name="jdbc/MySQLDB"
+<A NAME="30"></A> *                         res-man-jndi-name="java:/MySQLDB"
+<A NAME="31"></A> */</FONT>
+<A NAME="32"></A><FONT ID="FormalComment">/**
+<A NAME="33"></A> * This simple example EJB can be used to write
+<A NAME="34"></A> * log messages to a database.
+<A NAME="35"></A> */</FONT>
+<A NAME="36"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> LogSessionBean <FONT ID="Implements">implements</FONT> SessionBean
+<A NAME="37"></A>{
+<A NAME="38"></A>    <FONT ID="Private">private</FONT> SessionContext sessionContext;
+<A NAME="39"></A>    
+<A NAME="40"></A>    <FONT ID="MultiLineComment">/*
+<A NAME="41"></A>     * @ejb:interface-method
+<A NAME="42"></A>     * @ejb:transaction type="Required"
+<A NAME="43"></A>     */</FONT>
+<A NAME="44"></A>    <FONT ID="FormalComment">/**
+<A NAME="45"></A>     * Creates the database &lt;i&gt;logtable&lt;/i&gt;
+<A NAME="46"></A>     */</FONT>
+<A NAME="47"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> createLogTable()
+<A NAME="48"></A>    {
+<A NAME="49"></A>        Connection connection = <FONT ID="Null">null</FONT>;
+<A NAME="50"></A>        Statement statement = <FONT ID="Null">null</FONT>;
+<A NAME="51"></A>        <FONT ID="Try">try</FONT>
+<A NAME="52"></A>        {
+<A NAME="53"></A>            InitialContext context = <FONT ID="New">new</FONT> InitialContext();
+<A NAME="54"></A>            DataSource dataSource = (DataSource)context.lookup(<FONT ID="StringLiteral">"java:comp/env/jdbc/MySQLDB"</FONT>);
+<A NAME="55"></A>            connection = dataSource.getConnection();
+<A NAME="56"></A>            statement = connection.createStatement();
+<A NAME="57"></A>            statement.execute(<FONT ID="StringLiteral">"create table logtable("</FONT> +
+<A NAME="58"></A>                              <FONT ID="StringLiteral">"logtime timestamp not null,"</FONT> +
+<A NAME="59"></A>                              <FONT ID="StringLiteral">"message char(255) not null)"</FONT>);
+<A NAME="60"></A>        }
+<A NAME="61"></A>        <FONT ID="Catch">catch</FONT>(Exception exc)
+<A NAME="62"></A>        {
+<A NAME="63"></A>            sessionContext.setRollbackOnly();
+<A NAME="64"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> EJBException(exc.getMessage());
+<A NAME="65"></A>        }
+<A NAME="66"></A>        <FONT ID="Finally">finally</FONT>
+<A NAME="67"></A>        {
+<A NAME="68"></A>            <FONT ID="Try">try</FONT>
+<A NAME="69"></A>            {
+<A NAME="70"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != statement) statement.close();
+<A NAME="71"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != connection) connection.close();
+<A NAME="72"></A>            }
+<A NAME="73"></A>            <FONT ID="Catch">catch</FONT>(SQLException sqlExc)
+<A NAME="74"></A>            {
+<A NAME="75"></A>        
+<A NAME="76"></A>            }
+<A NAME="77"></A>        }
+<A NAME="78"></A>    }
+<A NAME="79"></A>    
+<A NAME="80"></A>    <FONT ID="MultiLineComment">/*
+<A NAME="81"></A>     * @ejb:interface-method
+<A NAME="82"></A>     * @ejb:transaction type="Required"
+<A NAME="83"></A>     */</FONT>
+<A NAME="84"></A>    <FONT ID="FormalComment">/**
+<A NAME="85"></A>     * Writes the specified message into the &lt;i&gt;logtable&lt;/i&gt;
+<A NAME="86"></A>     * along with the timestamp and the current thread name.
+<A NAME="87"></A>     * @param message the message
+<A NAME="88"></A>     */</FONT>
+<A NAME="89"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> logMessage(String message)
+<A NAME="90"></A>    {
+<A NAME="91"></A>        Connection connection = <FONT ID="Null">null</FONT>;
+<A NAME="92"></A>        PreparedStatement statement = <FONT ID="Null">null</FONT>;
+<A NAME="93"></A>        <FONT ID="Try">try</FONT>
+<A NAME="94"></A>        {
+<A NAME="95"></A>            InitialContext context = <FONT ID="New">new</FONT> InitialContext();
+<A NAME="96"></A>            DataSource dataSource = (DataSource)context.lookup(<FONT ID="StringLiteral">"java:comp/env/jdbc/MySQLDB"</FONT>);
+<A NAME="97"></A>            connection = dataSource.getConnection();
+<A NAME="98"></A>            statement = connection.prepareStatement(<FONT ID="StringLiteral">"insert into logtable values(?, ?)"</FONT>);
+<A NAME="99"></A>            statement.setTimestamp(<FONT ID="IntegerLiteral">1</FONT>, <FONT ID="New">new</FONT> Timestamp(System.currentTimeMillis()));
+<A NAME="100"></A>            statement.setString(<FONT ID="IntegerLiteral">2</FONT>, message);
+<A NAME="101"></A>            statement.executeUpdate();
+<A NAME="102"></A>        }
+<A NAME="103"></A>        <FONT ID="Catch">catch</FONT>(Exception exc)
+<A NAME="104"></A>        {
+<A NAME="105"></A>            sessionContext.setRollbackOnly();
+<A NAME="106"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> EJBException(exc.getMessage());
+<A NAME="107"></A>        }
+<A NAME="108"></A>        <FONT ID="Finally">finally</FONT>
+<A NAME="109"></A>        {
+<A NAME="110"></A>            <FONT ID="Try">try</FONT>
+<A NAME="111"></A>            {
+<A NAME="112"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != statement) statement.close();
+<A NAME="113"></A>                <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> != connection) connection.close();
+<A NAME="114"></A>            }
+<A NAME="115"></A>            <FONT ID="Catch">catch</FONT>(SQLException sqlExc)
+<A NAME="116"></A>            {
+<A NAME="117"></A>            
+<A NAME="118"></A>            }
+<A NAME="119"></A>        }
+<A NAME="120"></A>    }
+<A NAME="121"></A>    
+<A NAME="122"></A>    <FONT ID="MultiLineComment">/*
+<A NAME="123"></A>     * @ejb:create-method
+<A NAME="124"></A>     */</FONT>
+<A NAME="125"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbCreate() <FONT ID="Throws">throws</FONT> CreateException
+<A NAME="126"></A>    {
+<A NAME="127"></A>        
+<A NAME="128"></A>    }
+<A NAME="129"></A>    
+<A NAME="130"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbActivate() <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="131"></A>    {
+<A NAME="132"></A>
+<A NAME="133"></A>    }
+<A NAME="134"></A>
+<A NAME="135"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbPassivate() <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="136"></A>    {
+<A NAME="137"></A>
+<A NAME="138"></A>    }
+<A NAME="139"></A>
+<A NAME="140"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> ejbRemove() <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="141"></A>    {
+<A NAME="142"></A>
+<A NAME="143"></A>    }
+<A NAME="144"></A>
+<A NAME="145"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setSessionContext(SessionContext sessionContext) <FONT ID="Throws">throws</FONT> EJBException, RemoteException
+<A NAME="146"></A>    {
+<A NAME="147"></A>        <FONT ID="This">this</FONT>.sessionContext = sessionContext;
+<A NAME="148"></A>    }
+<A NAME="149"></A>}
+<A NAME="150"></A></pre>
+</BODY>
+</HTML>

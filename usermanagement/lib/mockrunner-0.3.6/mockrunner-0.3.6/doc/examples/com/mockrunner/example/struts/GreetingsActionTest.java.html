@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.struts.GreetingsActionTest (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">GreetingsActionTest.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.struts.index.html" target="packageFrame">com.mockrunner.example.struts</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> org.apache.commons.validator.ValidatorResources;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="Import">import</FONT> com.mockrunner.struts.BasicActionTestCaseAdapter;
+<A NAME="6"></A><FONT ID="Import">import</FONT> com.mockrunner.struts.MapMessageResources;
+<A NAME="7"></A>
+<A NAME="8"></A><FONT ID="FormalComment">/**
+<A NAME="9"></A> * Example test for the {@link GreetingsAction}.
+<A NAME="10"></A> * Please note that we cache the &lt;code&gt;ValidatorResources&lt;/code&gt;
+<A NAME="11"></A> * in a static field. You don't need to do this, but the parsing
+<A NAME="12"></A> * of the files before every test method will slow down your tests.
+<A NAME="13"></A> */</FONT>
+<A NAME="14"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> GreetingsActionTest <FONT ID="Extends">extends</FONT> BasicActionTestCaseAdapter
+<A NAME="15"></A>{
+<A NAME="16"></A>    <FONT ID="Private">private</FONT> <FONT ID="Static">static</FONT> ValidatorResources validatorRes = <FONT ID="Null">null</FONT>;
+<A NAME="17"></A>    
+<A NAME="18"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> setUp() <FONT ID="Throws">throws</FONT> Exception
+<A NAME="19"></A>    {
+<A NAME="20"></A>        <FONT ID="Super">super</FONT>.setUp();
+<A NAME="21"></A>        <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> == validatorRes)
+<A NAME="22"></A>        {
+<A NAME="23"></A>            String[] files = <FONT ID="New">new</FONT> String[<FONT ID="IntegerLiteral">2</FONT>];
+<A NAME="24"></A>            files[<FONT ID="IntegerLiteral">0</FONT>] = <FONT ID="StringLiteral">"src/com/mockrunner/example/struts/validator-rules.xml"</FONT>;
+<A NAME="25"></A>            files[<FONT ID="IntegerLiteral">1</FONT>] = <FONT ID="StringLiteral">"src/com/mockrunner/example/struts/validation.xml"</FONT>;
+<A NAME="26"></A>            validatorRes = createValidatorResources(files);
+<A NAME="27"></A>        }
+<A NAME="28"></A>        setValidatorResources(validatorRes);
+<A NAME="29"></A>        MapMessageResources resources = <FONT ID="New">new</FONT> MapMessageResources();
+<A NAME="30"></A>        resources.putMessages(<FONT ID="StringLiteral">"src/com/mockrunner/example/struts/Application.properties"</FONT>);
+<A NAME="31"></A>        setResources(resources);
+<A NAME="32"></A>        setValidate(<FONT ID="True">true</FONT>);
+<A NAME="33"></A>    }
+<A NAME="34"></A>    
+<A NAME="35"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testSuccesfulGreetings()
+<A NAME="36"></A>    {
+<A NAME="37"></A>        getActionMockObjectFactory().getMockServletContext().setAttribute(<FONT ID="StringLiteral">"counter"</FONT>, <FONT ID="New">new</FONT> Integer(<FONT ID="IntegerLiteral">0</FONT>));
+<A NAME="38"></A>        getActionMockObjectFactory().getMockActionMapping().setPath(<FONT ID="StringLiteral">"/greetings"</FONT>);
+<A NAME="39"></A>        addRequestParameter(<FONT ID="StringLiteral">"name"</FONT>, <FONT ID="StringLiteral">"testname"</FONT>);
+<A NAME="40"></A>        actionPerform(<A HREF="../../../../com/mockrunner/example/struts/GreetingsAction.java.html">GreetingsAction</A>.<FONT ID="Class">class</FONT>, <A HREF="../../../../com/mockrunner/example/struts/GreetingsValidatorForm.java.html">GreetingsValidatorForm</A>.<FONT ID="Class">class</FONT>);
+<A NAME="41"></A>        assertEquals(<FONT ID="StringLiteral">"Hello testname, you are visitor 1"</FONT>, getRequestAttribute(<FONT ID="StringLiteral">"greetings"</FONT>));
+<A NAME="42"></A>        getActionMockObjectFactory().getMockServletContext().setAttribute(<FONT ID="StringLiteral">"counter"</FONT>, <FONT ID="New">new</FONT> Integer(<FONT ID="IntegerLiteral">6</FONT>));
+<A NAME="43"></A>        verifyNoActionErrors();
+<A NAME="44"></A>        actionPerform(<A HREF="../../../../com/mockrunner/example/struts/GreetingsAction.java.html">GreetingsAction</A>.<FONT ID="Class">class</FONT>, <A HREF="../../../../com/mockrunner/example/struts/GreetingsValidatorForm.java.html">GreetingsValidatorForm</A>.<FONT ID="Class">class</FONT>);
+<A NAME="45"></A>        assertEquals(<FONT ID="StringLiteral">"Hello testname, you are visitor 7"</FONT>, getRequestAttribute(<FONT ID="StringLiteral">"greetings"</FONT>));
+<A NAME="46"></A>        verifyNoActionErrors();
+<A NAME="47"></A>        verifyForward(<FONT ID="StringLiteral">"success"</FONT>);
+<A NAME="48"></A>    }
+<A NAME="49"></A>    
+<A NAME="50"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> testValidationError()
+<A NAME="51"></A>    {
+<A NAME="52"></A>        getActionMockObjectFactory().getMockServletContext().setAttribute(<FONT ID="StringLiteral">"counter"</FONT>, <FONT ID="New">new</FONT> Integer(<FONT ID="IntegerLiteral">0</FONT>));
+<A NAME="53"></A>        getActionMockObjectFactory().getMockActionMapping().setPath(<FONT ID="StringLiteral">"/greetings"</FONT>); 
+<A NAME="54"></A>        actionPerform(<A HREF="../../../../com/mockrunner/example/struts/GreetingsAction.java.html">GreetingsAction</A>.<FONT ID="Class">class</FONT>, <A HREF="../../../../com/mockrunner/example/struts/GreetingsValidatorForm.java.html">GreetingsValidatorForm</A>.<FONT ID="Class">class</FONT>);
+<A NAME="55"></A>        verifyNumberActionErrors(<FONT ID="IntegerLiteral">1</FONT>);
+<A NAME="56"></A>        verifyActionErrorPresent(<FONT ID="StringLiteral">"errors.required"</FONT>);
+<A NAME="57"></A>        addRequestParameter(<FONT ID="StringLiteral">"name"</FONT>, <FONT ID="StringLiteral">"y"</FONT>);
+<A NAME="58"></A>        actionPerform(<A HREF="../../../../com/mockrunner/example/struts/GreetingsAction.java.html">GreetingsAction</A>.<FONT ID="Class">class</FONT>, <A HREF="../../../../com/mockrunner/example/struts/GreetingsValidatorForm.java.html">GreetingsValidatorForm</A>.<FONT ID="Class">class</FONT>);
+<A NAME="59"></A>        verifyNumberActionErrors(<FONT ID="IntegerLiteral">1</FONT>);
+<A NAME="60"></A>        verifyActionErrorPresent(<FONT ID="StringLiteral">"errors.minlength"</FONT>);
+<A NAME="61"></A>    }
+<A NAME="62"></A>}
+<A NAME="63"></A></pre>
+</BODY>
+</HTML>

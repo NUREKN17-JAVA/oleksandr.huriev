@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.struts.OrderManager (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">OrderManager.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.struts.index.html" target="packageFrame">com.mockrunner.example.struts</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> javax.servlet.ServletContext;
+<A NAME="4"></A>
+<A NAME="5"></A><FONT ID="FormalComment">/**
+<A NAME="6"></A> * The &lt;code&gt;OrderManager&lt;/code&gt; used in {@link OrderAction}.
+<A NAME="7"></A> * This example implementation does nothing.
+<A NAME="8"></A> */</FONT>
+<A NAME="9"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> OrderManager
+<A NAME="10"></A>{
+<A NAME="11"></A>    <FONT ID="Protected">protected</FONT> OrderManager()
+<A NAME="12"></A>    {
+<A NAME="13"></A>    
+<A NAME="14"></A>    }
+<A NAME="15"></A>    
+<A NAME="16"></A>    <FONT ID="Public">public</FONT> <FONT ID="Static">static</FONT> <FONT ID="Synchronized">synchronized</FONT> <A HREF="../../../../com/mockrunner/example/struts/OrderManager.java.html">OrderManager</A> instance(ServletContext context)
+<A NAME="17"></A>    {
+<A NAME="18"></A>        <A HREF="../../../../com/mockrunner/example/struts/OrderManager.java.html">OrderManager</A> manager = (<A HREF="../../../../com/mockrunner/example/struts/OrderManager.java.html">OrderManager</A>)context.getAttribute(<A HREF="../../../../com/mockrunner/example/struts/OrderManager.java.html">OrderManager</A>.<FONT ID="Class">class</FONT>.getName());
+<A NAME="19"></A>        <FONT ID="If">if</FONT>(<FONT ID="Null">null</FONT> == manager)
+<A NAME="20"></A>        {
+<A NAME="21"></A>            manager = <FONT ID="New">new</FONT> <A HREF="../../../../com/mockrunner/example/struts/OrderManager.java.html">OrderManager</A>();
+<A NAME="22"></A>            context.setAttribute(<A HREF="../../../../com/mockrunner/example/struts/OrderManager.java.html">OrderManager</A>.<FONT ID="Class">class</FONT>.getName(), manager);
+<A NAME="23"></A>        }
+<A NAME="24"></A>        <FONT ID="Return">return</FONT> manager;
+<A NAME="25"></A>    }
+<A NAME="26"></A>    
+<A NAME="27"></A>    <FONT ID="Public">public</FONT> <FONT ID="Int">int</FONT> getStock(String id)
+<A NAME="28"></A>    {
+<A NAME="29"></A>        <FONT ID="SingleLineComment">//get stock
+<A NAME="30"></A></FONT>        <FONT ID="Return">return</FONT> <FONT ID="IntegerLiteral">0</FONT>;
+<A NAME="31"></A>    }
+<A NAME="32"></A>    
+<A NAME="33"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> order(String id, <FONT ID="Int">int</FONT> amount)
+<A NAME="34"></A>    {
+<A NAME="35"></A>        <FONT ID="SingleLineComment">//do order
+<A NAME="36"></A></FONT>    }
+<A NAME="37"></A>}
+<A NAME="38"></A></pre>
+</BODY>
+</HTML>

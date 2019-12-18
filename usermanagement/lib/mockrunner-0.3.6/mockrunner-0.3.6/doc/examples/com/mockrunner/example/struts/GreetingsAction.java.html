@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>com.mockrunner.example.struts.GreetingsAction (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">GreetingsAction.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="Package">package</FONT> <A HREF="../../../../com.mockrunner.example.struts.index.html" target="packageFrame">com.mockrunner.example.struts</A>;
+<A NAME="2"></A>
+<A NAME="3"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletRequest;
+<A NAME="4"></A><FONT ID="Import">import</FONT> javax.servlet.http.HttpServletResponse;
+<A NAME="5"></A>
+<A NAME="6"></A><FONT ID="Import">import</FONT> org.apache.struts.action.Action;
+<A NAME="7"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionForm;
+<A NAME="8"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionForward;
+<A NAME="9"></A><FONT ID="Import">import</FONT> org.apache.struts.action.ActionMapping;
+<A NAME="10"></A><FONT ID="Import">import</FONT> org.apache.struts.util.MessageResources;
+<A NAME="11"></A>
+<A NAME="12"></A><FONT ID="FormalComment">/**
+<A NAME="13"></A> * This example action takes the name from the {@link GreetingsValidatorForm} 
+<A NAME="14"></A> * and loads some messages from the current message resources.
+<A NAME="15"></A> * It then creates a short greetings message and sets it to
+<A NAME="16"></A> * the request. Demonstrates how to deal with messages resources and
+<A NAME="17"></A> * validators.
+<A NAME="18"></A> */</FONT>
+<A NAME="19"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> GreetingsAction <FONT ID="Extends">extends</FONT> Action
+<A NAME="20"></A>{
+<A NAME="21"></A>    <FONT ID="Public">public</FONT> ActionForward execute(ActionMapping mapping,
+<A NAME="22"></A>                                 ActionForm form,
+<A NAME="23"></A>                                 HttpServletRequest request,
+<A NAME="24"></A>                                 HttpServletResponse response) <FONT ID="Throws">throws</FONT> Exception
+<A NAME="25"></A>    { 
+<A NAME="26"></A>        <A HREF="../../../../com/mockrunner/example/struts/GreetingsValidatorForm.java.html">GreetingsValidatorForm</A> greetForm = (<A HREF="../../../../com/mockrunner/example/struts/GreetingsValidatorForm.java.html">GreetingsValidatorForm</A>)form;
+<A NAME="27"></A>        String name = greetForm.getName();
+<A NAME="28"></A>        Integer counter = (Integer)request.getSession().getServletContext().getAttribute(<FONT ID="StringLiteral">"counter"</FONT>);
+<A NAME="29"></A>        counter = <FONT ID="New">new</FONT> Integer(counter.intValue() + <FONT ID="IntegerLiteral">1</FONT>);
+<A NAME="30"></A>        request.getSession().getServletContext().setAttribute(<FONT ID="StringLiteral">"counter"</FONT>, counter);
+<A NAME="31"></A>        MessageResources resources = getResources(request);
+<A NAME="32"></A>        String helloMessage = resources.getMessage(<FONT ID="StringLiteral">"hello.name"</FONT>, name);
+<A NAME="33"></A>        String visitorMessage = resources.getMessage(<FONT ID="StringLiteral">"visitor.number"</FONT>, counter);
+<A NAME="34"></A>        request.setAttribute(<FONT ID="StringLiteral">"greetings"</FONT>, helloMessage + <FONT ID="StringLiteral">" "</FONT> + visitorMessage);
+<A NAME="35"></A>        <FONT ID="Return">return</FONT> mapping.findForward(<FONT ID="StringLiteral">"success"</FONT>);
+<A NAME="36"></A>    }
+<A NAME="37"></A>}
+<A NAME="38"></A></pre>
+</BODY>
+</HTML>
