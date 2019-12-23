@@ -28,6 +28,8 @@ public interface Dao {
 
     Collection<User> findAll() throws DatabaseException;
 
+    Collection find(String firstName,String lastName) throws DatabaseException;
+
     void setConnectionFactory(ConnectionFactory connectionFactory);
 
     void delete(User userId) throws DatabaseException;

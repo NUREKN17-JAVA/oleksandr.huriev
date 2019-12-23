@@ -13,6 +13,7 @@ public abstract class HsqldbUserDao implements Dao {
 	private static final String DELETE_QUERY = "DELETE FROM users WHERE id=?";
 	private static final String SELECT_QUERY = "SELECT * FROM users WHERE id=?";
 	private static final String SELECT_ALL_QUERY = "SELECT * FROM users";
+	private static final String SELECT_BY_NAMES = "SELECT id, firstname, lastname,dateofbirth FROM users WHERE  firstname=? AND lastname=?";
 	private ConnectionFactory connectionFactory;
 	private static final String CALL_IDENTITY = "call IDENTITY()";
 	private static final String INSERT_QUERY = "INSERT INTO users (firstname, lastname, dateofbirth) VALUES (?,?,?)";
@@ -155,6 +156,38 @@ public abstract class HsqldbUserDao implements Dao {
 		}
 		return result;
 	}
+
+	public Collection find(String firstName,String lastName) throws DatabaseException{
+		Collection result = new LinkedList();
+
+		try {
+			Connection connection = connectionFactory.createConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BY_NAMES);
+			preparedStatement.setString(1, firstName);
+			preparedStatement.setString(2, lastName);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				User user = new User();
+				user.setId(resultSet.getLong(1));
+				user.setFirstName(resultSet.getString(2));
+				user.setLastName(resultSet.getString(3));
+				user.setDateOfBirth(resultSet.getDate(4));
+
+				result.add(user);
+			}
+
+			resultSet.close();
+			preparedStatement.close();
+			connection.close();
+		} catch (DatabaseException e) {
+			throw e;
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		return result;
+	}
+
 
 
 }

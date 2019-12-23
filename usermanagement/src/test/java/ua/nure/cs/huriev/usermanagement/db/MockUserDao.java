@@ -38,6 +38,11 @@ public class MockUserDao implements Dao {
         return users.values();
     }
 
+    @Override
+    public Collection find(String firstName, String lastName) throws DatabaseException {
+        throw new UnsupportedOperationException();
+    }
+
     public void setConnectionFactory(ConnectionFactory connectionFactory) {
 
     }

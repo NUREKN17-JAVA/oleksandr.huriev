@@ -92,7 +92,7 @@ public class SearchGui extends JFrame {
         }
 
         private void initialize() {
-            this.setName("addPanel"); //$NON-NLS-1$
+            this.setName("addPanel");
             this.setLayout(new BorderLayout());
             this.add(getFieldPanel(), BorderLayout.NORTH);
 
@@ -110,9 +110,9 @@ public class SearchGui extends JFrame {
         private JButton getCancelButton() {
             if (cancelButton == null) {
                 cancelButton = new JButton();
-                cancelButton.setText(Messages.getString("AddPanel.cancel")); //$NON-NLS-1$
-                cancelButton.setName("cancelButton"); //$NON-NLS-1$
-                cancelButton.setActionCommand("cancel"); //$NON-NLS-1$
+                cancelButton.setText(Messages.getString("AddPanel.cancel"));
+                cancelButton.setName("cancelButton");
+                cancelButton.setActionCommand("cancel");
                 cancelButton.addActionListener(this);
             }
             return cancelButton;
@@ -121,9 +121,9 @@ public class SearchGui extends JFrame {
         private JButton getSearchButton() {
             if (searchButton == null) {
                 searchButton = new JButton();
-                searchButton.setText("Search"); //$NON-NLS-1$
-                searchButton.setName("okButton"); //$NON-NLS-1$
-                searchButton.setActionCommand("ok"); //$NON-NLS-1$
+                searchButton.setText("Search");
+                searchButton.setName("okButton");
+                searchButton.setActionCommand("ok");
                 searchButton.addActionListener(this);
             }
             return searchButton;
@@ -133,9 +133,9 @@ public class SearchGui extends JFrame {
             if (fieldPanel == null) {
                 fieldPanel = new JPanel();
                 fieldPanel.setLayout(new GridLayout(2, 3));
-                addLabeledField(fieldPanel, "FirstName", getFirstNameField()); //$NON-NLS-1$
+                addLabeledField(fieldPanel, "FirstName", getFirstNameField());
                 fieldPanel.add(getSearchButton());
-                addLabeledField(fieldPanel, "LastName", getLastNameField()); //$NON-NLS-1$
+                addLabeledField(fieldPanel, "LastName", getLastNameField());
                 fieldPanel.add(getCancelButton());
             }
             return fieldPanel;
@@ -144,7 +144,7 @@ public class SearchGui extends JFrame {
         protected JTextField getLastNameField() {
             if (lastNameField == null) {
                 lastNameField = new JTextField();
-                lastNameField.setName("lastNameField"); //$NON-NLS-1$
+                lastNameField.setName("lastNameField");
             }
             return lastNameField;
         }
@@ -160,7 +160,7 @@ public class SearchGui extends JFrame {
         protected JTextField getFirstNameField() {
             if (firstNameField == null) {
                 firstNameField = new JTextField();
-                firstNameField.setName("firstNameField"); //$NON-NLS-1$
+                firstNameField.setName("firstNameField");
             }
             return firstNameField;
         }
